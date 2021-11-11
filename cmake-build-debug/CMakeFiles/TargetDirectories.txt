@@ -1,4 +1,0 @@
-/home/josef/BringAuto/Bakalarka/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/josef/BringAuto/Bakalarka/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/josef/BringAuto/Bakalarka/cmake-build-debug/CMakeFiles/StateGraph.dir
-/home/josef/BringAuto/Bakalarka/cmake-build-debug/CMakeFiles/bringautolib.dir

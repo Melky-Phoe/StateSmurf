@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/StateGraph.dir/main.cpp.o CMakeFiles/StateGraph.dir/source/Edge.cpp.o CMakeFiles/StateGraph.dir/source/StateGraph.cpp.o CMakeFiles/StateGraph.dir/source/Vertex.cpp.o -o StateGraph  libbringautolib.a 
