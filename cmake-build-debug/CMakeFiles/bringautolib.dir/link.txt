@@ -1,0 +1,2 @@
+/usr/bin/ar qc libbringautolib.a CMakeFiles/bringautolib.dir/source/Edge.cpp.o CMakeFiles/bringautolib.dir/source/StateGraph.cpp.o CMakeFiles/bringautolib.dir/source/Vertex.cpp.o
+/usr/bin/ranlib libbringautolib.a
