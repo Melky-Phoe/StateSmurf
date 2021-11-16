@@ -18,8 +18,9 @@ public:
 	bool changeState(const std::shared_ptr<Vertex>& vertex);
 	bool changeStateByName(const std::string& vertexName);
 
-	std::string getCurrentStateName() {return _currentState->name;}
+	bool stateExist(const std::string& vertexName);
+	std::string getCurrentStateName() {return _currentState != nullptr ? _currentState->name : "";}
 private:
-	std::shared_ptr<Vertex> _currentState;
+	std::shared_ptr<Vertex> _currentState {nullptr};
 };
 

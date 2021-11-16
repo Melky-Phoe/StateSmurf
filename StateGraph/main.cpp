@@ -8,6 +8,7 @@ int main() {
 	auto c = stateGraph.addVertex("C");
 	stateGraph.addVertex("D");
 	stateGraph.setEdge(a, b);
+	stateGraph.setEdge(b, c);
 	stateGraph.changeStateByName("A");
 	stateGraph.changeStateByName("B");
 	stateGraph.changeState(b);

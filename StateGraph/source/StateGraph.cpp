@@ -1,9 +1,4 @@
-//
-// Created by josef on 05.11.21.
-//
-
-#include "StateGraph.h"
-
+#include <StateGraph.h>
 #include <utility>
 #include <iostream>
 
@@ -32,18 +27,21 @@ bool StateGraph::changeStateByName(const std::string& vertexName) {
 		for (const auto& edge : edges) {
 			if (edge.from->name == _currentState->name) {
 				if (edge.to->name == vertexName) {
-					std::cout << "Prechazim do " << vertexName << std::endl;
+					// std::cout << "Going to " << vertexName << std::endl; // Debug print
 					_currentState = edge.to;
 					return true;
 				}
 			}
 		}
-		std::cout << "Nelze prejit do " << vertexName << std::endl;
+		// std::cout << "Can't go to " << vertexName << std::endl; // Debug print
 		return false;
 	}
 }
 
 bool StateGraph::changeState(const std::shared_ptr<Vertex>& vertex) {
+	if (vertex == nullptr) {
+		return false;
+	}
 	if (_currentState == nullptr) {
 		_currentState = vertex;
 		return true;
@@ -51,13 +49,22 @@ bool StateGraph::changeState(const std::shared_ptr<Vertex>& vertex) {
 		for (const auto& edge: edges) {
 			if (edge.from == _currentState) {
 				if (edge.to == vertex) {
-					std::cout << "Prechazim do " << vertex->name << std::endl;
+					// std::cout << "Prechazim do " << vertex->name << std::endl;
 					_currentState = vertex;
 					return true;
 				}
 			}
 		}
-		std::cout << "Nelze prejit do " << vertex->name << std::endl;
+		// std::cout << "Nelze prejit do " << vertex->name << std::endl;
 		return false;
 	}
+}
+
+bool StateGraph::stateExist(const std::string& vertexName) {
+	for (const auto& vertex : vertexes) {
+		if (vertex->name == vertexName) {
+			return true;
+		}
+	}
+	return false;
 }

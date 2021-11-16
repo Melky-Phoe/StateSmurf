@@ -4,7 +4,7 @@
 
 class Vertex {
 public:
-	Vertex(std::string newName);
+	explicit Vertex(std::string newName) : name{std::move(newName)} {};
 	const std::string name;
 };
 

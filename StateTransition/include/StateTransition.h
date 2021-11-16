@@ -6,9 +6,21 @@
 
 class StateTransition {
 public:
-	StateTransition(StateGraph stateGraph);
-	void goToState(std::string stateName);
-	void inState();
+	explicit StateTransition(StateGraph stateGraph);
+	/**
+	 * Changes current state
+	 * @param stateName Name of state
+	 * @return true if transition is possible
+	 */
+	bool goToState(const std::string& stateName);
+	/**
+	 * Compares if current state is same as param stateName, is called by goToState after change
+	 * @param stateName
+	 * @return true is same
+	 */
+	bool inState(const std::string& stateName);
+
+	//static void setStateGraph(StateGraph stateGraph);
 
 private:
 	StateGraph _stateGraph;

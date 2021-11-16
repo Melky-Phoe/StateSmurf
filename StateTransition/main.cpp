@@ -26,10 +26,12 @@ int main() {
 
 
 	StateTransition transitions(stateGraph);
+	transitions.goToState("Invalid");
 	transitions.goToState("D");
 	transitions.goToState("A");
 	transitions.goToState("A");
 	transitions.goToState("C");
 	transitions.goToState("B");
+
 	return 0;
 }
