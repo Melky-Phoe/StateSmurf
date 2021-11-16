@@ -5,6 +5,7 @@
 class SGTest : public ::testing::Test {
 protected:
 	void SetUp() override {
+		/// This State Graph as is drawn in test/StateGraph.jpg
 		auto a = stateGraph.addVertex("A");
 		auto b = stateGraph.addVertex("B");
 		auto c = stateGraph.addVertex("C");

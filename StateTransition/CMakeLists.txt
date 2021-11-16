@@ -1,19 +1,30 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 PROJECT(State_Transition)
 
+FIND_PACKAGE(CMLIB REQUIRED)
+
+IF(NOT BRINGAUTO_SYSTEM_DEP)
+	INCLUDE(cmake/Dependencies.cmake)
+ENDIF()
+
 SET(CMAKE_CXX_STANDARD 20)
 
+FIND_PACKAGE(libbringauto_logger)
+
 OPTION(BRINGAUTO_TESTS "Enable tests" ON)
-#TARGET_LINK_LIBRARIES(bringautolib PUBLIC cxxopts::cxxopts protobuff_lib ${OSMIUM_XML_LIBRARIES} bringauto_logger::bringauto_logger)
 
 IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
 	ADD_SUBDIRECTORY("test")
 ENDIF(BRINGAUTO_TESTS)
 
+ADD_LIBRARY(SGLib SHARED IMPORTED)
+SET_PROPERTY(TARGET SGLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/libstateGraphLib.so")
+
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(bringautolib STATIC ${source_files})
-TARGET_INCLUDE_DIRECTORIES(bringautolib PUBLIC "include")
+TARGET_INCLUDE_DIRECTORIES(bringautolib PUBLIC "include" "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include")
+TARGET_LINK_LIBRARIES(bringautolib PUBLIC bringauto_logger::bringauto_logger SGLib)
 
 ADD_EXECUTABLE(stateTransition main.cpp)
 TARGET_LINK_LIBRARIES(stateTransition PUBLIC bringautolib)

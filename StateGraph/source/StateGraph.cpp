@@ -27,6 +27,7 @@ bool StateGraph::changeStateByName(const std::string& vertexName) {
 				return true;
 			}
 		}
+		return false;
 	} else {
 		for (const auto& edge : edges) {
 			if (edge.from->name == _currentState->name) {
