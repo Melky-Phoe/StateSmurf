@@ -2,12 +2,12 @@
 
 #include <Vertex.h>
 #include <string>
-#include "StateGraph.h"
+#include <memory>
 
 class Edge {
 public:
-	Vertex from;
-	Vertex to;
+	std::shared_ptr<Vertex> from;
+	std::shared_ptr<Vertex> to;
 
 };
 

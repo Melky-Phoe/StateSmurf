@@ -5,6 +5,6 @@
 class Vertex {
 public:
 	Vertex(std::string newName);
-	static const std::string name;
+	const std::string name;
 };
 
