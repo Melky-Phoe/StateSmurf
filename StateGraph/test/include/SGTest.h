@@ -2,6 +2,8 @@
 #include <StateGraph.h>
 #include <gtest/gtest.h>
 
+namespace bringauto {
+
 class SGTest : public ::testing::Test {
 protected:
 	void SetUp() override {
@@ -21,3 +23,4 @@ protected:
 	StateGraph stateGraph;
 };
 
+}

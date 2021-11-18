@@ -2,7 +2,7 @@
 #include <StateGraph.h>
 
 int main() {
-	StateGraph stateGraph;
+	bringauto::StateGraph stateGraph;
 	auto a = stateGraph.addVertex("A");
 	auto b = stateGraph.addVertex("B");
 	auto c = stateGraph.addVertex("C");

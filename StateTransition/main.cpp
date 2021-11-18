@@ -1,4 +1,3 @@
-#include <iostream>
 #include <StateGraph.h>
 #include <StateTransition.h>
 
@@ -7,7 +6,7 @@
 #include <bringauto/logging/FileSink.hpp>
 
 int main() {
-	StateGraph stateGraph;
+	bringauto::StateGraph stateGraph;
 	auto a = stateGraph.addVertex("A");
 	auto b = stateGraph.addVertex("B");
 	auto c = stateGraph.addVertex("C");
@@ -25,7 +24,7 @@ int main() {
 	log::Logger::init({"StateTransition", log::Logger::Verbosity::Info});
 
 
-	StateTransition transitions(stateGraph);
+	bringauto::StateTransition transitions(stateGraph);
 	transitions.goToState("Invalid");
 	transitions.goToState("D");
 	transitions.goToState("A");

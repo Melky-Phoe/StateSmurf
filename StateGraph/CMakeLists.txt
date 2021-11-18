@@ -3,7 +3,7 @@ PROJECT(State_Graph)
 
 SET(CMAKE_CXX_STANDARD 20)
 
-OPTION(BRINGAUTO_TESTS "Enable tests" ON)
+OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
 #TARGET_LINK_LIBRARIES(bringautolib PUBLIC cxxopts::cxxopts protobuff_lib ${OSMIUM_XML_LIBRARIES} bringauto_logger::bringauto_logger)
 
 IF (BRINGAUTO_TESTS)

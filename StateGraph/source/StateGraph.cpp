@@ -2,10 +2,26 @@
 #include <utility>
 #include <iostream>
 
-void StateGraph::setEdge(std::shared_ptr<Vertex> from, std::shared_ptr<Vertex> to) {
-	Edge edge{from, to};
+namespace bringauto {
 
-	edges.push_back(edge);
+void StateGraph::setEdge(std::shared_ptr<Vertex> from, std::shared_ptr<Vertex> to) {
+	bool fromFound = false;
+	bool toFound = false;
+	for (const auto &vertex: vertexes) {
+		if (vertex == from) {
+			fromFound = true;
+		}
+		if (vertex == to) {
+			toFound = true;
+		}
+	}
+	if (fromFound && toFound) {
+		Edge edge{from, to};
+		edges.push_back(edge);
+	} else {
+		std::cerr << "Cant create edge, vertex doesn't exist" << std::endl;
+	}
+
 }
 
 std::shared_ptr<Vertex> StateGraph::addVertex(std::string name) {
@@ -14,9 +30,9 @@ std::shared_ptr<Vertex> StateGraph::addVertex(std::string name) {
 	return vertex;
 }
 
-bool StateGraph::changeStateByName(const std::string& vertexName) {
+bool StateGraph::changeStateByName(const std::string &vertexName) {
 	if (_currentState == nullptr) {
-		for (const auto& vertex : vertexes) {
+		for (const auto &vertex: vertexes) {
 			if (vertex->name == vertexName) {
 				_currentState = vertex;
 				return true;
@@ -24,8 +40,8 @@ bool StateGraph::changeStateByName(const std::string& vertexName) {
 		}
 		return false;
 	} else {
-		for (const auto& edge : edges) {
-			if (edge.from->name == _currentState->name) {
+		for (const auto &edge: edges) {
+			if (edge.from == _currentState) {
 				if (edge.to->name == vertexName) {
 					// std::cout << "Going to " << vertexName << std::endl; // Debug print
 					_currentState = edge.to;
@@ -38,7 +54,7 @@ bool StateGraph::changeStateByName(const std::string& vertexName) {
 	}
 }
 
-bool StateGraph::changeState(const std::shared_ptr<Vertex>& vertex) {
+bool StateGraph::changeState(const std::shared_ptr<Vertex> &vertex) {
 	if (vertex == nullptr) {
 		return false;
 	}
@@ -46,7 +62,7 @@ bool StateGraph::changeState(const std::shared_ptr<Vertex>& vertex) {
 		_currentState = vertex;
 		return true;
 	} else {
-		for (const auto& edge: edges) {
+		for (const auto &edge: edges) {
 			if (edge.from == _currentState) {
 				if (edge.to == vertex) {
 					// std::cout << "Prechazim do " << vertex->name << std::endl;
@@ -60,11 +76,12 @@ bool StateGraph::changeState(const std::shared_ptr<Vertex>& vertex) {
 	}
 }
 
-bool StateGraph::stateExist(const std::string& vertexName) {
-	for (const auto& vertex : vertexes) {
+bool StateGraph::stateExist(const std::string &vertexName) {
+	for (const auto &vertex: vertexes) {
 		if (vertex->name == vertexName) {
 			return true;
 		}
 	}
 	return false;
+}
 }

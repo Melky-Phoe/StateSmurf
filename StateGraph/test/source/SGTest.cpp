@@ -1,4 +1,7 @@
+#include "Vertex.h"
 #include "SGTest.h"
+
+namespace bringauto {
 
 TEST_F(SGTest, allValid) {
 	EXPECT_TRUE(stateGraph.changeStateByName("A")); //start
@@ -35,4 +38,9 @@ TEST_F(SGTest, stateExist) {
 	EXPECT_TRUE(stateGraph.stateExist("A"));
 	EXPECT_TRUE(stateGraph.stateExist("B"));
 	EXPECT_FALSE(stateGraph.stateExist("Invalid"));
+}
+
+TEST_F(SGTest, createEdge) {
+	Vertex a("newVertex")
+}
 }

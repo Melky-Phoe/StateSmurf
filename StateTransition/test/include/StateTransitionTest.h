@@ -7,11 +7,13 @@
 #include <bringauto/logging/FileSink.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 
+namespace bringauto {
+
 class StateTransitionTest : public ::testing::Test {
 protected:
 	void SetUp() override {
 		bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
-		bringauto::logging::Logger::addSink<bringauto::logging::FileSink>({"./","StateTransitionTest.log"});
+		bringauto::logging::Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
 		bringauto::logging::Logger::init({"StateTransitionTest", bringauto::logging::Logger::Verbosity::Info});
 
 		StateGraph stateGraph;
@@ -27,6 +29,7 @@ protected:
 		stateGraph.setEdge(d, a);
 		transition = StateTransition(stateGraph);
 	}
+
 	void TearDown() override {
 		bringauto::logging::Logger::destroy();
 	}
@@ -34,3 +37,4 @@ protected:
 	std::optional<StateTransition> transition;
 };
 
+}

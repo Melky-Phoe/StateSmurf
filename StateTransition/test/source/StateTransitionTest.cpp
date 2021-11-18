@@ -1,5 +1,7 @@
 #include "StateTransitionTest.h"
 
+namespace bringauto {
+
 TEST_F(StateTransitionTest, allValid) {
 	EXPECT_TRUE(transition->goToState("A")); //start
 	EXPECT_TRUE(transition->goToState("A"));
@@ -20,7 +22,7 @@ TEST_F(StateTransitionTest, goToSelf) {
 TEST_F(StateTransitionTest, notExistingState) {
 	EXPECT_FALSE(transition->goToState("Invalid")); // First does not exist
 	EXPECT_TRUE(transition->goToState("A"));
-	EXPECT_FALSE(transition->goToState("Invalid"));
+	EXPECT_FALSE(transition->goToState("Invalid")); // Other does not exist
 }
 
 TEST_F(StateTransitionTest, invalidEdge) {
@@ -29,5 +31,10 @@ TEST_F(StateTransitionTest, invalidEdge) {
 	EXPECT_FALSE(transition->goToState("D"));    // No Edge at all
 }
 
+TEST_F(StateTransitionTest, inState) {
+	EXPECT_FALSE(transition->inState("Ivalid"));
+	EXPECT_FALSE(transition->inState("A")); // valid but not in
+}
 
 
+}

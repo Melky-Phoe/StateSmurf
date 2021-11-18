@@ -2,11 +2,12 @@
 
 #include <bringauto/logging/Logger.hpp>
 
+namespace bringauto {
 StateTransition::StateTransition(StateGraph stateGraph) {
 	_stateGraph = std::move(stateGraph);
 }
 
-bool StateTransition::goToState(const std::string& stateName) {
+bool StateTransition::goToState(const std::string &stateName) {
 	if (_stateGraph.changeStateByName(stateName)) {
 		bringauto::logging::Logger::logInfo("[StateTransition] Going to state {}", stateName);
 		return inState(stateName);
@@ -21,13 +22,14 @@ bool StateTransition::goToState(const std::string& stateName) {
 	}
 }
 
-bool StateTransition::inState(const std::string& stateName) {
+bool StateTransition::inState(const std::string &stateName) {
 	if (_stateGraph.getCurrentStateName() == stateName) {
 		bringauto::logging::Logger::logInfo("[StateTransition] In state {}", _stateGraph.getCurrentStateName());
 		return true;
 	} else {
 		bringauto::logging::Logger::logError("[StateTransition] Not in state {}, current state is {}",
-											   stateName, _stateGraph.getCurrentStateName());
+		                                     stateName, _stateGraph.getCurrentStateName());
 		return false;
 	}
+}
 }
