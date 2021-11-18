@@ -40,7 +40,10 @@ TEST_F(SGTest, stateExist) {
 	EXPECT_FALSE(stateGraph.stateExist("Invalid"));
 }
 
-TEST_F(SGTest, createEdge) {
-	Vertex a("newVertex")
+TEST_F(SGTest, createInvalidEdge) {
+	auto a = std::make_shared<Vertex>("newVertex");
+	int count = stateGraph.edges.size();
+	stateGraph.setEdge(a, a);
+	EXPECT_EQ(stateGraph.edges.size(), count);
 }
 }
