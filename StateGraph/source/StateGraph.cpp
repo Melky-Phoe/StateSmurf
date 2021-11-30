@@ -4,7 +4,7 @@
 
 namespace bringauto {
 
-void StateGraph::setEdge(std::shared_ptr<Vertex> from, std::shared_ptr<Vertex> to) {
+void StateGraph::setEdge(const std::shared_ptr<Vertex>& from, const std::shared_ptr<Vertex>& to) {
 	bool fromFound = false;
 	bool toFound = false;
 	for (const auto &vertex: vertexes) {
@@ -24,8 +24,8 @@ void StateGraph::setEdge(std::shared_ptr<Vertex> from, std::shared_ptr<Vertex> t
 
 }
 
-std::shared_ptr<Vertex> StateGraph::addVertex(std::string name) {
-	auto vertex = std::make_shared<Vertex>(std::move(name));
+std::shared_ptr<Vertex> StateGraph::addVertex(const std::string &name) {
+	auto vertex = std::make_shared<Vertex>(name);
 	vertexes.push_back(vertex);
 	return vertex;
 }

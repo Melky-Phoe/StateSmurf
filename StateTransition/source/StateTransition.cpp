@@ -13,7 +13,7 @@ bool StateTransition::goToState(const std::string &stateName) {
 		return inState(stateName);
 	} else {
 		if (_stateGraph.stateExist(stateName)) {
-			bringauto::logging::Logger::logWarning("[StateTransition] Couldn't go to state {} from {}",
+			bringauto::logging::Logger::logWarning(R"([StateTransition] Couldn't change state {{ "to":{} "from": {} }})",
 			                                       stateName, _stateGraph.getCurrentStateName());
 		} else {
 			bringauto::logging::Logger::logWarning("[StateTransition] State doesnt exist {}", stateName);

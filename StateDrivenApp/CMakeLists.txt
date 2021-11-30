@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-PROJECT(State_Transition)
+PROJECT(StateDrivenApp)
 
 FIND_PACKAGE(CMLIB REQUIRED)
 
@@ -17,17 +17,23 @@ SET(CMAKE_CXX_STANDARD 20)
 FIND_PACKAGE(libbringauto_logger)
 
 
+ADD_LIBRARY(STransLib SHARED IMPORTED)
+SET_PROPERTY(TARGET STransLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/STransLib/libstateTransitionLib.so")
 ADD_LIBRARY(SGLib SHARED IMPORTED)
 SET_PROPERTY(TARGET SGLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/libstateGraphLib.so")
 
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(stateTransitionLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(stateTransitionLib PUBLIC "include" "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include")
-TARGET_LINK_LIBRARIES(stateTransitionLib PUBLIC bringauto_logger::bringauto_logger SGLib)
+ADD_LIBRARY(stateDrivenAppLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(stateDrivenAppLib PUBLIC
+		"include"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/STransLib/include"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include"
+		)
+TARGET_LINK_LIBRARIES(stateDrivenAppLib PUBLIC bringauto_logger::bringauto_logger STransLib)
 
-ADD_EXECUTABLE(stateTransition main.cpp)
-TARGET_LINK_LIBRARIES(stateTransition PUBLIC stateTransitionLib)
-
+ADD_EXECUTABLE(stateDrivenApp main.cpp)
+TARGET_LINK_LIBRARIES(stateDrivenApp PUBLIC stateDrivenAppLib)
+#[[
 IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
 	ADD_SUBDIRECTORY("test")
@@ -50,4 +56,4 @@ IF(BRINGAUTO_INSTALL)
 			Devel
 	)
 ENDIF()
-
+]]

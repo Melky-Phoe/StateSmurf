@@ -27,14 +27,14 @@ protected:
 		stateGraph.setEdge(a, d);
 		stateGraph.setEdge(a, a);
 		stateGraph.setEdge(d, a);
-		transition = StateTransition(stateGraph);
+		transition = std::make_shared<StateTransition>(stateGraph);
 	}
 
 	void TearDown() override {
 		bringauto::logging::Logger::destroy();
 	}
 
-	std::optional<StateTransition> transition;
+	std::shared_ptr<StateTransition> transition;
 };
 
 }

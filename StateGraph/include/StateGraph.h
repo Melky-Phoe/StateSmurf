@@ -13,9 +13,9 @@ public:
 	std::vector<Edge> edges;
 	std::vector<std::shared_ptr<Vertex>> vertexes;
 
-	void setEdge(std::shared_ptr<Vertex> from, std::shared_ptr<Vertex> to);
+	void setEdge(const std::shared_ptr<Vertex>& from, const std::shared_ptr<Vertex>& to);
 
-	std::shared_ptr<Vertex> addVertex(std::string name);
+	std::shared_ptr<Vertex> addVertex(const std::string &name);
 
 	// Logic
 	bool changeState(const std::shared_ptr<Vertex> &vertex);
