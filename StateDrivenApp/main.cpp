@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
 	/// State Transitions are using BALogger. You have to initialize before using it,
 	namespace log = bringauto::logging;
 	log::Logger::addSink<log::ConsoleSink>();
-	log::Logger::addSink<log::FileSink>({"./","StateTransition.log"});
-	log::Logger::init({"StateTransition", log::Logger::Verbosity::Info});
+	log::Logger::addSink<log::FileSink>({"./","sampleApp.log"});
+	log::Logger::init({"sampleApp", log::Logger::Verbosity::Info});
 
 	/// Creating State Graph. More in function
 	bringauto::StateGraph stateGraph = createStateGraph();
@@ -54,9 +54,13 @@ int main(int argc, char **argv) {
 	bringauto::Drive drive(transitions);
 
 	drive.increaseSpeed(10);
+	drive.increaseSpeed(15);
 	drive.stop();
 
-	/// Invalid transition
-	transitions->goToState("disconnected");
+	/// Invalid transition returns false
+	if (!transitions->goToState("disconnected")) {
+		bringauto::logging::Logger::logWarning("Unsuccessful transition");
+		drive.stop();
+	}
 
 }
