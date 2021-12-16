@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StateTransition.h"
+#include <StateTransition.h>
 
 namespace bringauto {
 
@@ -13,6 +13,6 @@ public:
 
 private:
 	std::shared_ptr<bringauto::StateTransition> _transitions;
-	int _speed;
+	int _speed = {0};
 };
 }

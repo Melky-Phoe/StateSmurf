@@ -1,0 +1,33 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+PROJECT(StateTransitionLogEvaluator)
+
+FIND_PACKAGE(CMLIB REQUIRED)
+
+FIND_PACKAGE(Boost 1.71 REQUIRED)
+
+FIND_PACKAGE(cxxopts 2.0.0 REQUIRED)
+
+OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
+OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
+OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
+OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
+
+IF(NOT BRINGAUTO_SYSTEM_DEP)
+	INCLUDE(cmake/Dependencies.cmake)
+ENDIF()
+
+SET(CMAKE_CXX_STANDARD 20)
+
+FIND_PACKAGE(libbringauto_logger)
+
+FILE(GLOB_RECURSE source_files "source/*")
+ADD_LIBRARY(evaluatorLib SHARED ${source_files})
+
+ADD_EXECUTABLE(evaluator main.cpp)
+TARGET_LINK_LIBRARIES(evaluator PUBLIC evaluatorLib)
+#[[
+IF (BRINGAUTO_TESTS)
+	ENABLE_TESTING()
+	ADD_SUBDIRECTORY("test")
+ENDIF(BRINGAUTO_TESTS)
+]]

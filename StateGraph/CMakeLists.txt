@@ -13,6 +13,10 @@ IF (BRINGAUTO_TESTS)
 	ADD_SUBDIRECTORY("test")
 ENDIF(BRINGAUTO_TESTS)
 
+FILE(GLOB_RECURSE source_files "source/*")
+ADD_LIBRARY(stateGraphLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(stateGraphLib PUBLIC "include")
+
 IF(BRINGAUTO_INSTALL)
 	INCLUDE(GNUInstallDirs)
 	INSTALL(TARGETS stateGraphLib EXPORT libstateGraphLibTargets
@@ -30,11 +34,6 @@ IF(BRINGAUTO_INSTALL)
 			Devel
 	)
 ENDIF()
-
-
-FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(stateGraphLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(stateGraphLib PUBLIC "include")
 
 ADD_EXECUTABLE(stateGraph main.cpp)
 TARGET_LINK_LIBRARIES(stateGraph PUBLIC stateGraphLib)

@@ -1,12 +1,12 @@
+#include <Drive.h>
+
 #include <StateGraph.h>
 #include <StateTransition.h>
-
 #include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 #include <bringauto/logging/FileSink.hpp>
-#include "Drive.h"
 
-void connect(std::shared_ptr<bringauto::StateTransition> transitions) {
+void connect(const std::shared_ptr<bringauto::StateTransition>& transitions) {
 	transitions->goToState("idle");
 }
 
