@@ -29,7 +29,7 @@ TARGET_INCLUDE_DIRECTORIES(stateDrivenAppLib PUBLIC
 		"${CMAKE_CURRENT_SOURCE_DIR}/lib/STransLib/include"
 		"${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include"
 		)
-TARGET_LINK_LIBRARIES(stateDrivenAppLib PUBLIC bringauto_logger::bringauto_logger STransLib)
+TARGET_LINK_LIBRARIES(stateDrivenAppLib PUBLIC bringauto_logger::bringauto_logger STransLib SGLib)
 
 ADD_EXECUTABLE(stateDrivenApp main.cpp)
 TARGET_LINK_LIBRARIES(stateDrivenApp PUBLIC stateDrivenAppLib)
