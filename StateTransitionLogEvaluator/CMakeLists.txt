@@ -22,6 +22,7 @@ FIND_PACKAGE(libbringauto_logger)
 
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(evaluatorLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(evaluatorLib PUBLIC "include")
 
 ADD_EXECUTABLE(evaluator main.cpp)
 TARGET_LINK_LIBRARIES(evaluator PUBLIC evaluatorLib)
