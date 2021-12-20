@@ -1,4 +1,4 @@
-#include <LogsComparer.h>
+#include <bringauto/logEvaluator/LogsComparer.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>

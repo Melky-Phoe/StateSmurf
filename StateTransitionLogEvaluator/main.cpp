@@ -1,10 +1,8 @@
-#include <Filter.h>
-#include <LogsComparer.h>
+#include <bringauto/logEvaluator/LogsComparer.h>
 
 #include <cxxopts.hpp>
 
 #include <iostream>
-#include <fstream>
 #include <string>
 
 
@@ -68,12 +66,10 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	//bringauto::Filter::findNextTransitionLog(etalonFile);
-	//bringauto::Filter::findNextTransitionLog(compareFile);
     bringauto::LogsComparer::compareFiles(etalonFile, compareFile);
 
-
 	etalonFile.close();
+    compareFile.close();
 	return EXIT_SUCCESS;
 
 }
