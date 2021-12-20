@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-PROJECT(StateTransitionLogEvaluator)
+PROJECT(StateTransitionLogEvaluator CXX)
 
 FIND_PACKAGE(CMLIB REQUIRED)
 

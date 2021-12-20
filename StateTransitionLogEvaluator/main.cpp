@@ -1,10 +1,12 @@
 #include <Filter.h>
+#include <LogsComparer.h>
 
 #include <cxxopts.hpp>
 
 #include <iostream>
 #include <fstream>
 #include <string>
+
 
 static cxxopts::Options createArgOpts() {
 	cxxopts::Options options {"BringAuto daemon"};
@@ -25,7 +27,7 @@ static int parseArgOpts(int argc, char** argv,
 			return 1;
 		}
 		if(!parsedOptions.count("etalon")){
-			std::cerr << "Error: no etanol file provided\n";
+			std::cerr << "Error: no etalon file provided\n";
 			std::cout << options.help() << std::endl;
 			return 1;
 		}
@@ -66,9 +68,9 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	bringauto::Filter::filterStateTransitionLogs(etalonFile);
-	bringauto::Filter::filterStateTransitionLogs(compareFile);
-
+	//bringauto::Filter::findNextTransitionLog(etalonFile);
+	//bringauto::Filter::findNextTransitionLog(compareFile);
+    bringauto::LogsComparer::compareFiles(etalonFile, compareFile);
 
 
 	etalonFile.close();

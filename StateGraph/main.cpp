@@ -13,6 +13,5 @@ int main() {
 	stateGraph.changeStateByName("B");
 	stateGraph.changeState(b);
 	stateGraph.changeState(c);
-	std::cout << stateGraph.getCurrentStateName() << std::endl;
 	return 0;
 }

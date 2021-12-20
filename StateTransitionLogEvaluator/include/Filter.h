@@ -6,6 +6,6 @@ namespace bringauto {
 
 class Filter {
 public:
-	static void filterStateTransitionLogs(std::istream& etalonFile);
+	static std::string  findNextTransitionLog(std::istream& srcFile);
 };
 }

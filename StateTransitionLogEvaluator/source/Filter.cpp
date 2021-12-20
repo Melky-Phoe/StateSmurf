@@ -8,16 +8,16 @@
 
 namespace bringauto {
 
-void Filter::filterStateTransitionLogs(std::istream& srcFile) {
-	std::stringstream filteredLogs;
+std::string Filter::findNextTransitionLog(std::istream& srcFile) {
+	//std::stringstream filteredLogs;
 	std::string line;
 	for (int i = 0; std::getline(srcFile, line); i++) {
 		// boost::iterator_range<std::string::iterator> result=boost::find_first(line,"ll");
 		if (boost::find_first(line,"[StateTransition]")) {
-			filteredLogs << i << ":\t" << line << std::endl;
+            return line;
 		}
 	}
-	std::cout << filteredLogs.str();
+    return "";
 }
 
 }
