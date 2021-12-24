@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-namespace bringauto {
+namespace bringauto::logEvaluator {
 
 class Filter {
 public:

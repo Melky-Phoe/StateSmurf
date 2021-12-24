@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-namespace bringauto {
+namespace bringauto::logEvaluator {
 
 
 int LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {

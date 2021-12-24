@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace bringauto {
+namespace bringauto::logEvaluator {
 
 std::string Filter::findNextTransitionLog(std::istream& srcFile) {
 	std::string line;

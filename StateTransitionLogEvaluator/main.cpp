@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-    bringauto::LogsComparer::compareFiles(etalonFile, compareFile);
+    bringauto::logEvaluator::LogsComparer::compareFiles(etalonFile, compareFile);
 
 	etalonFile.close();
     compareFile.close();

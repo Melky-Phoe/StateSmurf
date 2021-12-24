@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 
-namespace bringauto {
+namespace bringauto::logEvaluator {
 class LogsComparer {
 public:
     static int compareFiles(std::istream& etalon, std::istream& compared);
