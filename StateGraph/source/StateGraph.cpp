@@ -1,4 +1,4 @@
-#include <StateGraph.h>
+#include <StateGraph.hpp>
 #include <utility>
 #include <iostream>
 
@@ -25,9 +25,14 @@ void StateGraph::setEdge(const std::shared_ptr<Vertex>& from, const std::shared_
 }
 
 std::shared_ptr<Vertex> StateGraph::addVertex(const std::string &name) {
-	auto vertex = std::make_shared<Vertex>(name);
-	vertexes.push_back(vertex);
-	return vertex;
+    if (!stateExist(name)) {
+        auto vertex = std::make_shared<Vertex>(name);
+        vertexes.push_back(vertex);
+        return vertex;
+    } else {
+        std::cerr << "Vertex with name \"" << name <<"\" already exists" << std::endl;
+        return nullptr;
+    }
 }
 
 bool StateGraph::changeStateByName(const std::string &vertexName) {

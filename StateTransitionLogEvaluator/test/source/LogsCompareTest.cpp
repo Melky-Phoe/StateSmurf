@@ -6,73 +6,59 @@
 
 using namespace bringauto::log_evaluator;
 
-TEST(LogsComparer, shorterCompared) {
-    std::ifstream etalon;
-    etalon.open("../../test/testLogs/etalon.log", std::ios_base::in);
-    if (!etalon.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/etalon.log" << std::endl;
+std::ifstream openFile(std::string path) {
+    std::ifstream file;
+    file.open(path, std::ios_base::in);
+    if (!file.is_open()) {
+        std::cerr << "Unable to open" << path << std::endl;
     }
-    std::ifstream shorterCompare;
-    shorterCompare.open("../../test/testLogs/shorter.log", std::ios_base::in);
-    if (!shorterCompare.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/shorter.log" << std::endl;
-    }
+    return file;
+}
+TEST_F(LogsCompareTest, shorterCompared) {
+    std::ifstream shorterCompare = openFile("../../test/testLogs/shorter.log");
     EXPECT_FALSE(LogsComparer::compareFiles(etalon, shorterCompare));
-
-    etalon.close();
     shorterCompare.close();
 }
 
-TEST(LogsComparer, longerCompared) {
-    std::ifstream etalon;
-    etalon.open("../../test/testLogs/etalon.log", std::ios_base::in);
-    if (!etalon.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/etalon.log" << std::endl;
-    }
-    std::ifstream longerCompare;
-    longerCompare.open("../../test/testLogs/longer.log", std::ios_base::in);
-    if (!longerCompare.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/longer.log" << std::endl;
-    }
-
+TEST_F(LogsCompareTest, longerCompared) {
+    std::ifstream longerCompare = openFile("../../test/testLogs/longer.log");
     EXPECT_FALSE(LogsComparer::compareFiles(etalon, longerCompare));
-
-    etalon.close();
     longerCompare.close();
 }
 
-TEST(LogsComparer, sameFiles) {
-    std::ifstream etalon;
-    etalon.open("../../test/testLogs/etalon.log", std::ios_base::in);
-    if (!etalon.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/etalon.log" << std::endl;
-    }
-    std::ifstream compare;
-    compare.open("../../test/testLogs/etalon.log", std::ios_base::in);
-    if (!compare.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/etalon.log" << std::endl;
-    }
-
+TEST_F(LogsCompareTest, sameFiles) {
+    std::ifstream compare = openFile("../../test/testLogs/etalon.log");
     EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare));
-
-    etalon.close();
     compare.close();
 }
 
-TEST(LogsComparer, differentFiles) {
-    std::ifstream etalon;
-    etalon.open("../../test/testLogs/etalon.log", std::ios_base::in);
-    if (!etalon.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/etalon.log" << std::endl;
-    }
-    std::ifstream compare;
-    compare.open("../../test/testLogs/different.log", std::ios_base::in);
-    if (!compare.is_open()) {
-        std::cerr << "Unable to open ../../test/testLogs/different.log" << std::endl;
-    }
-
+TEST_F(LogsCompareTest, differentFiles) {
+    std::ifstream compare = openFile("../../test/testLogs/different.log");
     EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
-
-    etalon.close();
     compare.close();
 }
+
+TEST_F(LogsCompareTest, corruptedFile) {
+    std::ifstream compare = openFile("../../test/testLogs/corrupted.log");
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    compare.close();
+}
+
+TEST_F(LogsCompareTest, notExistingFile) {
+    std::ifstream compare = openFile("notExisting.log");
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    compare.close();
+}
+
+TEST_F(LogsCompareTest, missingReadRights) {
+    std::ifstream compare = openFile("../../test/testLogs/missingRights.log");
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare));
+    compare.close();
+}
+
+TEST_F(LogsCompareTest, longLine) {
+    std::ifstream compare = openFile("../../test/testLogs/longLine.log");
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare));
+    compare.close();
+}
+

@@ -1,5 +1,5 @@
 #pragma once
-#include <StateGraph.h>
+#include <StateGraph.hpp>
 #include <gtest/gtest.h>
 
 namespace bringauto {

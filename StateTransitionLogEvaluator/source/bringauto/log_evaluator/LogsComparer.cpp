@@ -43,17 +43,12 @@ bool LogsComparer::compareLines(const std::string& etalon, const std::string& co
     if (etalonTokens[static_cast<int>(LogTokensIndexes::verbosity)] == "[warning]") {
         std::cout << "WARNING: there is unsuccessful transition in etalon" << std::endl;
     }
-    // je tohle korektni volani funkce??
-    if (etalonTokens[static_cast<int>(LogTokensIndexes::stateTransition)] != "[StateTransition]") {
-        std::cerr << "ERROR: non StateTransion log in LogsComparer::compareLines" << std::endl;
-        return false;
-    }
 
     for (int i = static_cast<int>(LogTokensIndexes::stateTransition); i < etalonTokens.size(); ++i) {
         if (etalonTokens[i] != comparedTokens[i]) {
             std::cout << "Logs aren't equal:\n"
-                         "Etalon: " << etalon << std::endl <<
-                         "Compared: " << compared << std::endl;
+                         "  Etalon: " << etalon << std::endl <<
+                         "  Compared: " << compared << std::endl;
             return false;
 
         }

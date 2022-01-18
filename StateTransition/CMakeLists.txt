@@ -4,6 +4,7 @@ PROJECT(State_Transition)
 FIND_PACKAGE(CMLIB REQUIRED)
 
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
+OPTION(BRINGAUTO_SAMPLES "Enable build of sample applications" OFF)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
@@ -23,15 +24,17 @@ ADD_LIBRARY(stateTransitionLib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(stateTransitionLib PUBLIC "include" )
 TARGET_LINK_LIBRARIES(stateTransitionLib PUBLIC bringauto_logger::bringauto_logger stateGraphLib)
 
-ADD_EXECUTABLE(stateTransition main.cpp)
-TARGET_LINK_LIBRARIES(stateTransition PUBLIC stateTransitionLib)
+IF (BRINGAUTO_SAMPLES)
+	ADD_EXECUTABLE(stateTransition example/main.cpp)
+	TARGET_LINK_LIBRARIES(stateTransition PUBLIC stateTransitionLib)
+ENDIF(BRINGAUTO_SAMPLES)
 
 IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
 	ADD_SUBDIRECTORY("test")
 ENDIF(BRINGAUTO_TESTS)
 
-IF(BRINGAUTO_INSTALL)
+IF (BRINGAUTO_INSTALL)
 	INCLUDE(GNUInstallDirs)
 	INSTALL(TARGETS stateTransitionLib EXPORT libstateTransitionLibTargets
 			LIBRARY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
