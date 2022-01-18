@@ -1,0 +1,12 @@
+[2021-12-20 10:05:29.391] [sampleApp] [info] [StateTransition] Going to state idle
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state idle
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state drive
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state drive
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state drive
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state drive
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state inStop
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state inStop
+[2021-12-20 10:05:29.392] [sampleApp] [warning] [StateTransition] Couldn't change state { "to":disconnected "from": inStop }
+[2021-12-20 10:05:29.392] [sampleApp] [warning] Unsuccessful transition
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state inStop
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state inStop

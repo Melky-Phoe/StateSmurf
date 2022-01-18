@@ -1,10 +1,10 @@
-#include <bringauto/logEvaluator/Filter.h>
+#include <bringauto/log_evaluator/Filter.h>
 
 #include <boost/algorithm/string.hpp>
 
 #include <string>
 
-namespace bringauto::logEvaluator {
+namespace bringauto::log_evaluator {
 
 std::string Filter::findNextTransitionLog(std::istream& srcFile) {
 	std::string line;

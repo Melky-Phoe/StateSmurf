@@ -16,14 +16,16 @@ SET(CMAKE_CXX_STANDARD 20)
 
 FIND_PACKAGE(libbringauto_logger)
 
-
+#[[
 ADD_LIBRARY(SGLib SHARED IMPORTED)
 SET_PROPERTY(TARGET SGLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/libstateGraphLib.so")
+]]
 
+ADD_SUBDIRECTORY("${CMAKE_CURRENT_SOURCE_DIR}/../StateGraph/")
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(stateTransitionLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(stateTransitionLib PUBLIC "include" "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include")
-TARGET_LINK_LIBRARIES(stateTransitionLib PUBLIC bringauto_logger::bringauto_logger SGLib)
+TARGET_INCLUDE_DIRECTORIES(stateTransitionLib PUBLIC "include" )
+TARGET_LINK_LIBRARIES(stateTransitionLib PUBLIC bringauto_logger::bringauto_logger stateGraphLib)
 
 ADD_EXECUTABLE(stateTransition main.cpp)
 TARGET_LINK_LIBRARIES(stateTransition PUBLIC stateTransitionLib)

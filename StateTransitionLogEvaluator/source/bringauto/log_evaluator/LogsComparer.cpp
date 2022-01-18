@@ -1,11 +1,12 @@
-#include <bringauto/logEvaluator/LogsComparer.h>
+#include <bringauto/log_evaluator/LogsComparer.h>
+#include <bringauto/log_evaluator/Filter.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include <iostream>
 
-namespace bringauto::logEvaluator {
+namespace bringauto::log_evaluator {
 
 
 int LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
@@ -37,6 +38,10 @@ int LogsComparer::compareLines(const std::string& etalon, const std::string& com
 
     if (etalonTokens[static_cast<int>(LogTokensIndexes::verbosity)] == "[warning]") {
         std::cout << "WARNING: there is unsuccessful transition in etalon" << std::endl;
+    }
+    // je tohle korektni??
+    if (etalonTokens[static_cast<int>(LogTokensIndexes::stateTransition)] != "[StateTransition]") {
+        std::cerr << "ERROR: non StateTransion log in LogsComparer::compareLines" << std::endl;
     }
 
     for (int i = static_cast<int>(LogTokensIndexes::stateTransition); i < etalonTokens.size(); ++i) {

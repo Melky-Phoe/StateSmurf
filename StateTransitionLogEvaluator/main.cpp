@@ -1,4 +1,4 @@
-#include <bringauto/logEvaluator/LogsComparer.h>
+#include <bringauto/log_evaluator/LogsComparer.h>
 
 #include <cxxopts.hpp>
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-    bringauto::logEvaluator::LogsComparer::compareFiles(etalonFile, compareFile);
+    bringauto::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile);
 
 	etalonFile.close();
     compareFile.close();

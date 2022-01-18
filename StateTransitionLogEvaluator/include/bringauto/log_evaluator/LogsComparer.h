@@ -1,9 +1,8 @@
 #pragma once
-#include "Filter.h"
 #include <fstream>
 #include <vector>
 
-namespace bringauto::logEvaluator {
+namespace bringauto::log_evaluator {
 class LogsComparer {
 public:
     static int compareFiles(std::istream& etalon, std::istream& compared);
