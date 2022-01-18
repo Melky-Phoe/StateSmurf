@@ -1,7 +1,8 @@
-#include <bringauto/log_evaluator/LogsComparer.h>
+#include <bringauto/log_evaluator/LogsComparer.hpp>
 
 #include <cxxopts.hpp>
 
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -66,7 +67,10 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-    bringauto::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile);
+    if (!bringauto::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile)) {
+        std::cerr << "Input files are not same" << std::endl;
+        return EXIT_FAILURE;
+    }
 
 	etalonFile.close();
     compareFile.close();

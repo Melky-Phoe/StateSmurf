@@ -34,7 +34,3 @@ IF(BRINGAUTO_INSTALL)
 			Devel
 	)
 ENDIF()
-
-ADD_EXECUTABLE(stateGraph main.cpp)
-TARGET_LINK_LIBRARIES(stateGraph PUBLIC stateGraphLib)
-

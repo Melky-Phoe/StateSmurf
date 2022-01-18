@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Vertex.h>
-#include <Edge.h>
+#include <Vertex.hpp>
+#include <Edge.hpp>
 
 #include <vector>
 #include <memory>

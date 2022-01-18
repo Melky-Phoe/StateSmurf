@@ -1,3 +1,6 @@
-[2021-12-20 10:05:29.391] [sampleApp] [info] [StateTransition] Going to state idle
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state idle
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state drive
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Any log with [StateTransition] prefix
+[2021-12-20 10:05:29.391] [sampleApp] [info] [StateTransition] after double prefix
+[2021-12-20 10:05:29.392] [sampleApp] [error] anything
+everything
+[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] After other logs, also last
+nothing else

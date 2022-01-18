@@ -1,5 +1,5 @@
-#include <bringauto/log_evaluator/LogsComparer.h>
-#include <bringauto/log_evaluator/Filter.h>
+#include <bringauto/log_evaluator/LogsComparer.hpp>
+#include <bringauto/log_evaluator/Filter.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -9,21 +9,25 @@
 namespace bringauto::log_evaluator {
 
 
-int LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
+bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
     std::string etalonLog = Filter::findNextTransitionLog(etalon);
     std::string comparedLog = Filter::findNextTransitionLog(compared);
+    bool filesAreSame = true;
 
-    for (int i = 0; !etalonLog.empty(); ++i) {
-        compareLines(etalonLog, comparedLog);
-
+    while (!etalonLog.empty()) {
+        if (!compareLines(etalonLog, comparedLog)) {
+            filesAreSame = false;
+        }
         etalonLog = Filter::findNextTransitionLog(etalon);
         comparedLog = Filter::findNextTransitionLog(compared);
+
     }
     // mozna dvojita podminka ve foru bude lepsi
     if (!comparedLog.empty()) {
-        std::cerr << "comparedLog is longer" << std::endl;
+        std::cerr << "compared log is longer than etalon" << std::endl;
+        return false;
     }
-    return 0;
+    return filesAreSame;
 }
 
 std::vector<std::string> LogsComparer::parseLine( const std::string& line) {
@@ -32,16 +36,17 @@ std::vector<std::string> LogsComparer::parseLine( const std::string& line) {
     return tokens;
 }
 
-int LogsComparer::compareLines(const std::string& etalon, const std::string& compared) {
+bool LogsComparer::compareLines(const std::string& etalon, const std::string& compared) {
     std::vector<std::string> etalonTokens = parseLine(etalon);
     std::vector<std::string> comparedTokens = parseLine(compared);
 
     if (etalonTokens[static_cast<int>(LogTokensIndexes::verbosity)] == "[warning]") {
         std::cout << "WARNING: there is unsuccessful transition in etalon" << std::endl;
     }
-    // je tohle korektni??
+    // je tohle korektni volani funkce??
     if (etalonTokens[static_cast<int>(LogTokensIndexes::stateTransition)] != "[StateTransition]") {
         std::cerr << "ERROR: non StateTransion log in LogsComparer::compareLines" << std::endl;
+        return false;
     }
 
     for (int i = static_cast<int>(LogTokensIndexes::stateTransition); i < etalonTokens.size(); ++i) {
@@ -49,11 +54,11 @@ int LogsComparer::compareLines(const std::string& etalon, const std::string& com
             std::cout << "Logs aren't equal:\n"
                          "Etalon: " << etalon << std::endl <<
                          "Compared: " << compared << std::endl;
-            break;
+            return false;
 
         }
     }
-    return 0;
+    return true;
 }
 
 

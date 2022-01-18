@@ -16,44 +16,14 @@ SET(CMAKE_CXX_STANDARD 20)
 
 FIND_PACKAGE(libbringauto_logger)
 
-
-ADD_LIBRARY(STransLib SHARED IMPORTED)
-SET_PROPERTY(TARGET STransLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/STransLib/libstateTransitionLib.so")
-ADD_LIBRARY(SGLib SHARED IMPORTED)
-SET_PROPERTY(TARGET SGLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/libstateGraphLib.so")
+#ADD_SUBDIRECTORY("../StateGraph/" "StateGraph/") Can't be added, because StateTransition adds it too
+ADD_SUBDIRECTORY("../StateTransition/" "StateTransition/")
 
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(stateDrivenAppLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(stateDrivenAppLib PUBLIC
-		"include"
-		"${CMAKE_CURRENT_SOURCE_DIR}/lib/STransLib/include"
-		"${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include"
-		)
-TARGET_LINK_LIBRARIES(stateDrivenAppLib PUBLIC bringauto_logger::bringauto_logger STransLib SGLib)
+TARGET_INCLUDE_DIRECTORIES(stateDrivenAppLib PUBLIC "include")
+TARGET_LINK_LIBRARIES(stateDrivenAppLib PUBLIC bringauto_logger::bringauto_logger stateTransitionLib)
 
 ADD_EXECUTABLE(stateDrivenApp main.cpp)
 TARGET_LINK_LIBRARIES(stateDrivenApp PUBLIC stateDrivenAppLib)
-#[[
-IF (BRINGAUTO_TESTS)
-	ENABLE_TESTING()
-	ADD_SUBDIRECTORY("test")
-ENDIF(BRINGAUTO_TESTS)
 
-IF(BRINGAUTO_INSTALL)
-	INCLUDE(GNUInstallDirs)
-	INSTALL(TARGETS stateTransitionLib EXPORT libstateTransitionLibTargets
-			LIBRARY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
-			ARCHIVE DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
-			RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/STransLib
-			INCLUDES DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/STransLib
-			)
-	INSTALL(
-			DIRECTORY
-			${CMAKE_CURRENT_SOURCE_DIR}/include/
-			DESTINATION
-			${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib/include
-			COMPONENT
-			Devel
-	)
-ENDIF()
-]]
