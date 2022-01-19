@@ -9,9 +9,9 @@
 namespace state_smurf::diagram {
 
 /**
- * Class used for creating StateGraphs
- * State Graph is defined by its set of Vertexes (states) and Edges (transitions)
- * StateGraph implements logic of valid moving on the graph (changing current states)
+ * Class used for creating State Diagrams
+ * State Diagram is defined by set of Vertexes (states) and Edges (transitions)
+ * StateDiagram implements logic of valid moving on the diagram (changing current states)
  */
 class StateDiagram {
 public:
@@ -24,15 +24,14 @@ public:
 	void setEdge(const std::shared_ptr<Vertex>& from, const std::shared_ptr<Vertex>& to);
 
     /**
-     * Creates new vertex in StateGraph
+     * Creates new vertex in StateDiagram
      * @param name unique name of vertex
-     * @return pointer to Vertex if name is unique, nullptr otherwise
+     * @return pointer to Vertex
      */
 	std::shared_ptr<Vertex> addVertex(const std::string &name);
 
 	/**
 	 * Changes current state if there is valid Edge between currentState and vertex in parameter
-	 * This method is rather proof of concept
 	 * @param vertex as a pointer
 	 * @return true if change is possible
 	 */
@@ -47,7 +46,7 @@ public:
 	bool changeStateByName(const std::string &vertexName);
 
     /**
-     * Check if Vertex is defined in State Graph
+     * Check if Vertex is defined in StateDiagram
      * @param vertexName
      * @return true if Vertex exists
      */

@@ -4,8 +4,8 @@
 
 namespace state_smurf::diagram {
 /**
- * Class specifying Vertexes in StateGraph
- * Every Vertex is one state, in which StateGraph's current state can be
+ * Class specifying Vertexes in StateDiagram
+ * Every Vertex is one state, in which StateDiagram's current state can be
  * Vertexes can be addressed by name or pointer
  */
 class Vertex {

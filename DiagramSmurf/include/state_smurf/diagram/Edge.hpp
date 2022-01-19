@@ -8,8 +8,8 @@
 namespace state_smurf::diagram {
 
 /**
- * Class specifying oriented edges in StateGraphs
- * Edges define valid transitions in state graph
+ * Class specifying oriented edges in StateDiagram
+ * Edges define valid one-way transitions in state diagram
  * If Edge is defined from vertex A to vertex B, it is possible to change state from A to B,
  * for reverse transition there must be defined edge from B to A
  * From = initial Vertex
@@ -17,6 +17,11 @@ namespace state_smurf::diagram {
  */
 class Edge {
 public:
+    /**
+     * Creates new edge, both Vertexes in parameters must exist
+     * @param newFrom pointer to initial Vertex of Edge
+     * @param newTo pointer to target Vertex of Edge
+     */
     Edge(std::shared_ptr<Vertex> newFrom, std::shared_ptr<Vertex> newTo)
          : from{std::move(newFrom)}, to{std::move(newTo)} {};
 

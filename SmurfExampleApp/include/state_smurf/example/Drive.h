@@ -5,12 +5,12 @@
 
 namespace state_smurf::example {
 /**
- * Example class using StateTransition
+ * Example class using TransitionSmurf
  */
 class Drive {
 public:
     /**
-     * Constructor for class Drive, needs StateTransition for moving on StateGraph
+     * Constructor for class Drive, needs TransitionSmurf for moving on StateGraph
      * @param transition inicialized StateTransition
      */
 	explicit Drive(const std::shared_ptr<state_smurf::transition::StateTransition>& transition);
@@ -22,7 +22,7 @@ public:
 	void increaseSpeed(int newSpeed);
 
     /**
-     * Changes speed to 0, call transition to state inDrive
+     * Changes speed to 0, call transition to state inStop
      */
 	void stop();
 
