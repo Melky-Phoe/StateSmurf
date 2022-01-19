@@ -1,0 +1,54 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+PROJECT(State_Transition CXX)
+
+SET(CMAKE_CXX_STANDARD 20)
+
+FIND_PACKAGE(CMLIB REQUIRED)
+
+OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
+OPTION(BRINGAUTO_SAMPLES "Enable build of sample applications" OFF)
+OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
+OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
+OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
+
+IF(NOT BRINGAUTO_SYSTEM_DEP)
+	INCLUDE(cmake/Dependencies.cmake)
+ENDIF()
+
+FIND_PACKAGE(libbringauto_logger)
+
+ADD_SUBDIRECTORY("../DiagramSmurf/" "GraphSmurf/")
+
+FILE(GLOB_RECURSE source_files "source/*")
+ADD_LIBRARY(stateTransitionLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(stateTransitionLib PUBLIC "include" )
+TARGET_LINK_LIBRARIES(stateTransitionLib PUBLIC bringauto_logger::bringauto_logger stateGraphLib)
+
+IF (BRINGAUTO_SAMPLES)
+	ADD_EXECUTABLE(stateTransition example/main.cpp)
+	TARGET_LINK_LIBRARIES(stateTransition PUBLIC stateTransitionLib)
+ENDIF(BRINGAUTO_SAMPLES)
+
+IF (BRINGAUTO_TESTS)
+	ENABLE_TESTING()
+	ADD_SUBDIRECTORY("test")
+ENDIF(BRINGAUTO_TESTS)
+
+IF (BRINGAUTO_INSTALL)
+	INCLUDE(GNUInstallDirs)
+	INSTALL(TARGETS stateTransitionLib EXPORT libstateTransitionLibTargets
+			LIBRARY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
+			ARCHIVE DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
+			RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/STransLib
+			INCLUDES DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/STransLib
+			)
+	INSTALL(
+			DIRECTORY
+			${CMAKE_CURRENT_SOURCE_DIR}/include/
+			DESTINATION
+			${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib/include
+			COMPONENT
+			Devel
+	)
+ENDIF()
+
