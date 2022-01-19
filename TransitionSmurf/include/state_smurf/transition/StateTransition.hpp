@@ -1,9 +1,9 @@
 #pragma once
 
-#include <state_smurf/graph_smurf/StateGraph.h>
+#include <state_smurf/diagram/StateDiagram.hpp>
 #include <string>
 
-namespace state_smurf::transition_smurf {
+namespace state_smurf::transition {
 /**
  * Class controlling state transition logic of predefined StateGraph
  * StateGraph is passed to StateTransition in constructor
@@ -12,7 +12,7 @@ namespace state_smurf::transition_smurf {
 class StateTransition {
 public:
 
-	explicit StateTransition(StateGraph stateGraph);
+	explicit StateTransition(diagram::StateDiagram stateGraph);
 
 	/**
 	 * Changes current state if possible
@@ -29,7 +29,7 @@ private:
 	 */
 	bool inState(const std::string &stateName);
 
-	StateGraph _stateGraph;
+    diagram::StateDiagram _stateGraph;
 };
 
 }

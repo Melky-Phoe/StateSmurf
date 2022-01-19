@@ -1,8 +1,9 @@
 #pragma once
 
-#include <StateTransition.h>
+#include <state_smurf/transition/StateTransition.hpp>
+#include <memory>
 
-namespace bringauto {
+namespace state_smurf::example {
 /**
  * Example class using StateTransition
  */
@@ -12,7 +13,7 @@ public:
      * Constructor for class Drive, needs StateTransition for moving on StateGraph
      * @param transition inicialized StateTransition
      */
-	explicit Drive(const std::shared_ptr<bringauto::StateTransition>& transition);
+	explicit Drive(const std::shared_ptr<state_smurf::transition::StateTransition>& transition);
 
     /**
      * Changes speed, call transition to state Drive
@@ -26,7 +27,7 @@ public:
 	void stop();
 
 private:
-	std::shared_ptr<bringauto::StateTransition> _transitions;
+	std::shared_ptr<state_smurf::transition::StateTransition> _transitions;
 	int _speed = {0};
 };
 }

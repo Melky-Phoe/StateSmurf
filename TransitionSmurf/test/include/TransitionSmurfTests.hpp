@@ -1,13 +1,13 @@
 #pragma once
-#include <StateGraph.h>
-#include <StateTransition.h>
+#include <state_smurf/diagram/StateDiagram.hpp>
+#include <state_smurf/transition/StateTransition.hpp>
 
 #include <gtest/gtest.h>
 #include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/FileSink.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 
-namespace bringauto {
+namespace state_smurf::transition {
 
 class StateTransitionTest : public ::testing::Test {
 protected:
@@ -16,7 +16,7 @@ protected:
 		bringauto::logging::Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
 		bringauto::logging::Logger::init({"StateTransitionTest", bringauto::logging::Logger::Verbosity::Info});
 
-		StateGraph stateGraph;
+		diagram::StateDiagram stateGraph;
 		auto a = stateGraph.addVertex("A");
 		auto b = stateGraph.addVertex("B");
 		auto c = stateGraph.addVertex("C");

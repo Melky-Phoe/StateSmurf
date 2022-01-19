@@ -13,7 +13,7 @@ namespace state_smurf::diagram {
  * State Graph is defined by its set of Vertexes (states) and Edges (transitions)
  * StateGraph implements logic of valid moving on the graph (changing current states)
  */
-class StateGraph {
+class StateDiagram {
 public:
     /**
      * Creates edge between two vertexes given by parameters.

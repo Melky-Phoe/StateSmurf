@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-PROJECT(StateDrivenApp CXX)
+PROJECT(SmurfExampleApp CXX)
 
 SET(CMAKE_CXX_STANDARD 20)
 
@@ -20,10 +20,10 @@ FIND_PACKAGE(libbringauto_logger)
 ADD_SUBDIRECTORY("../TransitionSmurf/" "TransitionSmurf/")
 
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(stateDrivenAppLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(stateDrivenAppLib PUBLIC "include")
-TARGET_LINK_LIBRARIES(stateDrivenAppLib PUBLIC bringauto_logger::bringauto_logger stateTransitionLib)
+ADD_LIBRARY(SmurfExampleAppLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(SmurfExampleAppLib PUBLIC "include")
+TARGET_LINK_LIBRARIES(SmurfExampleAppLib PUBLIC bringauto_logger::bringauto_logger TransitionSmurfLib)
 
-ADD_EXECUTABLE(stateDrivenApp main.cpp)
-TARGET_LINK_LIBRARIES(stateDrivenApp PUBLIC stateDrivenAppLib)
+ADD_EXECUTABLE(smurfExampleApp main.cpp)
+TARGET_LINK_LIBRARIES(smurfExampleApp PUBLIC SmurfExampleAppLib)
 

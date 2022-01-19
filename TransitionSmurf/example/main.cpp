@@ -1,5 +1,5 @@
-#include <StateGraph.h>
-#include <StateTransition.h>
+#include <state_smurf/diagram/StateDiagram.hpp>
+#include <state_smurf/transition/StateTransition.hpp>
 
 #include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
@@ -7,8 +7,8 @@
 
 int main() {
     /// Creating State Graph
-    state_smurf::graph_smurf::StateGraph stateGraph;
-	auto a = stateGraph.addVertex("A");
+    state_smurf::diagram::StateDiagram stateGraph;
+	std::shared_ptr<state_smurf::diagram::Vertex> a = stateGraph.addVertex("A");
 	auto b = stateGraph.addVertex("B");
 	auto c = stateGraph.addVertex("C");
 	auto d = stateGraph.addVertex("D");
@@ -26,7 +26,7 @@ int main() {
 	log::Logger::init({"StateTransition", log::Logger::Verbosity::Info});
 
     /// StateTransition Init
-    state_smurf::transition_smurf::StateTransition transitions(stateGraph);
+    state_smurf::transition::StateTransition transitions(stateGraph);
     /// Moving on StateGraph
 	transitions.goToState("Invalid");
 	transitions.goToState("D");

@@ -1,9 +1,9 @@
-#include <StateTransition.h>
+#include <state_smurf/transition/StateTransition.hpp>
 
 #include <bringauto/logging/Logger.hpp>
 
-namespace state_smurf::transition_smurf {
-StateTransition::StateTransition(StateGraph stateGraph) {
+namespace state_smurf::transition {
+StateTransition::StateTransition(diagram::StateDiagram stateGraph) {
 	_stateGraph = std::move(stateGraph);
 }
 

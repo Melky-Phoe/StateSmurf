@@ -1,6 +1,6 @@
-#include "StateTransitionTest.h"
+#include <TransitionSmurfTests.hpp>
 
-namespace bringauto {
+namespace state_smurf::transition {
 
 TEST_F(StateTransitionTest, allValid) {
 	EXPECT_TRUE(transition->goToState("A")); //start
@@ -31,10 +31,12 @@ TEST_F(StateTransitionTest, invalidEdge) {
 	EXPECT_FALSE(transition->goToState("D"));    // No Edge at all
 }
 
+/*
 TEST_F(StateTransitionTest, inState) {
 	EXPECT_FALSE(transition->inState("Ivalid"));
 	EXPECT_FALSE(transition->inState("A")); // valid but not in
 }
+*/
 
 
 }

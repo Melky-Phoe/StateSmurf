@@ -2,9 +2,9 @@
 
 #include <bringauto/logging/Logger.hpp>
 
-namespace bringauto {
+namespace state_smurf::example {
 
-Drive::Drive(const std::shared_ptr<bringauto::StateTransition>& transition) {
+Drive::Drive(const std::shared_ptr<state_smurf::transition::StateTransition>& transition) {
 	_transitions = transition;
 
 }
@@ -15,7 +15,7 @@ void Drive::increaseSpeed(int newSpeed) {
 
 	/// Do desired stuff
 	_speed = newSpeed;
-	logging::Logger::logInfo("Going in speed {}", _speed);
+	bringauto::logging::Logger::logInfo("Going in speed {}", _speed);
 }
 
 void Drive::stop() {

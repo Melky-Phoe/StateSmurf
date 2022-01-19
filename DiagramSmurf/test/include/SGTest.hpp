@@ -1,5 +1,5 @@
 #pragma once
-#include <state_smurf/diagram/StateGraph.hpp>
+#include <state_smurf/diagram/StateDiagram.hpp>
 #include <gtest/gtest.h>
 
 namespace state_smurf::diagram {
@@ -20,7 +20,7 @@ protected:
 		stateGraph.setEdge(d, a);
 	}
 
-	StateGraph stateGraph;
+	StateDiagram stateGraph;
 };
 
 }

@@ -1,9 +1,9 @@
-#include <state_smurf/diagram/StateGraph.hpp>
+#include <state_smurf/diagram/StateDiagram.hpp>
 #include <iostream>
 
 namespace state_smurf::diagram {
 
-void StateGraph::setEdge(const std::shared_ptr<Vertex>& from, const std::shared_ptr<Vertex>& to) {
+void StateDiagram::setEdge(const std::shared_ptr<Vertex>& from, const std::shared_ptr<Vertex>& to) {
 	bool fromFound = false;
 	bool toFound = false;
 	for (const auto &vertex: vertexes) {
@@ -23,7 +23,7 @@ void StateGraph::setEdge(const std::shared_ptr<Vertex>& from, const std::shared_
 
 }
 
-std::shared_ptr<Vertex> StateGraph::addVertex(const std::string &name) {
+std::shared_ptr<Vertex> StateDiagram::addVertex(const std::string &name) {
     if (!stateExist(name)) {
         auto vertex = std::make_shared<Vertex>(name);
         vertexes.push_back(vertex);
@@ -34,7 +34,7 @@ std::shared_ptr<Vertex> StateGraph::addVertex(const std::string &name) {
     }
 }
 
-bool StateGraph::changeStateByName(const std::string &vertexName) {
+bool StateDiagram::changeStateByName(const std::string &vertexName) {
 	if (_currentState == nullptr) {
 		for (const auto &vertex: vertexes) {
 			if (vertex->getName() == vertexName) {
@@ -58,7 +58,7 @@ bool StateGraph::changeStateByName(const std::string &vertexName) {
 	}
 }
 
-bool StateGraph::changeState(const std::shared_ptr<Vertex> &vertex) {
+bool StateDiagram::changeState(const std::shared_ptr<Vertex> &vertex) {
 	if (vertex == nullptr) {
 		return false;
 	}
@@ -80,7 +80,7 @@ bool StateGraph::changeState(const std::shared_ptr<Vertex> &vertex) {
 	}
 }
 
-bool StateGraph::stateExist(const std::string &vertexName) {
+bool StateDiagram::stateExist(const std::string &vertexName) {
 	for (const auto &vertex: vertexes) {
 		if (vertex->getName() == vertexName) {
 			return true;

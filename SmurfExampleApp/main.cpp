@@ -1,17 +1,17 @@
 #include <state_smurf/example/Drive.h>
 
-#include <state_smurf/graph_smurf/StateGraph.h>
-#include <StateTransition.h>
+#include <state_smurf/diagram/StateDiagram.hpp>
+#include <state_smurf/transition/StateTransition.hpp>
 #include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 #include <bringauto/logging/FileSink.hpp>
 
-void connect(const std::shared_ptr<bringauto::StateTransition>& transitions) {
+void connect(const std::shared_ptr<state_smurf::transition::StateTransition>& transitions) {
 	transitions->goToState("idle");
 }
 
-bringauto::StateGraph createStateGraph() {
-	bringauto::StateGraph stateGraph;
+state_smurf::diagram::StateDiagram createStateGraph() {
+    state_smurf::diagram::StateDiagram stateGraph;
 	/// Creating Vertexes, they are accessible by name.
 	auto disconnected = stateGraph.addVertex("disconnected");
 	auto idle = stateGraph.addVertex("idle");
@@ -43,15 +43,15 @@ int main(int argc, char **argv) {
 	log::Logger::init({"sampleApp", log::Logger::Verbosity::Info});
 
 	/// Creating State Graph. More in function
-	bringauto::StateGraph stateGraph = createStateGraph();
+    state_smurf::diagram::StateDiagram stateGraph = createStateGraph();
 
 	/// Transition class takes StateGraph in constructor, on which it is working on
-	std::shared_ptr<bringauto::StateTransition> transitions = std::make_shared<bringauto::StateTransition>(stateGraph);
+	std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(stateGraph);
 
 	/// Passing transitions as argument
 	connect(transitions);
 
-	bringauto::Drive drive(transitions);
+	state_smurf::example::Drive drive(transitions);
 
 	drive.increaseSpeed(10);
 	drive.increaseSpeed(15);

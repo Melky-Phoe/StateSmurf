@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-PROJECT(State_Transition CXX)
+PROJECT(TransitionSmurf CXX)
 
 SET(CMAKE_CXX_STANDARD 20)
 
@@ -17,16 +17,16 @@ ENDIF()
 
 FIND_PACKAGE(libbringauto_logger)
 
-ADD_SUBDIRECTORY("../DiagramSmurf/" "GraphSmurf/")
+ADD_SUBDIRECTORY("../DiagramSmurf/" "DiagramSmurf/")
 
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(stateTransitionLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(stateTransitionLib PUBLIC "include" )
-TARGET_LINK_LIBRARIES(stateTransitionLib PUBLIC bringauto_logger::bringauto_logger stateGraphLib)
+ADD_LIBRARY(TransitionSmurfLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(TransitionSmurfLib PUBLIC "include" )
+TARGET_LINK_LIBRARIES(TransitionSmurfLib PUBLIC bringauto_logger::bringauto_logger DiagramSmurfLib)
 
 IF (BRINGAUTO_SAMPLES)
-	ADD_EXECUTABLE(stateTransition example/main.cpp)
-	TARGET_LINK_LIBRARIES(stateTransition PUBLIC stateTransitionLib)
+	ADD_EXECUTABLE(transitionSmurf example/main.cpp)
+	TARGET_LINK_LIBRARIES(transitionSmurf PUBLIC TransitionSmurfLib)
 ENDIF(BRINGAUTO_SAMPLES)
 
 IF (BRINGAUTO_TESTS)
@@ -37,16 +37,16 @@ ENDIF(BRINGAUTO_TESTS)
 IF (BRINGAUTO_INSTALL)
 	INCLUDE(GNUInstallDirs)
 	INSTALL(TARGETS stateTransitionLib EXPORT libstateTransitionLibTargets
-			LIBRARY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
-			ARCHIVE DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib
-			RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/STransLib
-			INCLUDES DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/STransLib
+			LIBRARY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/TransitionSmurfLib
+			ARCHIVE DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib/TransitionSmurfLib
+			RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/TransitionSmurfLib
+			INCLUDES DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/TransitionSmurfLib
 			)
 	INSTALL(
 			DIRECTORY
 			${CMAKE_CURRENT_SOURCE_DIR}/include/
 			DESTINATION
-			${CMAKE_CURRENT_BINARY_DIR}/lib/STransLib/include
+			${CMAKE_CURRENT_BINARY_DIR}/lib/TransitionSmurfLib/include
 			COMPONENT
 			Devel
 	)
