@@ -8,6 +8,11 @@
 
 namespace bringauto {
 
+/**
+ * Class used for creating StateGraphs
+ * State Graph is defined by its set of Vertexes (states) and Edges (transitions)
+ * StateGraph implements logic of valid moving on the graph (changing current states)
+ */
 class StateGraph {
 public:
     /**
@@ -26,17 +31,33 @@ public:
 	std::shared_ptr<Vertex> addVertex(const std::string &name);
 
 	/**
-	 * Changes current state
-	 * @param vertex
-	 * @return
+	 * Changes current state if there is valid Edge between currentState and vertex in parameter
+	 * This method is rather proof of concept
+	 * @param vertex as a pointer
+	 * @return true if change is possible
 	 */
 	bool changeState(const std::shared_ptr<Vertex> &vertex);
 
+    /**
+	 * Changes current state if there is valid Edge between currentState and vertex in parameter
+     * Finds destination vertex based on Name, not pointer
+	 * @param vertexName
+	 * @return true if change is possible
+	 */
 	bool changeStateByName(const std::string &vertexName);
 
+    /**
+     * Check if Vertex is defined in State Graph
+     * @param vertexName
+     * @return true if Vertex exists
+     */
 	bool stateExist(const std::string &vertexName);
 
-	std::string getCurrentStateName() { return _currentState != nullptr ? _currentState->name : ""; }
+    /**
+     * Returns name of current state
+     * @return name (string)
+     */
+	std::string getCurrentStateName() { return _currentState != nullptr ? _currentState->getName() : ""; }
 
 private:
 	std::shared_ptr<Vertex> _currentState{nullptr};

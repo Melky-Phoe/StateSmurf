@@ -38,18 +38,18 @@ std::shared_ptr<Vertex> StateGraph::addVertex(const std::string &name) {
 bool StateGraph::changeStateByName(const std::string &vertexName) {
 	if (_currentState == nullptr) {
 		for (const auto &vertex: vertexes) {
-			if (vertex->name == vertexName) {
+			if (vertex->getName() == vertexName) {
 				_currentState = vertex;
 				return true;
 			}
 		}
 		return false;
 	} else {
-		for (const auto &edge: edges) {
-			if (edge.from == _currentState) {
-				if (edge.to->name == vertexName) {
+		for (auto edge: edges) {
+			if (edge.getFrom() == _currentState) {
+				if (edge.getTo()->getName() == vertexName) {
 					// std::cout << "Going to " << vertexName << std::endl; // Debug print
-					_currentState = edge.to;
+					_currentState = edge.getTo();
 					return true;
 				}
 			}
@@ -67,9 +67,9 @@ bool StateGraph::changeState(const std::shared_ptr<Vertex> &vertex) {
 		_currentState = vertex;
 		return true;
 	} else {
-		for (const auto &edge: edges) {
-			if (edge.from == _currentState) {
-				if (edge.to == vertex) {
+		for (auto edge: edges) {
+			if (edge.getFrom() == _currentState) {
+				if (edge.getTo() == vertex) {
 					// std::cout << "Prechazim do " << vertex->name << std::endl;
 					_currentState = vertex;
 					return true;
@@ -83,7 +83,7 @@ bool StateGraph::changeState(const std::shared_ptr<Vertex> &vertex) {
 
 bool StateGraph::stateExist(const std::string &vertexName) {
 	for (const auto &vertex: vertexes) {
-		if (vertex->name == vertexName) {
+		if (vertex->getName() == vertexName) {
 			return true;
 		}
 	}

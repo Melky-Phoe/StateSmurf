@@ -6,6 +6,7 @@
 #include <bringauto/logging/FileSink.hpp>
 
 int main() {
+    /// Creating State Graph
 	bringauto::StateGraph stateGraph;
 	auto a = stateGraph.addVertex("A");
 	auto b = stateGraph.addVertex("B");
@@ -18,13 +19,15 @@ int main() {
 	stateGraph.setEdge(a, a);
 	stateGraph.setEdge(d, a);
 
+    /// Logger initialization
 	namespace log = bringauto::logging;
 	log::Logger::addSink<log::ConsoleSink>();
 	log::Logger::addSink<log::FileSink>({"./","StateTransition.log"});
 	log::Logger::init({"StateTransition", log::Logger::Verbosity::Info});
 
-
+    /// StateTransition Init
 	bringauto::StateTransition transitions(stateGraph);
+    /// Moving on StateGraph
 	transitions.goToState("Invalid");
 	transitions.goToState("D");
 	transitions.goToState("A");

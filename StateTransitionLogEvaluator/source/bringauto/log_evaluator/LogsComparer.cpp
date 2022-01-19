@@ -22,7 +22,7 @@ bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
         comparedLog = Filter::findNextTransitionLog(compared);
 
     }
-    // mozna dvojita podminka ve foru bude lepsi
+
     if (!comparedLog.empty()) {
         std::cerr << "compared log is longer than etalon" << std::endl;
         return false;
@@ -44,7 +44,7 @@ bool LogsComparer::compareLines(const std::string& etalon, const std::string& co
         std::cout << "WARNING: there is unsuccessful transition in etalon" << std::endl;
     }
 
-    for (int i = static_cast<int>(LogTokensIndexes::stateTransition); i < etalonTokens.size(); ++i) {
+    for (int i = static_cast<int>(LogTokensIndexes::appName); i < etalonTokens.size(); ++i) {
         if (etalonTokens[i] != comparedTokens[i]) {
             std::cout << "Logs aren't equal:\n"
                          "  Etalon: " << etalon << std::endl <<

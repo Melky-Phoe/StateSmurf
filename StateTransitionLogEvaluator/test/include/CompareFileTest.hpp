@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-class LogsCompareTest : public ::testing::Test {
+class CompareFileTest : public ::testing::Test {
 protected:
     void SetUp() override {
         etalon.open("../../test/testLogs/etalon.log", std::ios_base::in);
