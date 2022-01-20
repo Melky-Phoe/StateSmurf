@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 
-namespace bringauto::log_evaluator {
+namespace state_smurf::log_evaluator {
 /**
  * Class implementing filtering of .log files
  */
@@ -18,10 +18,10 @@ public:
 	static std::string findNextTransitionLog(std::istream& srcFile);
 
     /**
-     * Filters .log file
+     * Filters .log file and creates vector of [TransitionSmurf] logs
      * @param srcFile .log file
-     * @return
+     * @return filtered out logs containing only TranstionSmurf logs
      */
-    static std::vector<std::string> createTransitionLogVector(std::istream& srcFile)
+    static std::vector<std::string> createTransitionLogVector(std::istream& srcFile);
 };
 }

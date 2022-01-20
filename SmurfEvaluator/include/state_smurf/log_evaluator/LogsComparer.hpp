@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 
-namespace bringauto::log_evaluator {
+namespace state_smurf::log_evaluator {
 class LogsComparer {
 public:
     /**
@@ -28,6 +28,10 @@ private:
      * @return vector containing tokens
      */
     static std::vector<std::string> parseLine(const std::string& line);
+
+    static bool isStartOfRunLog(const std::string& line);
+
+    static bool validateEtalon(std::vector<std::string> etalonLogs);
 
     /**
      * Enum for addressing tokens created by parseLine

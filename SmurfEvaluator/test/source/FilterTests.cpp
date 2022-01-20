@@ -1,12 +1,13 @@
 #include <FilterTests.hpp>
 
-#include <bringauto/log_evaluator/Filter.hpp>
+#include <state_smurf/log_evaluator/Filter.hpp>
 
-using namespace bringauto::log_evaluator;
+using namespace state_smurf::log_evaluator;
 TEST_F(FilterTests, filterFile) {
-    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Any log with [StateTransition] prefix");
-    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.391] [sampleApp] [info] [StateTransition] after double prefix");
-    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] After other logs, also last");
+    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run");
+    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Any log with [TransitionSmurf] prefix");
+    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.391] [sampleApp] [info] [TransitionSmurf] after double prefix");
+    EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] After other logs, also last");
     EXPECT_EQ(Filter::findNextTransitionLog(file), "");
 }
 

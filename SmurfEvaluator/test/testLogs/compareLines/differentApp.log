@@ -1,2 +1,3 @@
-[2021-12-20 10:05:29.392] [otherApp] [info] [StateTransition] Going to state etalon
-[2021-12-20 10:05:29.392] [otherApp] [info] [StateTransition] In state etalon
+[2021-12-20 10:05:29.392] [otherApp] [info] [TransitionSmurf] Start of Run
+[2021-12-20 10:05:29.392] [otherApp] [info] [TransitionSmurf] Going to state etalon
+[2021-12-20 10:05:29.392] [otherApp] [info] [TransitionSmurf] In state etalon

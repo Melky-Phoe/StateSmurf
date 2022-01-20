@@ -1,12 +1,56 @@
-[2021-12-20 10:05:29.391] [sampleApp] [info] [StateTransition] Going to state idle
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state idle
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state drive
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state drive
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state inStop
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state inStop
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state drive
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state drive
-[2021-12-20 10:05:29.392] [sampleApp] [warning] [StateTransition] Couldn't change state { "to":disconnected "from": inStop }
-[2021-12-20 10:05:29.392] [sampleApp] [warning] Unsuccessful transition
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] Going to state inStop
-[2021-12-20 10:05:29.392] [sampleApp] [info] [StateTransition] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Start of Run
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state idle
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state idle
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":disconnected "from": inStop }
+[2021-12-20 10:05:19.984] [sampleApp] [warning] Unsuccessful transition
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Start of Run
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":disconnected "from": inStop }
+[2021-12-20 10:05:19.984] [sampleApp] [warning] Unsuccessful transition
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Start of Run
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state idle
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state idle
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":disconnected "from": inStop }
+[2021-12-20 10:05:19.984] [sampleApp] [warning] Unsuccessful transition
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Start of Run
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state idle
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state idle
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] Going in speed 10
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state drive
+[2021-12-20 10:05:19.984] [sampleApp] [info] Going in speed 15
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":disconnected "from": inStop }
+[2021-12-20 10:05:19.984] [sampleApp] [warning] Unsuccessful transition
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] Going to state inStop
+[2021-12-20 10:05:19.984] [sampleApp] [info] [TransitionSmurf] In state inStop

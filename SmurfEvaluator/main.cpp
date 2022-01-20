@@ -1,4 +1,4 @@
-#include <bringauto/log_evaluator/LogsComparer.hpp>
+#include <state_smurf/log_evaluator/LogsComparer.hpp>
 
 #include <cxxopts.hpp>
 
@@ -67,8 +67,7 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-    if (!bringauto::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile)) {
-        std::cerr << "Input files are not same" << std::endl;
+    if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile)) {
         return EXIT_FAILURE;
     }
 
