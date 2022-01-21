@@ -16,13 +16,13 @@ ENDIF()
 
 FIND_PACKAGE(libbringauto_logger)
 
-#ADD_SUBDIRECTORY("../StateGraph/" "StateGraph/") Can't be added, because StateTransition adds it too
+ADD_SUBDIRECTORY("../DiagramSmurf/" "StateGraph/")
 ADD_SUBDIRECTORY("../TransitionSmurf/" "TransitionSmurf/")
 
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(SmurfExampleAppLib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(SmurfExampleAppLib PUBLIC "include")
-TARGET_LINK_LIBRARIES(SmurfExampleAppLib PUBLIC bringauto_logger::bringauto_logger TransitionSmurfLib)
+TARGET_LINK_LIBRARIES(SmurfExampleAppLib PUBLIC bringauto_logger::bringauto_logger TransitionSmurfLib DiagramSmurfLib)
 
 ADD_EXECUTABLE(smurfExampleApp main.cpp)
 TARGET_LINK_LIBRARIES(smurfExampleApp PUBLIC SmurfExampleAppLib)

@@ -20,19 +20,15 @@ make -j 8
 - For building tests use cmake option -DBRINGAUTO_TESTS=ON 
 - Start tests: `$ ./test/diagram_smurf_tests`
 
-# Installation
-- For installation provide -DBRINGAUTO_INSTALL switch to cmake
-- use `$ make install` to create directory lib
+## Usage
 
-### Usage
-- copy lib directory to your project
-- in CMakeLists.txt use:
-```
-  ADD_LIBRARY(StateGraphLib SHARED IMPORTED)
-  SET_PROPERTY(TARGET StateGraphLib PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/libstateGraphLib.so")
-  TARGET_INCLUDE_DIRECTORIES(<target> PUBLIC CMAKE_CURRENT_SOURCE_DIR}/lib/SGLib/include")
-  TARGET_LINK_LIBRARIES(<target> PUBLIC StateGraphLib)
+Clone directory to your project and add as subdirectory in CMakeLists.txt:
   ```
+  ADD_SUBDIRECTORY("<Path_to_DiagramSmurf_directory>")
+  
+  TARGET_LINK_LIBRARIES(<target> PUBLIC DiagramSmurfLib)
+  ```
+
 
 ### Example
 - example use of creating state graph and changing states is in example/main.cpp

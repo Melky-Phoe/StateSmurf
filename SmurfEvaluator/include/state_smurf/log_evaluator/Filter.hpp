@@ -20,7 +20,7 @@ public:
     /**
      * Filters .log file and creates vector of [TransitionSmurf] logs
      * @param srcFile .log file
-     * @return filtered out logs containing only TranstionSmurf logs
+     * @return filtered out logs containing only TransitionSmurf logs
      */
     static std::vector<std::string> createTransitionLogVector(std::istream& srcFile);
 };

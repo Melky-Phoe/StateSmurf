@@ -10,7 +10,7 @@ void connect(const std::shared_ptr<state_smurf::transition::StateTransition>& tr
 	transitions->goToState("idle");
 }
 
-state_smurf::diagram::StateDiagram createStateGraph() {
+state_smurf::diagram::StateDiagram createStateDiagram() {
     state_smurf::diagram::StateDiagram stateGraph;
 	/// Creating Vertexes, they are accessible by name.
 	auto disconnected = stateGraph.addVertex("disconnected");
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 	log::Logger::init({"sampleApp", log::Logger::Verbosity::Info});
 
 	/// Creating State Graph. More in function
-    state_smurf::diagram::StateDiagram stateGraph = createStateGraph();
+    state_smurf::diagram::StateDiagram stateGraph = createStateDiagram();
 
 	/// Transition class takes StateGraph in constructor, on which it is working on
 	std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(stateGraph);
