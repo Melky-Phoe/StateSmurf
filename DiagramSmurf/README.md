@@ -1,5 +1,5 @@
-# StateGraph
-Library for creating State graphs and changing states
+# DiagramSmurf
+Library for creating State diagrams and changing states
 
 ## Requirements
 
@@ -17,8 +17,8 @@ make -j 8
 ```
 
 ### Tests
-- For building tests use -DBRINGAUTO_TESTS=ON 
-- Start tests: `$ ./test/state_graph_tests`
+- For building tests use cmake option -DBRINGAUTO_TESTS=ON 
+- Start tests: `$ ./test/diagram_smurf_tests`
 
 # Installation
 - For installation provide -DBRINGAUTO_INSTALL switch to cmake
@@ -35,4 +35,4 @@ make -j 8
   ```
 
 ### Example
-- example use of creating state graph and changing states is in main.cpp
+- example use of creating state graph and changing states is in example/main.cpp

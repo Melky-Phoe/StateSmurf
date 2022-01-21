@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
-PROJECT(StateTransitionLogEvaluator CXX)
+PROJECT(SmurfEvaluator CXX)
 
 FIND_PACKAGE(CMLIB REQUIRED)
 
@@ -21,11 +21,11 @@ SET(CMAKE_CXX_STANDARD 20)
 FIND_PACKAGE(libbringauto_logger)
 
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(evaluatorLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(evaluatorLib PUBLIC "include")
+ADD_LIBRARY(SmurfEvaluatorLib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(SmurfEvaluatorLib PUBLIC "include")
 
-ADD_EXECUTABLE(evaluator main.cpp)
-TARGET_LINK_LIBRARIES(evaluator PUBLIC evaluatorLib)
+ADD_EXECUTABLE(smurfEvaluator main.cpp)
+TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib)
 
 IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
