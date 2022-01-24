@@ -29,6 +29,5 @@ Clone directory to your project and add as subdirectory in CMakeLists.txt:
   TARGET_LINK_LIBRARIES(<target> PUBLIC DiagramSmurfLib)
   ```
 
-
 ### Example
 - example use of creating state graph and changing states is in example/main.cpp
