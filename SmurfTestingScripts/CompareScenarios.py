@@ -6,24 +6,29 @@ import json
 import argparse
 
 
+def run_commands(key):
+    for action in scenario_json[key]:
+        return_code = os.system(action)
+        print("'", action, "' ended with exit code: ", return_code)
+        if return_code > 0:
+            return False
+    return True
+
+
 def set_up():
     if not args.create_etalons:
         init_evaluator()
 
-    for action in scenario_json["prestart"]:
-        exit_code = os.system(action)
-        print("'", action, "' ended with exit code: ", exit_code)
-        if not exit_code == 0:
-            print("Operation unsuccessful, shutting down testing script")
-            tear_down()
+    if not run_commands("prestart"):
+        print("Operation unsuccessful, shutting down testing script")
+        tear_down()
+        exit(1)
 
 
 def tidy_up():
-    for action in scenario_json["betweenRuns"]:
-        exit_code = os.system(action)
-        print("'", action, "' ended with exit code: ", exit_code)
-        if not exit_code == 0:
-            print("Tidy-up operation unsuccessful, following test might be unsuccessful")
+    if not run_commands("betweenRuns"):
+        print("Tidy-up operation unsuccessful, following test might be unsuccessful")
+        exit(1)
 
 
 def run_scenarios():
@@ -49,9 +54,9 @@ def run_scenarios():
 def init_evaluator():
     if not os.path.isfile(evaluator_path):
         Path(evaluator_path.rsplit(('/', 1)[0]).split('/')).mkdir(parents=True, exist_ok=True)
-        exit_code = os.system("cmake .. -DCMAKE_BUILD_TYPE=Debug && make -j 8")
-        print("'", action, "' ended with exit code: ", exit_code)
-        if not exit_code == 0:
+        return_code = os.system("cmake .. -DCMAKE_BUILD_TYPE=Debug && make -j 8")
+        print("'", action, "' ended with exit code: ", return_code)
+        if not return_code == 0:
             print("Operation unsuccessful, shutting down testing script")
             tear_down()
     if not os.access(evaluator_path, os.X_OK):
@@ -64,10 +69,10 @@ def compare_outputs() -> bool:
     for scenario in scenario_json["scenarios"]:
         etalon_file = os.path.join("etalons", scenario["name"] + ".log")
         compared_file = os.path.join("output", scenario["name"] + ".log")
-        exit_code = os.system(evaluator_path + " --etalon " + etalon_file +
-                              " --compare " + compared_file +
-                              " > compare_out/" + scenario["name"])
-        if exit_code > 0:
+        return_code = os.system(evaluator_path + " --etalon " + etalon_file +
+                                " --compare " + compared_file +
+                                " > compare_out/" + scenario["name"])
+        if return_code > 0:
             tests_passed = False
             print("WARNING: test didn't pass: ", scenario["name"])
     return tests_passed
@@ -85,11 +90,7 @@ def create_command_string(scenario: dict) -> str:
 
 
 def tear_down():
-    for action in scenario_json["tearDown"]:
-        print(action)
-        exit_code = os.system(action)
-        print("'", action, "' ended with exit code: ", exit_code)
-    exit(1)
+    run_commands("tearDown")
 
 
 if __name__ == "__main__":
@@ -123,9 +124,9 @@ if __name__ == "__main__":
     evaluator_path = os.path.dirname(os.path.realpath(__file__)).rsplit('/', 1)[0]
     evaluator_path = os.path.join(evaluator_path, "SmurfEvaluator", "_build", "smurfEvaluator")
 
-    exit_code = 0
-
-    set_up()
+    exit_code = set_up()
+    if exit_code > 0:
+        exit(exit_code)
     run_scenarios()
     if not args.create_etalons:
         if not compare_outputs():
