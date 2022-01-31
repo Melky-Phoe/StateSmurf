@@ -34,7 +34,6 @@ def tidy_up():
 def run_scenarios():
     for scenario in scenario_json["scenarios"]:
         print("Running test: ", scenario["name"], " .....")
-
         process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir)
         try:
             if "timeout" in scenario.keys():
@@ -118,6 +117,7 @@ if __name__ == "__main__":
     # evaluator_bin_path = os.path.join(evaluator_bin_path, "SmurfEvaluator", "_build", "smurfEvaluator")
     evaluator_bin_path = "../_build/lib/StateSmurf/SmurfEvaluator/smurfEvaluator"
     workDir = args.file.rsplit('/', 1)[0]
+    workDir = os.path.realpath(workDir)
     os.chdir(workDir)
 
     Path("./etalons/").mkdir(parents=True, exist_ok=True)
