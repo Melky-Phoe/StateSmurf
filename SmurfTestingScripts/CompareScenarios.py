@@ -48,16 +48,15 @@ def run_scenarios():
         tidy_up()
 
 
-def init_evaluator():
-    if not os.path.isfile(evaluator_bin_path):
-        print("ERROR: SmurfEvaluator binary doesn't exist")
-        tear_down()
-        exit(1)
+def check_executable(path_to_executable) -> bool:
+    if not os.path.isfile(path_to_executable):
+        print("ERROR: ", path_to_executable, " binary doesn't exist")
+        return False
 
-    if not os.access(evaluator_bin_path, os.X_OK):
-        print("ERROR: SmurfEvaluator is not executable")
-        tear_down()
-        exit(1)
+    if not os.access(path_to_executable, os.X_OK):
+        print("ERROR: ", path_to_executable, "  is not executable")
+        return False
+    return True
 
 
 def compare_outputs() -> bool:
@@ -75,7 +74,7 @@ def compare_outputs() -> bool:
 
 
 def create_command_string(scenario: dict) -> str:
-    command = scenario["executable"] + " "
+    command = executable_path + " "
     for argument in scenario["arguments"]:
         command += argument + " " + str(scenario["arguments"][argument]) + " "
     if args.create_etalons:
@@ -91,13 +90,22 @@ def tear_down():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", type=str, required=True, help="Path to scenario.json file")
+    parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
+    parser.add_argument("-e", "--executable", type=str, required=True, help="Path to executable")
+    parser.add_argument("-E", "--evaluator", type=str, default="", help="Path to SmurfEvaluator binary")
     parser.add_argument("-C", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
-    parser.add_argument("-E", "--evaluator", type=str, default="../_build/lib/StateSmurf/SmurfEvaluator/smurfEvaluator",
-                        help="Path to SmurfEvaluator binary, default = _build/lib/StateSmurf/SmurfEvaluator/evaluator")
 
     args = parser.parse_args()
+
+    if not check_executable(args.executable):
+        exit(1)
+    if not args.create_etalons:
+        if args.evaluator == "":
+            print("Path to SmurfEvaluator executable needed, pass in --evaluator argument ")
+            exit(2)
+        if not check_executable(args.evaluator):
+            exit(1)
 
     if not os.path.isfile(args.file):
         print("ERROR: File given by argument --file is not a valid file: " + args.file)
@@ -113,6 +121,7 @@ if __name__ == "__main__":
         exit(1)
 
     evaluator_bin_path = args.evaluator
+    executable_path = args.executable
     workDir = args.file.rsplit('/', 1)[0]
     workDir = os.path.realpath(workDir)
     os.chdir(workDir)
