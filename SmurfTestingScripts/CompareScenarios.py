@@ -94,8 +94,8 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--file", type=str, required=True, help="Path to scenario.json file")
     parser.add_argument("-C", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
-    parser.add_argument("-E", "--evaluator", type=str, help="Path to SmurfEvaluator binary, "
-                                                            "default = _build/lib/StateSmurf/SmurfEvaluator/evaluator")
+    parser.add_argument("-E", "--evaluator", type=str, default="../_build/lib/StateSmurf/SmurfEvaluator/smurfEvaluator",
+                        help="Path to SmurfEvaluator binary, default = _build/lib/StateSmurf/SmurfEvaluator/evaluator")
 
     args = parser.parse_args()
 
@@ -112,10 +112,7 @@ if __name__ == "__main__":
         print(e)
         exit(1)
 
-    current_dir = os.getcwd()
-    # evaluator_bin_path = os.path.dirname(os.path.realpath(__file__)).rsplit('/', 1)[0]
-    # evaluator_bin_path = os.path.join(evaluator_bin_path, "SmurfEvaluator", "_build", "smurfEvaluator")
-    evaluator_bin_path = "../_build/lib/StateSmurf/SmurfEvaluator/smurfEvaluator"
+    evaluator_bin_path = args.evaluator
     workDir = args.file.rsplit('/', 1)[0]
     workDir = os.path.realpath(workDir)
     os.chdir(workDir)
