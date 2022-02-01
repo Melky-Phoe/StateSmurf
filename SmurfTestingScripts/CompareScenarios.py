@@ -15,18 +15,15 @@ def run_commands(key):
     return True
 
 
-def set_up():
-    if not run_commands("prestart"):
+def setup():
+    if not run_commands("setup"):
         print("Operation unsuccessful, shutting down testing script")
-        tear_down()
+        cleanup()
         exit(1)
-
-    if not args.create_etalons:
-        init_evaluator()
 
 
 def tidy_up():
-    if not run_commands("betweenRuns"):
+    if not run_commands("between_runs"):
         print("Tidy-up operation unsuccessful, following test might be unsuccessful")
         exit(1)
 
@@ -48,16 +45,15 @@ def run_scenarios():
         tidy_up()
 
 
-def init_evaluator():
-    if not os.path.isfile(evaluator_bin_path):
-        print("ERROR: SmurfEvaluator binary doesn't exist")
-        tear_down()
-        exit(1)
+def check_executable(path_to_executable) -> bool:
+    if not os.path.isfile(path_to_executable):
+        print("ERROR: ", path_to_executable, " binary doesn't exist")
+        return False
 
-    if not os.access(evaluator_bin_path, os.X_OK):
-        print("ERROR: SmurfEvaluator is not executable")
-        tear_down()
-        exit(1)
+    if not os.access(path_to_executable, os.X_OK):
+        print("ERROR: ", path_to_executable, "  is not executable")
+        return False
+    return True
 
 
 def compare_outputs() -> bool:
@@ -75,7 +71,7 @@ def compare_outputs() -> bool:
 
 
 def create_command_string(scenario: dict) -> str:
-    command = scenario["executable"] + " "
+    command = executable_path + " "
     for argument in scenario["arguments"]:
         command += argument + " " + str(scenario["arguments"][argument]) + " "
     if args.create_etalons:
@@ -85,25 +81,34 @@ def create_command_string(scenario: dict) -> str:
     return command
 
 
-def tear_down():
-    run_commands("tearDown")
+def cleanup():
+    run_commands("cleanup")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", type=str, required=True, help="Path to scenario.json file")
+    parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
+    parser.add_argument("-e", "--executable", type=str, required=True, help="Path to executable")
+    parser.add_argument("-E", "--evaluator", type=str, default="", help="Path to SmurfEvaluator binary")
     parser.add_argument("-C", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
-    parser.add_argument("-E", "--evaluator", type=str, default="../_build/lib/StateSmurf/SmurfEvaluator/smurfEvaluator",
-                        help="Path to SmurfEvaluator binary, default = _build/lib/StateSmurf/SmurfEvaluator/evaluator")
 
     args = parser.parse_args()
 
-    if not os.path.isfile(args.file):
+    if not check_executable(args.executable):
+        exit(1)
+    if not args.create_etalons:
+        if args.evaluator == "":
+            print("Path to SmurfEvaluator executable needed, pass in --evaluator argument ")
+            exit(2)
+        if not check_executable(args.evaluator):
+            exit(1)
+
+    if not os.path.isfile(args.scenario):
         print("ERROR: File given by argument --file is not a valid file: " + args.file)
         exit(1)
 
-    scenario_file = open(args.file, "r")
+    scenario_file = open(args.scenario, "r")
 
     try:
         scenario_json = json.loads(scenario_file.read())
@@ -113,7 +118,8 @@ if __name__ == "__main__":
         exit(1)
 
     evaluator_bin_path = args.evaluator
-    workDir = args.file.rsplit('/', 1)[0]
+    executable_path = args.executable
+    workDir = args.scenario.rsplit('/', 1)[0]
     workDir = os.path.realpath(workDir)
     os.chdir(workDir)
 
@@ -122,13 +128,13 @@ if __name__ == "__main__":
     Path("./compare_out/").mkdir(parents=True, exist_ok=True)
 
     exit_code = 0
-    set_up()
+    setup()
     run_scenarios()
     if not args.create_etalons:
         if not compare_outputs():
             exit_code = 2
             print("WARNING: Some test have different transition logs, check \'compare_out/\' for output")
 
-    tear_down()
+    cleanup()
 
     exit(exit_code)
