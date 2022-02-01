@@ -15,18 +15,15 @@ def run_commands(key):
     return True
 
 
-def set_up():
-    if not run_commands("prestart"):
+def setup():
+    if not run_commands("setup"):
         print("Operation unsuccessful, shutting down testing script")
-        tear_down()
+        cleanup()
         exit(1)
-
-    if not args.create_etalons:
-        init_evaluator()
 
 
 def tidy_up():
-    if not run_commands("betweenRuns"):
+    if not run_commands("between_runs"):
         print("Tidy-up operation unsuccessful, following test might be unsuccessful")
         exit(1)
 
@@ -84,8 +81,8 @@ def create_command_string(scenario: dict) -> str:
     return command
 
 
-def tear_down():
-    run_commands("tearDown")
+def cleanup():
+    run_commands("cleanup")
 
 
 if __name__ == "__main__":
@@ -107,11 +104,11 @@ if __name__ == "__main__":
         if not check_executable(args.evaluator):
             exit(1)
 
-    if not os.path.isfile(args.file):
+    if not os.path.isfile(args.scenario):
         print("ERROR: File given by argument --file is not a valid file: " + args.file)
         exit(1)
 
-    scenario_file = open(args.file, "r")
+    scenario_file = open(args.scenario, "r")
 
     try:
         scenario_json = json.loads(scenario_file.read())
@@ -122,7 +119,7 @@ if __name__ == "__main__":
 
     evaluator_bin_path = args.evaluator
     executable_path = args.executable
-    workDir = args.file.rsplit('/', 1)[0]
+    workDir = args.scenario.rsplit('/', 1)[0]
     workDir = os.path.realpath(workDir)
     os.chdir(workDir)
 
@@ -131,13 +128,13 @@ if __name__ == "__main__":
     Path("./compare_out/").mkdir(parents=True, exist_ok=True)
 
     exit_code = 0
-    set_up()
+    setup()
     run_scenarios()
     if not args.create_etalons:
         if not compare_outputs():
             exit_code = 2
             print("WARNING: Some test have different transition logs, check \'compare_out/\' for output")
 
-    tear_down()
+    cleanup()
 
     exit(exit_code)
