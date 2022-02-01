@@ -5,12 +5,12 @@
 namespace state_smurf::transition {
 StateTransition::StateTransition(diagram::StateDiagram stateGraph) {
 	_stateGraph = std::move(stateGraph);
-    bringauto::logging::Logger::logInfo("[TransitionSmurf] Start of Run");
+    bringauto::logging::Logger::logDebug("[TransitionSmurf] Start of Run");
 }
 
 bool StateTransition::goToState(const std::string &stateName) {
 	if (_stateGraph.changeStateByName(stateName)) {
-		bringauto::logging::Logger::logInfo("[TransitionSmurf] Going to state {}", stateName);
+		bringauto::logging::Logger::logDebug("[TransitionSmurf] Going to state {}", stateName);
 		return inState(stateName);
 	} else {
 		if (_stateGraph.stateExist(stateName)) {
@@ -25,7 +25,7 @@ bool StateTransition::goToState(const std::string &stateName) {
 
 bool StateTransition::inState(const std::string &stateName) {
 	if (_stateGraph.getCurrentStateName() == stateName) {
-		bringauto::logging::Logger::logInfo("[TransitionSmurf] In state {}", _stateGraph.getCurrentStateName());
+		//bringauto::logging::Logger::logInfo("[TransitionSmurf] In state {}", _stateGraph.getCurrentStateName());
 		return true;
 	} else {
 		bringauto::logging::Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",
