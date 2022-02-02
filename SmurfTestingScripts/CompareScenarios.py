@@ -95,17 +95,20 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if not check_executable(args.executable):
+    evaluator_bin_path = os.path.realpath(args.evaluator)
+    executable_path = os.path.realpath(args.executable)
+
+    if not check_executable(executable_path):
         exit(1)
     if not args.create_etalons:
-        if args.evaluator == "":
+        if evaluator_bin_path == "":
             print("Path to SmurfEvaluator executable needed, pass in --evaluator argument ")
             exit(2)
-        if not check_executable(args.evaluator):
+        if not check_executable(evaluator_bin_path):
             exit(1)
 
     if not os.path.isfile(args.scenario):
-        print("ERROR: File given by argument --file is not a valid file: " + args.file)
+        print("ERROR: File given by argument --scenario is not a valid file: " + args.scenario)
         exit(1)
 
     scenario_file = open(args.scenario, "r")
@@ -117,12 +120,9 @@ if __name__ == "__main__":
         print(e)
         exit(1)
 
-    evaluator_bin_path = args.evaluator
-    executable_path = args.executable
     workDir = args.scenario.rsplit('/', 1)[0]
     workDir = os.path.realpath(workDir)
     os.chdir(workDir)
-
     Path("./etalons/").mkdir(parents=True, exist_ok=True)
     Path("./output/").mkdir(parents=True, exist_ok=True)
     Path("./compare_out/").mkdir(parents=True, exist_ok=True)
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     if not args.create_etalons:
         if not compare_outputs():
             exit_code = 2
-            print("WARNING: Some test have different transition logs, check \'compare_out/\' for output")
+            print("WARNING: Some test have different transition logs, check \'<smurf_dir>/compare_out/\' for output")
 
     cleanup()
 
