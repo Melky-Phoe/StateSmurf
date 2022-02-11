@@ -27,17 +27,7 @@ static int parseArgOpts(int argc, char** argv,
 			std::cout << options.help() << std::endl;
 			return 1;
 		}
-       
-        state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
-		auto circuits = CF.find();
-		for (const auto& cir : circuits) {
-			for (const auto& n: cir) {
-				std::cout<< n << " ";
-			}
-			std::cout<< std::endl;
-		}
-        return 0;
-        /////////////////////
+
 		if(!parsedOptions.count("etalon")){
 			std::cerr << "Error: no etalon file provided\n";
 			std::cout << options.help() << std::endl;
@@ -65,7 +55,17 @@ int main(int argc, char **argv) {
 	if(parseArgOpts(argc, argv, &etalonFilePath, &compareFilePath)) {
 		return 1;
 	}
-
+	
+	state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
+	auto circuits = CF.find();
+	// DEBUG print
+	for (const auto& cir : circuits) {
+		for (const auto& n: cir) {
+			std::cout<< n << " ";
+		}
+		std::cout<< std::endl;
+	}
+	
 	// Opening files
 	std::ifstream etalonFile;
 	etalonFile.open(etalonFilePath, std::ios_base::in);
