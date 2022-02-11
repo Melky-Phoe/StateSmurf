@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 
 namespace state_smurf::diagram {
 
@@ -44,6 +45,8 @@ public:
 	 * @return true if change is possible
 	 */
 	bool changeStateByName(const std::string &vertexName);
+
+    std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> createAdjacencyMap();
 
     /**
      * Check if Vertex is defined in StateDiagram

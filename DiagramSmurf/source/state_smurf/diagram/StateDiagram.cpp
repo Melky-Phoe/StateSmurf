@@ -80,6 +80,23 @@ bool StateDiagram::changeState(const std::shared_ptr<Vertex> &vertex) {
 	}
 }
 
+std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> StateDiagram::createAdjacencyMap() {
+    std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> adjacencyMap;
+    for (auto edge: edges) {
+        adjacencyMap[edge.getFrom()].push_back(edge.getTo());
+    }
+    /* Printing adjacency
+    for (const auto & [key, vec] : adjacencyMap) {
+        std::cout << key->getName() << std::endl;
+        for (auto v : vec) {
+            std::cout << v->getName() << " ";
+        }
+        std::cout << std::endl;
+
+    }*/
+    return adjacencyMap;
+}
+
 bool StateDiagram::stateExist(const std::string &vertexName) {
 	for (const auto &vertex: vertexes) {
 		if (vertex->getName() == vertexName) {

@@ -21,11 +21,13 @@ bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
         std::cout << "ERROR: compared Log file isn't starting with Start of Run log" << std::endl;
         return false;
     }
+    // tady si vytvorim prechody smycek, asi to budu chtit ulozit >> kdyz najdu nesrovnalost, budu se asi chtit podivat kde byla
 
     for (int runCount = 1; isStartOfRunLog(comparedLog); ++runCount) {
         std::cout << "Run number " << runCount << ":" << std::endl;
 
         for (int i = 0; i < etalonLogs.size(); ++i) {
+            // tady bude zmena, budu porovnavat smycky, jinak by vsechno melo byt stejny
             if (!compareLines(etalonLogs[i], comparedLog)) {
                 runsAreSame = false;
 

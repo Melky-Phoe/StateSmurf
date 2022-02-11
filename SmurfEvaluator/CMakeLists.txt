@@ -20,9 +20,12 @@ SET(CMAKE_CXX_STANDARD 20)
 
 FIND_PACKAGE(libbringauto_logger)
 
+ADD_SUBDIRECTORY("../DiagramSmurf/" "DiagramSmurf/")
+
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(SmurfEvaluatorLib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(SmurfEvaluatorLib PUBLIC "include")
+TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib)
 
 ADD_EXECUTABLE(smurfEvaluator main.cpp)
 TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib)
