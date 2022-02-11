@@ -13,25 +13,29 @@ namespace state_smurf::log_evaluator {
         for (auto & it : adjacencyMap) {
             keys.push_back(it.first);
         }
+		startingVertexes = stateDiagram.getStartVertexes();
     }
 	
 	void CircuitFinder::find() {
-		for (int i = 0; i < numberOfVertexes; ++i) {
+		for (int i = 0; i < startingVertexes.size(); ++i) {
 			if (!adjacencyMap.empty()) {
 				for (int j = 0; j < numberOfVertexes; j++) {
 					blockMap[j].clear();
 					blocked[j] = false;
 				}
-				startVertex = keys[i];
+				startVertex = startingVertexes[i];
 				circuit(startVertex);
-				/*
+				
+				for (const auto& adjacentVertex : adjacencyMap[startVertex]) {
+					startingVertexes.push_back(adjacentVertex);
+				}
 				adjacencyMap.erase(startVertex);
 				for (auto & it : adjacencyMap) {
 					auto it2 = std::find(it.second.begin(), it.second.end(), startVertex);
 					if (it2 != it.second.end()) {
 						it.second.erase(it2);
 					}
-				}*/
+				}
 			} else {
 				break;
 			}

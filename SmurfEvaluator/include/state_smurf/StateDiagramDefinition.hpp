@@ -40,6 +40,7 @@ namespace state_smurf {
 		stateDiagram.setEdge(drive, carStatusSent);
 		stateDiagram.setEdge(drive, inStop);
 		stateDiagram.setEdge(inStop, carStatusSent);
+		// stateDiagram.isOptimized();
 		return stateDiagram;
 	}
 }

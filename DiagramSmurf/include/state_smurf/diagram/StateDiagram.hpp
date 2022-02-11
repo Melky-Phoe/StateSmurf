@@ -73,6 +73,11 @@ public:
 	 * @return
 	 */
 	std::vector<std::shared_ptr<Vertex>> getStartVertexes() {return startVertexes;}
+	
+	/**
+	 *
+	 */
+	 bool isOptimized();
 private:
 	std::shared_ptr<Vertex> _currentState{nullptr};
     std::vector<Edge> edges;

@@ -26,6 +26,7 @@ private:
     std::vector<std::vector<std::shared_ptr<diagram::Vertex>>> blockMap;
     std::vector<std::shared_ptr<diagram::Vertex>> stack;
     ulong numberOfVertexes;
+	std::vector<std::shared_ptr<diagram::Vertex>> startingVertexes;
     std::shared_ptr<diagram::Vertex> startVertex;
     bool *blocked;
 };
