@@ -11,7 +11,7 @@ namespace state_smurf::log_evaluator {
 class CircuitFinder {
 public:
 	explicit CircuitFinder(diagram::StateDiagram stateDiagram);
-	
+	~CircuitFinder() { free(blocked); blocked = nullptr;};
 	void find();
 
 private:

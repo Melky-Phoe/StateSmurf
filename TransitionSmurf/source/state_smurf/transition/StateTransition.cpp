@@ -14,8 +14,14 @@ bool StateTransition::goToState(const std::string &stateName) {
 		return inState(stateName);
 	} else {
 		if (_stateGraph.stateExist(stateName)) {
-			bringauto::logging::Logger::logWarning(R"([TransitionSmurf] Couldn't change state {{ "to":{} "from": {} }})",
-			                                       stateName, _stateGraph.getCurrentStateName());
+			if (_stateGraph.getCurrentStateName().empty()) {
+				bringauto::logging::Logger::logWarning(R"([TransitionSmurf] Invalid Starting state {{ "state":{} }})",
+													   stateName);
+			} else {
+				bringauto::logging::Logger::logWarning(
+						R"([TransitionSmurf] Couldn't change state {{ "to":{} "from": {} }})",
+						stateName, _stateGraph.getCurrentStateName());
+			}
 		} else {
 			bringauto::logging::Logger::logWarning("[TransitionSmurf] State doesnt exist {}", stateName);
 		}

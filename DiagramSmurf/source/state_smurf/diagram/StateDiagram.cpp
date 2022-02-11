@@ -24,6 +24,9 @@ void StateDiagram::setEdge(const std::shared_ptr<Vertex>& from, const std::share
 }
 
 std::shared_ptr<Vertex> StateDiagram::addVertex(const std::string &name) {
+	if (name.empty()) {
+		std::cerr << "Vertex can't have empty name, give valid string to addVertex";
+	}
     if (!stateExist(name)) {
         auto vertex = std::make_shared<Vertex>(name);
         vertexes.push_back(vertex);
@@ -36,24 +39,26 @@ std::shared_ptr<Vertex> StateDiagram::addVertex(const std::string &name) {
 
 bool StateDiagram::changeStateByName(const std::string &vertexName) {
 	if (_currentState == nullptr) {
-		for (const auto &vertex: vertexes) {
+		for (const auto &vertex: startVertexes) {
 			if (vertex->getName() == vertexName) {
 				_currentState = vertex;
 				return true;
 			}
+		}
+		if (startVertexes.empty()) {
+			std::cerr << "List of Starting Vertexes is empty, add Starting Vertex:\n"
+						 " setStartVertex(std::shared_ptr<Vertex> vertex)" << std::endl;
 		}
 		return false;
 	} else {
 		for (auto edge: edges) {
 			if (edge.getFrom() == _currentState) {
 				if (edge.getTo()->getName() == vertexName) {
-					// std::cout << "Going to " << vertexName << std::endl; // Debug print
 					_currentState = edge.getTo();
 					return true;
 				}
 			}
 		}
-		// std::cout << "Can't go to " << vertexName << std::endl; // Debug print
 		return false;
 	}
 }
@@ -63,19 +68,21 @@ bool StateDiagram::changeState(const std::shared_ptr<Vertex> &vertex) {
 		return false;
 	}
 	if (_currentState == nullptr) {
-		_currentState = vertex;
-		return true;
+		for (const auto &startVertex: startVertexes) {
+			if (vertex == startVertex) {
+				return true;
+			}
+		}
+		return false;
 	} else {
 		for (auto edge: edges) {
 			if (edge.getFrom() == _currentState) {
 				if (edge.getTo() == vertex) {
-					// std::cout << "Prechazim do " << vertex->name << std::endl;
 					_currentState = vertex;
 					return true;
 				}
 			}
 		}
-		// std::cout << "Nelze prejit do " << vertex->name << std::endl;
 		return false;
 	}
 }
@@ -105,4 +112,13 @@ bool StateDiagram::stateExist(const std::string &vertexName) {
 	}
 	return false;
 }
+
+void StateDiagram::setStartVertex(std::shared_ptr<Vertex> vertex) {
+	if (std::find(vertexes.begin(), vertexes.end(), vertex) != vertexes.end()) {
+		startVertexes.push_back(vertex);
+	} else {
+		std::cerr << "ERROR in setStartVertex: given Vertex must be existing Vertex of StateDiagram" << std::endl;
+	}
+}
+
 }

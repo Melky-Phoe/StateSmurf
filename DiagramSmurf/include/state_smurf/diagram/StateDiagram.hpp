@@ -32,6 +32,13 @@ public:
 	std::shared_ptr<Vertex> addVertex(const std::string &name);
 
 	/**
+     * Sets given Vertex as StartVertex. Multiple Starting Vertexes are possible
+     * @param shared_ptr to Vertex
+     * @return
+     */
+	void setStartVertex(std::shared_ptr<Vertex> vertex);
+	
+	/**
 	 * Changes current state if there is valid Edge between currentState and vertex in parameter
 	 * @param vertex as a pointer
 	 * @return true if change is possible
@@ -60,12 +67,17 @@ public:
      * @return name (string)
      */
 	std::string getCurrentStateName() { return _currentState != nullptr ? _currentState->getName() : ""; }
-
+	
+	/**
+	 * Returns vector of Starting Vertexes
+	 * @return
+	 */
+	std::vector<std::shared_ptr<Vertex>> getStartVertexes() {return startVertexes;}
 private:
 	std::shared_ptr<Vertex> _currentState{nullptr};
     std::vector<Edge> edges;
     std::vector<std::shared_ptr<Vertex>> vertexes;
-
+	std::vector<std::shared_ptr<Vertex>> startVertexes;
 };
 
 }

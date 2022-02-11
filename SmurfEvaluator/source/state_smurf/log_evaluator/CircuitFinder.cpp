@@ -12,14 +12,29 @@ namespace state_smurf::log_evaluator {
         }
         for (auto & it : adjacencyMap) {
             keys.push_back(it.first);
-            // std::cout << it.first->getName() << std::endl;
         }
     }
 	
 	void CircuitFinder::find() {
 		for (int i = 0; i < numberOfVertexes; ++i) {
-			startVertex = keys[i];
-			circuit(startVertex);
+			if (!adjacencyMap.empty()) {
+				for (int j = 0; j < numberOfVertexes; j++) {
+					blockMap[j].clear();
+					blocked[j] = false;
+				}
+				startVertex = keys[i];
+				circuit(startVertex);
+				/*
+				adjacencyMap.erase(startVertex);
+				for (auto & it : adjacencyMap) {
+					auto it2 = std::find(it.second.begin(), it.second.end(), startVertex);
+					if (it2 != it.second.end()) {
+						it.second.erase(it2);
+					}
+				}*/
+			} else {
+				break;
+			}
 		}
 	}
 	
@@ -27,7 +42,6 @@ namespace state_smurf::log_evaluator {
         long vertexIndex = getVertexIndex(keys, vertex);
         blocked[vertexIndex] = false;
 	    for (auto it = blockMap[vertexIndex].begin(); it != blockMap[vertexIndex].end();) {
-		    // kdyz to udelam pres mapu, zlepsim indexovani, ale problem zustane
 		    auto blockedVertexIndex = it - blockMap[vertexIndex].begin();
 		    it = blockMap[vertexIndex].erase(it);
 		    if (blocked[blockedVertexIndex]) {
