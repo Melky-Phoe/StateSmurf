@@ -29,7 +29,13 @@ static int parseArgOpts(int argc, char** argv,
 		}
        
         state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
-		CF.find();
+		auto circuits = CF.find();
+		for (const auto& cir : circuits) {
+			for (const auto& n: cir) {
+				std::cout<< n << " ";
+			}
+			std::cout<< std::endl;
+		}
         return 0;
         /////////////////////
 		if(!parsedOptions.count("etalon")){

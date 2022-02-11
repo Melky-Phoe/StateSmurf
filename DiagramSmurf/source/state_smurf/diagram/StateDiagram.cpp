@@ -120,7 +120,7 @@ void StateDiagram::setStartVertex(std::shared_ptr<Vertex> vertex) {
 		std::cerr << "ERROR in setStartVertex: given Vertex must be existing Vertex of StateDiagram" << std::endl;
 	}
 }
-
+/*
 bool StateDiagram::isOptimized() {
 	auto adjacencyMap = createAdjacencyMap();
 	bool vertexRemovable = false;
@@ -143,6 +143,6 @@ bool StateDiagram::isOptimized() {
 		}
 	}
 	return true;
-}
+}*/
 
 }

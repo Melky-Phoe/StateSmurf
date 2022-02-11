@@ -12,7 +12,7 @@ class CircuitFinder {
 public:
 	explicit CircuitFinder(diagram::StateDiagram stateDiagram);
 	~CircuitFinder() { free(blocked); blocked = nullptr;};
-	void find();
+	std::vector<std::vector<std::string>> find();
 
 private:
     void unblock(const std::shared_ptr<diagram::Vertex>& vertex);
@@ -29,6 +29,8 @@ private:
 	std::vector<std::shared_ptr<diagram::Vertex>> startingVertexes;
     std::shared_ptr<diagram::Vertex> startVertex;
     bool *blocked;
+	
+	std::vector<std::vector<std::string>> circuits;
 };
 
 }

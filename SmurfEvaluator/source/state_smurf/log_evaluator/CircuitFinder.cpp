@@ -16,7 +16,7 @@ namespace state_smurf::log_evaluator {
 		startingVertexes = stateDiagram.getStartVertexes();
     }
 	
-	void CircuitFinder::find() {
+	std::vector<std::vector<std::string>>  CircuitFinder::find() {
 		for (int i = 0; i < startingVertexes.size(); ++i) {
 			if (!adjacencyMap.empty()) {
 				for (int j = 0; j < numberOfVertexes; j++) {
@@ -40,6 +40,7 @@ namespace state_smurf::log_evaluator {
 				break;
 			}
 		}
+		return circuits;
 	}
 	
     void CircuitFinder::unblock(const std::shared_ptr<diagram::Vertex>& vertex) {
@@ -73,11 +74,14 @@ namespace state_smurf::log_evaluator {
 
         for (const auto& nextVertex : adjacencyMap[vertex]) {
             if (nextVertex == startVertex) {
+				std::vector<std::string> newCircuit;
                 for (const auto& circuitVertex : stack) {
                     // save circuit
-                    std::cout << circuitVertex->getName() << " ";
+                    //std::cout << circuitVertex->getName() << " ";
+					newCircuit.push_back(circuitVertex->getName());
                 }
-                std::cout << std::endl; // oddelovac DEBUG
+                //std::cout << std::endl; // oddelovac DEBUG
+				circuits.push_back(newCircuit);
                 found = true;
             } else if (!blocked[getVertexIndex(keys, nextVertex)]) {
                 if (circuit(nextVertex)) {
