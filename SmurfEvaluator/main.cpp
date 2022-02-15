@@ -1,5 +1,6 @@
 #include <state_smurf/log_evaluator/LogsComparer.hpp>
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
+#include <state_smurf/log_evaluator/CircuitCreator.hpp>
 #include <state_smurf/StateDiagramDefinition.hpp>
 
 #include <cxxopts.hpp>
@@ -13,48 +14,51 @@ static cxxopts::Options createArgOpts() {
 	cxxopts::Options options {"BringAuto daemon"};
 	options.add_options()
 			("e,etalon", "Path to Etalon.log file", cxxopts::value<std::string>())
-			("c,compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
+			("compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
+			("create", "Switch to create circuits of etalon file")
+			("t, target", "Target filename, where circuit-log will be written", cxxopts::value<std::string>()->default_value("./circuit.log"))
 			("h,help", "Print help message");
 	return options;
 }
 
-static int parseArgOpts(int argc, char** argv,
-						std::string* etalonFilePath, std::string* compareFilePath) {
+cxxopts::ParseResult parseArgOpts(int argc, char** argv) {
 	cxxopts::Options options = createArgOpts();
 	try {
 		auto parsedOptions = options.parse(argc, argv);
 		if (parsedOptions.count("help")) {
 			std::cout << options.help() << std::endl;
-			return 1;
+			exit(EXIT_SUCCESS);
 		}
 
-		if(!parsedOptions.count("etalon")){
+		if (!parsedOptions.count("etalon")) {
 			std::cerr << "Error: no etalon file provided\n";
 			std::cout << options.help() << std::endl;
-			return 1;
+			exit(EXIT_FAILURE);
 		}
-		if(!parsedOptions.count("compare")){
+		if (!parsedOptions.count("compare") && !parsedOptions.count("create")) {
 			std::cerr << "Error: no compare file provided\n";
 			std::cout << options.help() << std::endl;
-			return 1;
+			exit(EXIT_FAILURE);
 		}
-
-		etalonFilePath->append(parsedOptions["etalon"].as<std::string>());
-		compareFilePath->append(parsedOptions["compare"].as<std::string>());
-
+		
+		return parsedOptions;
 	} catch (...) {
 		std::cerr << "Parsing of arguments failed\n" << options.help();
-		return 1;
+		exit(EXIT_FAILURE);
 	}
-	return 0;
+	
 }
 
 int main(int argc, char **argv) {
-	std::string etalonFilePath = {};
+	auto args = parseArgOpts(argc, argv);
+	
+	bool createEtalonCircuits = args.count("create");
+	std::string etalonFilePath = args["etalon"].as<std::string>();
 	std::string compareFilePath = {};
-	if(parseArgOpts(argc, argv, &etalonFilePath, &compareFilePath)) {
-		return 1;
+	if (!createEtalonCircuits) {
+		compareFilePath = args["compare"].as<std::string>();
 	}
+	std::string targetFileName = args["target"].as<std::string>();
 	
 	state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
 	auto circuits = CF.find();
@@ -72,6 +76,12 @@ int main(int argc, char **argv) {
 	if (!etalonFile.is_open()) {
 		std::cerr << "Unable to open " << etalonFilePath << std::endl;
 		return EXIT_FAILURE;
+	}
+	if (createEtalonCircuits) {
+		state_smurf::log_evaluator::CircuitCreator circuitCreator(etalonFile, circuits);
+		circuitCreator.createCircuit(targetFileName);
+		etalonFile.close();
+		return EXIT_SUCCESS;
 	}
 	std::ifstream compareFile;
 	compareFile.open(compareFilePath);

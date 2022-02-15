@@ -28,7 +28,7 @@ TARGET_INCLUDE_DIRECTORIES(SmurfEvaluatorLib PUBLIC "include")
 TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib)
 
 ADD_EXECUTABLE(smurfEvaluator main.cpp)
-TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib)
+TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib cxxopts::cxxopts)
 
 IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
