@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-#define LOGS_PATH "../../test/testLogs/"
+#define LOGS_PATH "testLogs/"
 using namespace state_smurf::log_evaluator;
 namespace compare_file {
 std::ifstream openFile(std::string filename) {

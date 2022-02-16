@@ -53,7 +53,14 @@ public:
 	 */
 	bool changeStateByName(const std::string &vertexName);
 
-    std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> createAdjacencyMap();
+	/**
+	 * Creates adjacency list of current diagram
+	 * implemented by std::map
+	 * very vertex in StateDiagram is key for its set of destination vertexes
+	 * https://en.wikipedia.org/wiki/Adjacency_list
+	 * @return adjacency list
+	 */
+    std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> createAdjacencyList();
 
     /**
      * Check if Vertex is defined in StateDiagram

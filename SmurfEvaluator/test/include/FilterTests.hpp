@@ -8,9 +8,9 @@
 class FilterTests : public ::testing::Test {
 protected:
     void SetUp() override {
-        file.open("../../test/testLogs/findNext.log", std::ios_base::in);
+        file.open("testLogs/findNext.log", std::ios_base::in);
         if (!file.is_open()) {
-            std::cerr << "Unable to open ../../test/testLogs/findNext.log" << std::endl;
+            std::cerr << "Unable to open testLogs/findNext.log" << std::endl;
         }
     }
     void TearDown() override {

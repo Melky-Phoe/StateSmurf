@@ -22,6 +22,11 @@ public:
 	 */
 	static std::vector<std::string> parseLine(const std::string &line);
 
+	/**
+	 * Gets destination state from TransitionSmurf Log
+	 * @param line string containing TransitionSmurf log
+	 * @return name of state
+	 */
 	static std::string getState(const std::string &line);
 	/**
 	 * Enum for addressing tokens created by parseLine

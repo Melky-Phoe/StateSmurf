@@ -7,9 +7,9 @@
 class CompareFileTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        etalon.open("../../test/testLogs/etalon.log", std::ios_base::in);
+        etalon.open("testLogs/etalon.log", std::ios_base::in);
         if (!etalon.is_open()) {
-            std::cerr << "Unable to open ../../test/testLogs/etalon.log" << std::endl;
+            std::cerr << "Unable to open testLogs/etalon.log" << std::endl;
         }
     }
     void TearDown() override {

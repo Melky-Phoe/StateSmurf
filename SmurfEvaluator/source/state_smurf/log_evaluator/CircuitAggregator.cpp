@@ -1,4 +1,6 @@
-#include <state_smurf/log_evaluator/CircuitCreator.hpp>
+#include <state_smurf/log_evaluator/CircuitAggregator.hpp>
+#include <state_smurf/log_evaluator/CircuitFinder.hpp>
+#include <state_smurf/StateDiagramDefinition.hpp>
 #include <state_smurf/log_evaluator/Filter.hpp>
 #include <state_smurf/log_evaluator/LineParser.hpp>
 
@@ -9,18 +11,25 @@ namespace state_smurf::log_evaluator {
 	constexpr long NOT_FOUND = -1;
 	constexpr long END_FOUND = -2;
 	
-	CircuitCreator::CircuitCreator(std::istream &sourceLogFile,
-	                               const std::vector<std::vector<std::string>> &circuitList) {
+	CircuitAggregator::CircuitAggregator(std::istream &sourceLogFile) {
 		_transitionLogVector = Filter::createTransitionLogVector(sourceLogFile);
-		_circuitList = circuitList;
+		state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
+		_circuitList = CF.find();
+		/* DEBUG print
+		for (const auto& cir : circuits) {
+			for (const auto& n: cir) {
+				std::cout<< n << " ";
+			}
+			std::cout<< std::endl;
+		}*/
 	}
 	
-	std::ofstream CircuitCreator::createCircuitFile(const std::string& newFileName) {
+	void CircuitAggregator::createAggregatedFile(const std::string& newFileName) {
 		// Opening new file
 		std::ofstream targetFile(newFileName);
 		if (!targetFile.is_open()) {
 			std::cerr << "Unable to open " << newFileName << std::endl;
-			return targetFile;
+			return;
 		}
 		
 		std::vector<int> circuitFoundIndexes;
@@ -29,7 +38,7 @@ namespace state_smurf::log_evaluator {
 			long nextCircuit = getCircuit();
 			if (nextCircuit == END_FOUND) {
 				if (LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
-					targetFile << _transitionLogVector[_transitionIndex] << std::endl;
+					targetFile << _transitionLogVector[_transitionIndex] << " -- Aggregated" << std::endl;
 				}
 				if (!handleEnd(currentCircuit)) {
 					while (_transitionIndex < _transitionLogVector.size() && !LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
@@ -54,10 +63,10 @@ namespace state_smurf::log_evaluator {
 				currentCircuit = nextCircuit;
 			}
 		}
-		return targetFile;
+		targetFile.close();
 	}
 	
-	long CircuitCreator::getLongestCircuitIndex(const std::vector<int>& circuitFoundIndexes) {
+	long CircuitAggregator::getLongestCircuitIndex(const std::vector<int>& circuitFoundIndexes) {
 		long max = 0;
 		for (auto index : circuitFoundIndexes) {
 			if (_circuitList[index].size() > max) {
@@ -67,27 +76,7 @@ namespace state_smurf::log_evaluator {
 		return max;
 	}
 	
-	
-	
-	int CircuitCreator::aggregateCircuit(const u_long &circuitIndex) {
-		u_long circuitLength = _circuitList[circuitIndex].size();
-		bool inCircuit = true;
-		while (inCircuit && _transitionIndex < _transitionLogVector.size()) {
-			_transitionIndex += circuitLength;
-			for (int j = 0; j < _circuitList[circuitIndex].size() && (_transitionIndex+j) < _transitionLogVector.size(); ++j) {
-				if (LineParser::getState(_transitionLogVector[_transitionIndex + j]) != _circuitList[circuitIndex][j]) {
-					inCircuit = false;
-					break;
-				}
-			}
-			if (!inCircuit) {
-				return 0;
-			}
-		}
-		return 0;
-	}
-	
-	long CircuitCreator::getCircuit() {
+	long CircuitAggregator::getCircuit() {
 		std::vector<int> circuitFoundIndexes;
 		for (int i = 0; i < _circuitList.size(); ++i) {
 			for (int j = 0; j < _circuitList[i].size(); ++j) {
@@ -110,7 +99,7 @@ namespace state_smurf::log_evaluator {
 		}
 	}
 	
-	bool CircuitCreator::handleEnd(long currentCircuit) {
+	bool CircuitAggregator::handleEnd(long currentCircuit) {
 		if (currentCircuit == END_FOUND || currentCircuit == NOT_FOUND) {
 			_transitionIndex++;
 		} else {

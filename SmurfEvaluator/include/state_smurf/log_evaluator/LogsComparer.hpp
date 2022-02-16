@@ -14,8 +14,18 @@ public:
     static bool compareFiles(std::istream& etalonFile, std::istream& comparedFile);
 
 private:
+	/**
+	 * Check if line is Start of Run in aggregated file
+	 * @param line
+	 * @return
+	 */
     static bool isStartOfRunLog(const std::string& line);
 
+	/**
+	 * Check if all logs of etalon are valid. Checks count of runs, unsuccessful transitions
+	 * @param etalonLogs filtered vector
+	 * @return
+	 */
     static bool validateEtalon(std::vector<std::string> etalonLogs);
 	
 };

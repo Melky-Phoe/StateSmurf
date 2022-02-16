@@ -1,7 +1,5 @@
 #include <state_smurf/log_evaluator/LogsComparer.hpp>
-#include <state_smurf/log_evaluator/CircuitFinder.hpp>
-#include <state_smurf/log_evaluator/CircuitCreator.hpp>
-#include <state_smurf/StateDiagramDefinition.hpp>
+#include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 
 #include <cxxopts.hpp>
 
@@ -13,10 +11,10 @@
 static cxxopts::Options createArgOpts() {
 	cxxopts::Options options {"BringAuto daemon"};
 	options.add_options()
-			("e,etalon", "Path to EtalonCircuit file", cxxopts::value<std::string>())
-			("compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
-			("create-circuits", "Path to .log file to create CircuitFile from", cxxopts::value<std::string>())
-			("t, target", "Target CircuitFile name", cxxopts::value<std::string>()->default_value("./circuitFile"))
+			("e, etalon", "Path to EtalonAggregated file", cxxopts::value<std::string>())
+			("c, compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
+			("a, aggregate", "Path to .log file to create AggregatedFile from", cxxopts::value<std::string>())
+			("t, target", "Target AggregatedFile name", cxxopts::value<std::string>()->default_value("./aggregatedFile"))
 			("h,help", "Print help message");
 	return options;
 }
@@ -30,7 +28,7 @@ cxxopts::ParseResult parseArgOpts(int argc, char** argv) {
 			exit(EXIT_SUCCESS);
 		}
 		
-		if (!parsedOptions.count("create-circuits")) {
+		if (!parsedOptions.count("aggregate")) {
 			if (!parsedOptions.count("etalon")) {
 				std::cerr << "Error: no etalon file provided\n";
 				std::cout << options.help() << std::endl;
@@ -54,7 +52,7 @@ cxxopts::ParseResult parseArgOpts(int argc, char** argv) {
 int main(int argc, char **argv) {
 	auto args = parseArgOpts(argc, argv);
 	
-	bool createEtalonCircuits = args.count("create-circuits");
+	bool createEtalonCircuits = args.count("aggregate");
 	std::string etalonFilePath = {};
 	std::string compareFilePath = {};
 	if (!createEtalonCircuits) {
@@ -62,26 +60,18 @@ int main(int argc, char **argv) {
 		etalonFilePath = args["etalon"].as<std::string>();
 	}
 	std::string targetFileName = args["target"].as<std::string>();
-	
-	state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
-	auto circuits = CF.find();
-	/* DEBUG print
-	for (const auto& cir : circuits) {
-		for (const auto& n: cir) {
-			std::cout<< n << " ";
-		}
-		std::cout<< std::endl;
-	}*/
+
 	if (createEtalonCircuits) {
 		std::ifstream sourceFile;
-		sourceFile.open(args["create-circuits"].as<std::string>(), std::ios_base::in);
+		std::string sourceFileName = args["aggregate"].as<std::string>();
+		sourceFile.open(sourceFileName, std::ios_base::in);
 		if (!sourceFile.is_open()) {
-			std::cerr << "Unable to open " << etalonFilePath << std::endl;
+			std::cerr << "Unable to open " << sourceFileName << std::endl;
 			return EXIT_FAILURE;
 		}
-		state_smurf::log_evaluator::CircuitCreator circuitCreator(sourceFile, circuits);
-		std::ofstream circuitFile = circuitCreator.createCircuitFile(targetFileName);
-		circuitFile.close();
+		state_smurf::log_evaluator::CircuitAggregator circuitCreator(sourceFile);
+		circuitCreator.createAggregatedFile(targetFileName);
+		std::cout << "Created file containing aggregated circuits: " << targetFileName << std::endl;
 		sourceFile.close();
 		return EXIT_SUCCESS;
 	}
@@ -98,17 +88,17 @@ int main(int argc, char **argv) {
 		std::cerr << "Unable to open " << compareFilePath << std::endl;
 		return EXIT_FAILURE;
 	}
-	state_smurf::log_evaluator::CircuitCreator circuitCreator(compareFile, circuits);
-	circuitCreator.createCircuitFile(targetFileName).close();
+	state_smurf::log_evaluator::CircuitAggregator circuitAggregator(compareFile);
+	circuitAggregator.createAggregatedFile(targetFileName);
 	compareFile.close();
 	
-	std::ifstream circuitCompareFile(targetFileName);
-	if (!circuitCompareFile.is_open()) {
+	std::ifstream aggregatedCompareFile(targetFileName);
+	if (!aggregatedCompareFile.is_open()) {
 		std::cerr << "Unable to open created file " << targetFileName << std::endl;
 		return EXIT_FAILURE;
 	}
 
-    if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, circuitCompareFile)) {
+    if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, aggregatedCompareFile)) {
         return EXIT_FAILURE;
     }
 

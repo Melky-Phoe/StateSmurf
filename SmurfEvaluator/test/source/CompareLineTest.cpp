@@ -2,7 +2,7 @@
 #include <state_smurf/log_evaluator/LogsComparer.hpp>
 #include <gtest/gtest.h>
 
-#define LOGS_PATH "../../test/testLogs/compareLines/"
+#define LOGS_PATH "testLogs/compareLines/"
 using namespace state_smurf::log_evaluator;
 namespace compare_line {
 std::ifstream openFile(std::string filename) {

@@ -1,9 +1,11 @@
 #pragma once
 #include <state_smurf/diagram/StateDiagram.hpp>
+
 /**
  *  This file serves to define StateDiagram using DiagramSmurf,
  *  Evaluator finds circuits in diagram.
  *  Evaluating compares Transitions between aggregated circuits, rather than single transitions.
+ *  TODO this file is part of every project, should be on a better place. Its the same diagram used by whole application we are testing
  **/
 
 namespace state_smurf {
@@ -40,7 +42,6 @@ namespace state_smurf {
 		stateDiagram.setEdge(drive, carStatusSent);
 		stateDiagram.setEdge(drive, inStop);
 		stateDiagram.setEdge(inStop, carStatusSent);
-		// stateDiagram.isOptimized();
 		return stateDiagram;
 	}
 }

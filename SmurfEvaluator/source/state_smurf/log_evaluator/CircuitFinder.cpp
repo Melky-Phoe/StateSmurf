@@ -3,14 +3,15 @@
 
 namespace state_smurf::log_evaluator {
 
-    CircuitFinder::CircuitFinder(diagram::StateDiagram stateDiagram) : adjacencyMap{stateDiagram.createAdjacencyMap()} {
-        numberOfVertexes = adjacencyMap.size();
+    CircuitFinder::CircuitFinder(diagram::StateDiagram stateDiagram) : adjacencyList{
+		    stateDiagram.createAdjacencyList()} {
+        numberOfVertexes = adjacencyList.size();
         blocked = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
 		blockMap.resize(numberOfVertexes);
         if (blocked == nullptr) {
             exit(1); // exception
         }
-        for (auto & it : adjacencyMap) {
+        for (auto & it : adjacencyList) {
             keys.push_back(it.first);
         }
 		startingVertexes = stateDiagram.getStartVertexes();
@@ -18,7 +19,7 @@ namespace state_smurf::log_evaluator {
 	
 	std::vector<std::vector<std::string>>  CircuitFinder::find() {
 		for (int i = 0; i < startingVertexes.size(); ++i) {
-			if (!adjacencyMap.empty()) {
+			if (!adjacencyList.empty()) {
 				for (int j = 0; j < numberOfVertexes; j++) {
 					blockMap[j].clear();
 					blocked[j] = false;
@@ -26,13 +27,13 @@ namespace state_smurf::log_evaluator {
 				startVertex = startingVertexes[i];
 				circuit(startVertex);
 				
-				for (const auto& adjacentVertex : adjacencyMap[startVertex]) {
+				for (const auto& adjacentVertex : adjacencyList[startVertex]) {
 					startingVertexes.push_back(adjacentVertex);
 				}
 				
 				// removing Vertex that has been completly discovered
-				adjacencyMap.erase(startVertex);
-				for (auto & it : adjacencyMap) {
+				adjacencyList.erase(startVertex);
+				for (auto & it : adjacencyList) {
 					auto it2 = std::find(it.second.begin(), it.second.end(), startVertex);
 					if (it2 != it.second.end()) {
 						it.second.erase(it2);
@@ -74,7 +75,7 @@ namespace state_smurf::log_evaluator {
         visitedVertexes.push_back(vertex);
         blocked[currVertexIndex] = true;
 
-        for (const auto& nextVertex : adjacencyMap[vertex]) {
+        for (const auto& nextVertex : adjacencyList[vertex]) {
             if (nextVertex == startVertex) {
 				std::vector<std::string> newCircuit;
                 for (const auto& circuitVertex : visitedVertexes) {
@@ -94,7 +95,7 @@ namespace state_smurf::log_evaluator {
         if (found) {
             unblock(vertex);
         } else {
-            for (auto blockVertex : adjacencyMap[vertex]) {
+            for (auto blockVertex : adjacencyList[vertex]) {
 				auto blockedVector = blockMap[getVertexIndex(keys, blockVertex)];
 	            if (std::find(blockedVector.begin(), blockedVector.end(), vertex) == blockedVector.end()) {
 		            blockMap[getVertexIndex(keys, blockVertex)].push_back(vertex);

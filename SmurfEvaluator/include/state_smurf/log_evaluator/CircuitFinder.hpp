@@ -13,7 +13,7 @@ namespace state_smurf::log_evaluator {
  * circuits are used by Evaluator to aggregate states transition into circuits transition
  *
  * Class uses Johnson's algorithm methods.
- * TODO odkaz na johnsona
+ * https://www.cs.tufts.edu/comp/150GA/homeworks/hw1/Johnson%2075.PDF
  */
 class CircuitFinder {
 public:
@@ -55,11 +55,10 @@ private:
     static long getVertexIndex(const std::vector<std::shared_ptr<diagram::Vertex>>& vertexVector, const std::shared_ptr<diagram::Vertex>& vertex);
 	
 	/**
-	 * Adjacency table, set of possible destination vertexes for each vertex
-	 * every vertex in StateDiagram has its own key and set of destination vertexes
-	 * TODO odkaz
+	 * Adjacency list, set of possible destination vertexes for each vertex
+	 * TODO odkaz, rozdil mezi List a Matrix (matrix asi nerychlejsi) https://www.geeksforgeeks.org/comparison-between-adjacency-list-and-adjacency-matrix-representation-of-graph/#:~:text=A%20graph%20can%20be%20represented,which%20this%20node%20is%20connected.
 	 */
-    std::map<std::shared_ptr<diagram::Vertex>, std::vector<std::shared_ptr<diagram::Vertex>>> adjacencyMap;
+    std::map<std::shared_ptr<diagram::Vertex>, std::vector<std::shared_ptr<diagram::Vertex>>> adjacencyList;
 	
 	/**
 	 * Vector of all vertexes ordered, used for indexing in other vectors
