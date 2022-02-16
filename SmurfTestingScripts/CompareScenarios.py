@@ -41,6 +41,7 @@ def run_scenarios():
         except subprocess.TimeoutExpired:
             print("Timed out")
             process.kill()
+            # TODO interrupt, then kill
         print("..... Done")
         tidy_up()
 

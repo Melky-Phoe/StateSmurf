@@ -6,63 +6,55 @@
 
 namespace state_smurf::log_evaluator {
 	
+	constexpr long NOT_FOUND = -1;
+	constexpr long END_FOUND = -2;
+	
 	CircuitCreator::CircuitCreator(std::istream &sourceLogFile,
 	                               const std::vector<std::vector<std::string>> &circuitList) {
 		_transitionLogVector = Filter::createTransitionLogVector(sourceLogFile);
 		_circuitList = circuitList;
 	}
 	
-	void CircuitCreator::createCircuit(const std::string& targetFileName) {
+	std::ofstream CircuitCreator::createCircuitFile(const std::string& newFileName) {
 		// Opening new file
-		std::ofstream targetFile(targetFileName);
+		std::ofstream targetFile(newFileName);
 		if (!targetFile.is_open()) {
-			std::cerr << "Unable to open " << targetFileName << std::endl;
-			return;
+			std::cerr << "Unable to open " << newFileName << std::endl;
+			return targetFile;
 		}
-		
-		bool newRun = false;
 		
 		std::vector<int> circuitFoundIndexes;
-		
+		long currentCircuit = END_FOUND;
 		for (_transitionIndex = 0; _transitionIndex < _transitionLogVector.size();) {
-			for (int i = 0; i < _circuitList.size(); ++i) {
-				for (int j = 0; j < _circuitList[i].size() && _transitionIndex+j < _transitionLogVector.size(); ++j) {
-					auto nextState = LineParser::getState(_transitionLogVector[_transitionIndex + j]);
-					if (nextState.empty()) {
-						newRun = true;
-						break;
-					}
-					if (nextState != _circuitList[i][j]) {
-						break;
-					} else if (j == _circuitList[i].size() - 1) { // all elements are equal
-						circuitFoundIndexes.push_back(i);
-					}
+			long nextCircuit = getCircuit();
+			if (nextCircuit == END_FOUND) {
+				if (LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
+					targetFile << _transitionLogVector[_transitionIndex] << std::endl;
 				}
-			}
-			// I have all possible circuits
-			if (!circuitFoundIndexes.empty()) {
-				u_long index = getLongestCircuitIndex(circuitFoundIndexes);
-				targetFile << "In loop " << index << ": [";
-				for (const auto& state : _circuitList[index]) {
-					targetFile << state << ", ";
-				}
-				targetFile << "]" << std::endl;
-				aggregateCircuit(index);
-				
-				circuitFoundIndexes.clear();
-			} else {
-				if (newRun) {
-					for (; _transitionIndex < _transitionLogVector.size() && !LineParser::getState(_transitionLogVector[_transitionIndex]).empty(); _transitionIndex++) {
+				if (!handleEnd(currentCircuit)) {
+					while (_transitionIndex < _transitionLogVector.size() && !LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
 						targetFile << _transitionLogVector[_transitionIndex] << std::endl;
+						_transitionIndex++;
 					}
-
-					newRun = false;
 				}
+				currentCircuit = END_FOUND;
+			} else if (nextCircuit == NOT_FOUND) {
 				targetFile << _transitionLogVector[_transitionIndex] << std::endl;
 				_transitionIndex++;
+				currentCircuit = NOT_FOUND;
+			} else {
+				if (nextCircuit != currentCircuit) {
+					targetFile << "In circuit " << nextCircuit << ": [";
+					for (const auto& state : _circuitList[nextCircuit]) {
+						targetFile << state << ", ";
+					}
+					targetFile << "]" << std::endl;
+				}
+				_transitionIndex += _circuitList[nextCircuit].size();
+				currentCircuit = nextCircuit;
 			}
 		}
-		std::cout << "Circuits are written in file: " << targetFileName << std::endl;
+		return targetFile;
 	}
 	
 	long CircuitCreator::getLongestCircuitIndex(const std::vector<int>& circuitFoundIndexes) {
@@ -79,16 +71,16 @@ namespace state_smurf::log_evaluator {
 	
 	int CircuitCreator::aggregateCircuit(const u_long &circuitIndex) {
 		u_long circuitLength = _circuitList[circuitIndex].size();
-		bool inLoop = true;
-		while (inLoop && _transitionIndex < _transitionLogVector.size()) {
+		bool inCircuit = true;
+		while (inCircuit && _transitionIndex < _transitionLogVector.size()) {
 			_transitionIndex += circuitLength;
 			for (int j = 0; j < _circuitList[circuitIndex].size() && (_transitionIndex+j) < _transitionLogVector.size(); ++j) {
 				if (LineParser::getState(_transitionLogVector[_transitionIndex + j]) != _circuitList[circuitIndex][j]) {
-					inLoop = false;
+					inCircuit = false;
 					break;
 				}
 			}
-			if (!inLoop) {
+			if (!inCircuit) {
 				return 0;
 			}
 		}
@@ -100,9 +92,8 @@ namespace state_smurf::log_evaluator {
 		for (int i = 0; i < _circuitList.size(); ++i) {
 			for (int j = 0; j < _circuitList[i].size(); ++j) {
 				auto nextState = LineParser::getState(_transitionLogVector[_transitionIndex + j]);
-				if (nextState.empty() || _transitionIndex+j < _transitionLogVector.size()) {
-					// TODO Handle end
-					break;
+				if (nextState.empty() || _transitionIndex+j == _transitionLogVector.size()-1) {
+					return END_FOUND;
 				}
 				if (nextState != _circuitList[i][j]) {
 					break;
@@ -115,8 +106,39 @@ namespace state_smurf::log_evaluator {
 			long index = getLongestCircuitIndex(circuitFoundIndexes);
 			return index;
 		} else {
-			return -1;
+			return NOT_FOUND;
 		}
+	}
+	
+	bool CircuitCreator::handleEnd(long currentCircuit) {
+		if (currentCircuit == END_FOUND || currentCircuit == NOT_FOUND) {
+			_transitionIndex++;
+		} else {
+			bool stayInCircuit = true;
+			while (_transitionIndex < _transitionLogVector.size()) {
+				for (int j = 0; j < _circuitList[currentCircuit].size() &&
+				                (_transitionIndex + j) < _transitionLogVector.size(); ++j) {
+					auto state = LineParser::getState(_transitionLogVector[_transitionIndex + j]);
+					if (state.empty()) {
+						_transitionIndex += j;
+						return true;
+					}
+					if (state != _circuitList[currentCircuit][j]) {
+						stayInCircuit = false;
+						break;
+					}
+				}
+				if (!stayInCircuit) {
+					// States before end doesn't follow last circuit's states
+					return false;
+					
+				} else {
+					_transitionIndex += _circuitList[currentCircuit].size();
+				}
+			}
+			
+		}
+		return true;
 	}
 	
 	

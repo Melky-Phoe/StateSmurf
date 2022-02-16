@@ -17,15 +17,24 @@ bool LineParser::compareLines(const std::string &etalon, const std::string &comp
 	std::vector<std::string> etalonTokens = parseLine(etalon);
 	std::vector<std::string> comparedTokens = parseLine(compared);
 	
-	
-	for (int i = static_cast<int>(LogTokensIndexes::appName);
-	     i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
-		if (etalonTokens[i] != comparedTokens[i]) {
-			std::cout << "Logs aren't equal:\n"
-			             "  Etalon: " << etalon << std::endl <<
-			          "  Compared: " << compared << std::endl;
-			return false;
-			
+	if (etalonTokens.size() > 3 && etalonTokens[1] == "circuit") { // circuit log
+		for (int i = 0; i < 3; ++i) {
+			if (etalonTokens[i] != comparedTokens[i]) {
+				std::cout << "Logs aren't equal:\n"
+				             "  Etalon: " << etalon << std::endl <<
+							 "  Compared: " << compared << std::endl;
+				return false;
+			}
+		}
+	} else {    // normal StateTransition log
+		for (int i = static_cast<int>(LogTokensIndexes::appName);
+		     i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
+			if (etalonTokens[i] != comparedTokens[i]) {
+				std::cout << "Logs aren't equal:\n"
+				             "  Etalon: " << etalon << std::endl <<
+							 "  Compared: " << compared << std::endl;
+				return false;
+			}
 		}
 	}
 	return true;

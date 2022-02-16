@@ -6,12 +6,19 @@
 
 namespace state_smurf::log_evaluator {
 
-bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
-    std::vector<std::string> etalonLogs = Filter::createTransitionLogVector(etalon);
+bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile) {
+    std::vector<std::string> etalonLogs;
+	std::string line = {};
+	getline(etalonFile, line);
+	while (etalonFile) {
+		etalonLogs.push_back(line);
+		getline(etalonFile, line);
+	}
     if (!validateEtalon(etalonLogs)) {
         return false;
     }
-    std::string comparedLog = Filter::findNextTransitionLog(compared);
+	std::string comparedLog = {};
+	std::getline(comparedFile, comparedLog);
     bool filesAreSame = true;
     bool runsAreSame = true;
 
@@ -41,14 +48,15 @@ bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
                     break;
                 }
             }
-
-            comparedLog = Filter::findNextTransitionLog(compared);
+	
+	        getline(comparedFile, comparedLog);
+            //comparedLog = Filter::findNextTransitionLog(comparedFile);
         }
         // Etalon run is shorter than compared, needs catching up
-        while (!isStartOfRunLog(comparedLog) && !comparedLog.empty()) {
+        while (!isStartOfRunLog(comparedLog) && comparedFile) {
             runsAreSame = false;
 	        LineParser::compareLines("", comparedLog);
-            comparedLog = Filter::findNextTransitionLog(compared);
+	        getline(comparedFile, comparedLog);
         }
         if (runsAreSame) {
             std::cout << "\tOK" << std::endl;
@@ -74,7 +82,7 @@ bool LogsComparer::isStartOfRunLog(const std::string &line) {
 bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
     if (!etalonLogs.empty()) {
         if (!isStartOfRunLog(etalonLogs[0])) {
-            std::cout << "WARNING: Etalon doesn't contain \"Start of Run\" log" << std::endl;
+            std::cerr << "ERROR: Etalon doesn't contain \"Start of Run\" log" << std::endl;
             return false;
         }
         for (int i = 1; i < etalonLogs.size(); ++i) {
