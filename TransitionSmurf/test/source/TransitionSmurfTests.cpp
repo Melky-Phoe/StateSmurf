@@ -25,6 +25,10 @@ TEST_F(StateTransitionTest, notExistingState) {
 	EXPECT_FALSE(transition->goToState("Invalid")); // Other does not exist
 }
 
+TEST_F(StateTransitionTest, notStartingState) {
+	EXPECT_FALSE(transition->goToState("D"));
+}
+
 TEST_F(StateTransitionTest, invalidEdge) {
 	EXPECT_TRUE(transition->goToState("B"));
 	EXPECT_FALSE(transition->goToState("A"));    // edge in Oposite dirrection

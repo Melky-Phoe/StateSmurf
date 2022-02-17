@@ -30,6 +30,7 @@ private:
 	 */
 	bool inState(const std::string &stateName);
 
+	void printAdjacencyList();
     diagram::StateDiagram _stateGraph;
 };
 

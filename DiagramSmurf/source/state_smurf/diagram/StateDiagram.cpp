@@ -4,21 +4,16 @@
 namespace state_smurf::diagram {
 
 void StateDiagram::setEdge(const std::shared_ptr<Vertex>& from, const std::shared_ptr<Vertex>& to) {
-	bool fromFound = false;
-	bool toFound = false;
-	for (const auto &vertex: vertexes) {
-		if (vertex == from) {
-			fromFound = true;
-		}
-		if (vertex == to) {
-			toFound = true;
-		}
+	bool vertexesFound = false;
+	
+	if (adjacencyList.find(from) != adjacencyList.end() && adjacencyList.find(to) != adjacencyList.end()) {
+		vertexesFound = true;
 	}
-	if (fromFound && toFound) {
-		Edge edge{from, to};
-		edges.push_back(edge);
+
+	if (vertexesFound) {
+		adjacencyList[from].push_back(to);
 	} else {
-		std::cerr << "Cant create edge, vertex doesn't exist" << std::endl;
+		std::cerr << "Cant create edge, vertex doesn't exist" << from->getName() << " or " << to->getName() << std::endl;
 	}
 
 }
@@ -29,7 +24,7 @@ std::shared_ptr<Vertex> StateDiagram::addVertex(const std::string &name) {
 	}
     if (!stateExist(name)) {
         auto vertex = std::make_shared<Vertex>(name);
-        vertexes.push_back(vertex);
+        adjacencyList[vertex]; // creating new key in map
         return vertex;
     } else {
         std::cerr << "Vertex with name \"" << name <<"\" already exists" << std::endl;
@@ -38,88 +33,52 @@ std::shared_ptr<Vertex> StateDiagram::addVertex(const std::string &name) {
 }
 
 bool StateDiagram::changeStateByName(const std::string &vertexName) {
-	if (_currentState == nullptr) {
-		for (const auto &vertex: startVertexes) {
-			if (vertex->getName() == vertexName) {
-				_currentState = vertex;
-				return true;
-			}
-		}
-		if (startVertexes.empty()) {
-			std::cerr << "List of Starting Vertexes is empty, add Starting Vertex:\n"
-						 " setStartVertex(std::shared_ptr<Vertex> vertex)" << std::endl;
-		}
-		return false;
-	} else {
-		for (auto edge: edges) {
-			if (edge.getFrom() == _currentState) {
-				if (edge.getTo()->getName() == vertexName) {
-					_currentState = edge.getTo();
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-}
-
-bool StateDiagram::changeState(const std::shared_ptr<Vertex> &vertex) {
-	if (vertex == nullptr) {
-		return false;
-	}
-	if (_currentState == nullptr) {
-		for (const auto &startVertex: startVertexes) {
-			if (vertex == startVertex) {
-				return true;
-			}
-		}
-		return false;
-	} else {
-		for (auto edge: edges) {
-			if (edge.getFrom() == _currentState) {
-				if (edge.getTo() == vertex) {
-					_currentState = vertex;
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-}
-
-std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> StateDiagram::createAdjacencyList() {
-    std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>> adjacencyMap;
-    for (auto edge: edges) {
-        adjacencyMap[edge.getFrom()].push_back(edge.getTo());
-    }
-    /* Printing adjacency
-    for (const auto & [key, vec] : adjacencyMap) {
-        std::cout << key->getName() << std::endl;
-        for (auto v : vec) {
-            std::cout << v->getName() << " ";
-        }
-        std::cout << std::endl;
-
-    }*/
-    return adjacencyMap;
-}
-
-bool StateDiagram::stateExist(const std::string &vertexName) {
-	for (const auto &vertex: vertexes) {
+	for (const auto& vertex : adjacencyList[_currentState]) {
 		if (vertex->getName() == vertexName) {
+			_currentState = vertex;
 			return true;
 		}
 	}
 	return false;
 }
 
-void StateDiagram::setStartVertex(std::shared_ptr<Vertex> vertex) {
-	if (std::find(vertexes.begin(), vertexes.end(), vertex) != vertexes.end()) {
-		startVertexes.push_back(vertex);
+bool StateDiagram::changeState(const std::shared_ptr<Vertex> &destinationVertex) {
+	for (const auto& vertex : adjacencyList[_currentState]) {
+		if (destinationVertex == vertex) {
+			_currentState = destinationVertex;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool StateDiagram::stateExist(const std::string &vertexName) {
+	for (const auto &it: adjacencyList) {
+		if (it.first->getName() == vertexName) {
+			return true;
+		}
+	}
+	return false;
+}
+
+std::shared_ptr<Vertex> StateDiagram::findStateByName(const std::string &vertexName) {
+	for (const auto &it: adjacencyList) {
+		if (it.first->getName() == vertexName) {
+			return it.first;
+		}
+	}
+	return nullptr;
+}
+
+void StateDiagram::setStartVertex(const std::shared_ptr<Vertex>& vertex) {
+	if (adjacencyList.find(vertex) != adjacencyList.end()) {
+		// Possible to just push to vector
+		adjacencyList[findStateByName("__START__")].push_back(vertex);
 	} else {
 		std::cerr << "ERROR in setStartVertex: given Vertex must be existing Vertex of StateDiagram" << std::endl;
 	}
 }
+
 /*
 bool StateDiagram::isOptimized() {
 	auto adjacencyMap = createAdjacencyMap();

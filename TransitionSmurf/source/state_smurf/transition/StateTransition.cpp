@@ -5,6 +5,7 @@
 namespace state_smurf::transition {
 StateTransition::StateTransition(diagram::StateDiagram stateGraph) {
 	_stateGraph = std::move(stateGraph);
+	printAdjacencyList();
     bringauto::logging::Logger::logDebug("[TransitionSmurf] Start of Run");
 }
 
@@ -38,5 +39,20 @@ bool StateTransition::inState(const std::string &stateName) {
 		                                     stateName, _stateGraph.getCurrentStateName());
 		return false;
 	}
+}
+
+void StateTransition::printAdjacencyList() {
+	auto adjacencyList = _stateGraph.getAdjacencyList();
+	
+	bringauto::logging::Logger::logDebug("[DiagramSmurf] ------- Adjacency table -------");
+	for (const auto &it : adjacencyList) {
+		std::string states = {};
+		for (const auto &state : it.second) {
+			states.append(state->getName());
+			states.append(" ");
+		}
+		bringauto::logging::Logger::logDebug("[DiagramSmurf] {} :\t{}", it.first->getName(), states);
+	}
+	
 }
 }

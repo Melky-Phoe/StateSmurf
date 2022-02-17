@@ -21,7 +21,7 @@ public:
 	 * Constructor
 	 * @param stateDiagram to search circuits in
 	 */
-	explicit CircuitFinder(diagram::StateDiagram stateDiagram);
+	explicit CircuitFinder(std::istream& srcFile);
 	~CircuitFinder() { free(blocked); blocked = nullptr;};
 	
 	/**
@@ -53,6 +53,8 @@ private:
 	 * @return index
 	 */
     static long getVertexIndex(const std::vector<std::shared_ptr<diagram::Vertex>>& vertexVector, const std::shared_ptr<diagram::Vertex>& vertex);
+	
+	void createAdjacencyList(std::istream& srcFile);
 	
 	/**
 	 * Adjacency list, set of possible destination vertexes for each vertex

@@ -14,20 +14,22 @@ protected:
 	void SetUp() override {
 		bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
 		bringauto::logging::Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
-		bringauto::logging::Logger::init({"StateTransitionTest", bringauto::logging::Logger::Verbosity::Info});
+		bringauto::logging::Logger::init({"StateTransitionTest", bringauto::logging::Logger::Verbosity::Debug});
 
-		diagram::StateDiagram stateGraph;
-		auto a = stateGraph.addVertex("A");
-		auto b = stateGraph.addVertex("B");
-		auto c = stateGraph.addVertex("C");
-		auto d = stateGraph.addVertex("D");
-		stateGraph.setEdge(a, b);
-		stateGraph.setEdge(b, c);
-		stateGraph.setEdge(c, d);
-		stateGraph.setEdge(a, d);
-		stateGraph.setEdge(a, a);
-		stateGraph.setEdge(d, a);
-		transition = std::make_shared<StateTransition>(stateGraph);
+		diagram::StateDiagram stateDiagram;
+		auto a = stateDiagram.addVertex("A");
+		auto b = stateDiagram.addVertex("B");
+		auto c = stateDiagram.addVertex("C");
+		auto d = stateDiagram.addVertex("D");
+		stateDiagram.setStartVertex(a);
+		stateDiagram.setStartVertex(b);
+		stateDiagram.setEdge(a, b);
+		stateDiagram.setEdge(b, c);
+		stateDiagram.setEdge(c, d);
+		stateDiagram.setEdge(a, d);
+		stateDiagram.setEdge(a, a);
+		stateDiagram.setEdge(d, a);
+		transition = std::make_shared<StateTransition>(stateDiagram);
 	}
 
 	void TearDown() override {

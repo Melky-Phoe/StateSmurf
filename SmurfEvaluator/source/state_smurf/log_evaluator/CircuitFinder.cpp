@@ -1,10 +1,12 @@
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
 #include <iostream>
+#include "state_smurf/log_evaluator/Filter.hpp"
+#include "state_smurf/log_evaluator/LineParser.hpp"
 
 namespace state_smurf::log_evaluator {
 
-    CircuitFinder::CircuitFinder(diagram::StateDiagram stateDiagram) : adjacencyList{
-		    stateDiagram.createAdjacencyList()} {
+    CircuitFinder::CircuitFinder(std::istream& srcFile) {
+	    createAdjacencyList(srcFile); // TODO open file
         numberOfVertexes = adjacencyList.size();
         blocked = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
 		blockMap.resize(numberOfVertexes);
@@ -14,7 +16,7 @@ namespace state_smurf::log_evaluator {
         for (auto & it : adjacencyList) {
             keys.push_back(it.first);
         }
-		startingVertexes = stateDiagram.getStartVertexes();
+		startingVertexes; // = TODO;
     }
 	
 	std::vector<std::vector<std::string>>  CircuitFinder::find() {
@@ -105,4 +107,16 @@ namespace state_smurf::log_evaluator {
 		visitedVertexes.pop_back();
         return found;
     }
+	
+	void CircuitFinder::createAdjacencyList(std::istream& srcFile) {
+		std::string line = Filter::findDiagramSmurfLog(srcFile);
+		auto tokens = LineParser::parseLine(line);
+		// nekolik neuzitecnych tokenu (cas), zatim je ignoruju
+		if (tokens[0] == "__START__") {
+		
+		} else {
+			//create matrix
+		}
+			// asi to predelam na indexy, nazvy jsou extremne narocny
+	}
 }

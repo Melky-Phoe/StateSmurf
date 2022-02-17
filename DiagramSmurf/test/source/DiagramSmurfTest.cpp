@@ -24,6 +24,12 @@ TEST_F(DiagramSmurfTest, notExistingState) {
 	EXPECT_FALSE(stateDiagram.changeStateByName("Invalid"));
 }
 
+TEST_F(DiagramSmurfTest, StartingVertex) {
+	EXPECT_FALSE(stateDiagram.changeStateByName("D"));
+	stateDiagram.setStartVertex(stateDiagram.findStateByName("D"));
+	EXPECT_TRUE(stateDiagram.changeStateByName("D"));
+}
+
 TEST_F(DiagramSmurfTest, invalidEdge) {
 	EXPECT_TRUE(stateDiagram.changeStateByName("B"));
 	EXPECT_FALSE(stateDiagram.changeStateByName("A"));    // edge in Oposite dirrection
