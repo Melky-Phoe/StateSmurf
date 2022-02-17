@@ -1,15 +1,15 @@
 #include <state_smurf/log_evaluator/LineParser.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 #include <iostream>
 
 namespace state_smurf::log_evaluator {
 
-std::vector<std::string> LineParser::parseLine(const std::string &line) {
+std::vector<std::string> LineParser::parseLine(std::string line) {
 	std::vector<std::string> tokens;
-	boost::split(tokens, line, boost::is_any_of(" "));
+	boost::trim(line);
+	boost::split(tokens, line, boost::is_any_of(" \t\n"));
 	return tokens;
 }
 

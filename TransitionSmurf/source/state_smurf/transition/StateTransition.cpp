@@ -44,7 +44,6 @@ bool StateTransition::inState(const std::string &stateName) {
 void StateTransition::printAdjacencyList() {
 	auto adjacencyList = _stateGraph.getAdjacencyList();
 	
-	bringauto::logging::Logger::logDebug("[DiagramSmurf] ------- Adjacency table -------");
 	for (const auto &it : adjacencyList) {
 		std::string states = {};
 		for (const auto &state : it.second) {

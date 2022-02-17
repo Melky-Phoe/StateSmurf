@@ -36,7 +36,7 @@ private:
 	 * Vertexes are unblocked when circuit containing them is found
 	 * @param vertex
 	 */
-    void unblock(const std::shared_ptr<diagram::Vertex>& vertex);
+    void unblock(const int& vertex);
 
 	/**
 	 * Checks given vertex's adjacent Vertexes, if any is startOfCircuit (bottom on stack), returns true
@@ -44,28 +44,26 @@ private:
 	 * @param vertex
 	 * @return true if circuit found
 	 */
-    bool circuit(const std::shared_ptr<diagram::Vertex>& vertex);
+    bool circuit(const int& vertex);
 
 	/**
-	 * Returns vertex's index in given array (vector)
-	 * @param vertexVector array where to look for vertex
-	 * @param vertex that's index is wanted
-	 * @return index
+	 * Creates adjacency matrix from [DiagramSmurf] logs in srcFile
+	 * @param srcFile .log file input stream
 	 */
-    static long getVertexIndex(const std::vector<std::shared_ptr<diagram::Vertex>>& vertexVector, const std::shared_ptr<diagram::Vertex>& vertex);
-	
-	void createAdjacencyList(std::istream& srcFile);
+	void createAdjacencyMatrix(std::istream& srcFile);
+
+	std::vector<std::string> stateNames;
 	
 	/**
-	 * Adjacency list, set of possible destination vertexes for each vertex
-	 * TODO odkaz, rozdil mezi List a Matrix (matrix asi nerychlejsi) https://www.geeksforgeeks.org/comparison-between-adjacency-list-and-adjacency-matrix-representation-of-graph/#:~:text=A%20graph%20can%20be%20represented,which%20this%20node%20is%20connected.
+	 * Adjacency matrix is set of possible destination vertexes for each vertex
 	 */
-    std::map<std::shared_ptr<diagram::Vertex>, std::vector<std::shared_ptr<diagram::Vertex>>> adjacencyList;
+	std::vector<bool*> adjacencyMatrix;
 	
 	/**
-	 * Vector of all vertexes ordered, used for indexing in other vectors
+	 * matrix of vertexes that will be unblocked if a vertex is unblocked
+	 * For more info check Johnson's algorithm principle
 	 */
-    std::vector<std::shared_ptr<diagram::Vertex>> keys;
+	std::vector<bool*> blockMatrix;
 	
 	/**
 	 * List of vertexes that will be unblocked if a vertex is unblocked
@@ -78,24 +76,24 @@ private:
 	 * has stack-like behavior, but has to be iterated-over, therefore is implemented as vector
 	 * If circuit() finds startVertex, all vertexes in vector are part of a new 4circuit
 	 */
-    std::vector<std::shared_ptr<diagram::Vertex>> visitedVertexes;
+    std::vector<int> visitedVertexes;
 	
 	/**
 	 * total vertexes in state diagram
 	 */
-    ulong numberOfVertexes;
+    int numberOfVertexes;
 	
 	/**
 	 * list of all startingVertexes of state diagram
 	 * find() starts searching for cycles vertexes of this vector
 	 * after every circuit is found, adjacent vertexes are appended
 	 */
-	std::vector<std::shared_ptr<diagram::Vertex>> startingVertexes;
+	std::vector<int> startingVertexes;
 	
 	/**
 	 * Vertex that circuit() was originally called on, serve for comparing to find end of circuit
 	 */
-    std::shared_ptr<diagram::Vertex> startVertex;
+    int startVertex;
 	
 	/**
 	 * Array indicating if Vertex on given index is blocked.

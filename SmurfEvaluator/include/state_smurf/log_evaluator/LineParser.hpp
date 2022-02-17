@@ -20,7 +20,7 @@ public:
 	 * @param line string
 	 * @return vector containing tokens
 	 */
-	static std::vector<std::string> parseLine(const std::string &line);
+	static std::vector<std::string> parseLine(std::string line);
 
 	/**
 	 * Gets destination state from TransitionSmurf Log

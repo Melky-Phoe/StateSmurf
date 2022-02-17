@@ -13,10 +13,12 @@ namespace state_smurf::log_evaluator {
 	
 	CircuitAggregator::CircuitAggregator(std::istream &sourceLogFile) {
 		_transitionLogVector = Filter::createTransitionLogVector(sourceLogFile);
-		state_smurf::log_evaluator::CircuitFinder CF(state_smurf::createDiagram());
+		sourceLogFile.clear();
+		sourceLogFile.seekg(std::ios::beg);
+		state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
 		_circuitList = CF.find();
 		/* DEBUG print
-		for (const auto& cir : circuits) {
+		for (const auto& cir : _circuitList) {
 			for (const auto& n: cir) {
 				std::cout<< n << " ";
 			}
