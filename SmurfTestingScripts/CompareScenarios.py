@@ -1,4 +1,5 @@
 import os.path
+import time
 import signal
 import subprocess
 from pathlib import Path
@@ -48,8 +49,8 @@ def run_scenarios():
                 process.wait(timeout=default_timeout)
         except subprocess.TimeoutExpired:
             print("Timed out")
-            process.send_signal(signal.SIGINT)
-            process.wait(timeout=kill_timeout)
+            process.send_signal(signal.SIGTERM)
+            time.sleep(kill_timeout)
             process.send_signal(signal.SIGKILL)
         print("..... Done")
 
