@@ -129,21 +129,24 @@ namespace state_smurf::log_evaluator {
 			stateNames.push_back(adjacencyTokens[i+1][ORIGIN_STATE_INDEX]);
 			namesMap[adjacencyTokens[i+1][ORIGIN_STATE_INDEX]] = i;
 		}
-		if (adjacencyTokens[0][ORIGIN_STATE_INDEX] == "__START__") {
-			for (int j = DEST_STATES_INDEX; j < adjacencyTokens[0].size(); ++j) {
-				// adjacency matrix line i, index of state on index j is true
-				startingVertexes.push_back(namesMap[adjacencyTokens[0][j]]);
+		for (int i = 0; i < numberOfVertexes; ++i) {
+			if (adjacencyTokens[i][ORIGIN_STATE_INDEX] == "__START__") {    // different approach for starting vertexes
+				for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
+					// adjacency matrix line i, index of state on index j is true
+					startingVertexes.push_back(namesMap[adjacencyTokens[i][j]]);
+				}
+				i++;
+			} else {
+				adjacencyMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
+				for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
+					// adjacency matrix line i, index of state on index j is true
+					std::string state = adjacencyTokens[i][j];
+					adjacencyMatrix[i][namesMap[state]] = true;
+				}
 			}
-		} else {
-			std::cout << "ERROR: no starting vertexes" << std::endl;
 		}
-		for (int i = 0; i < numberOfVertexes; ++i) {  // Not including 1st line containing starting vertexes
-			adjacencyMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
-			for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i+1].size(); ++j) {
-				// adjacency matrix line i, index of state on index j is true
-				std::string state = adjacencyTokens[i+1][j];
-				adjacencyMatrix[i][namesMap[state]] = true;
-			}
+		if (startingVertexes.empty()) {
+			std::cerr << "ERROR: no starting vertexes" << std::endl;
 		}
 
 	}
