@@ -22,7 +22,7 @@ public:
 	 * @param stateDiagram to search circuits in
 	 */
 	explicit CircuitFinder(std::istream& srcFile);
-	~CircuitFinder() { free(blocked); blocked = nullptr;};
+	~CircuitFinder();
 	
 	/**
 	 * Find all elementary non-duplicit circuits in state diagram
@@ -50,7 +50,7 @@ private:
 	 * Creates adjacency matrix from [DiagramSmurf] logs in srcFile
 	 * @param srcFile .log file input stream
 	 */
-	void createAdjacencyMatrix(std::istream& srcFile);
+	bool createAdjacencyMatrix(std::istream& srcFile);
 
 	std::vector<std::string> stateNames;
 	
@@ -81,7 +81,7 @@ private:
 	/**
 	 * total vertexes in state diagram
 	 */
-    int numberOfVertexes;
+    int numberOfVertexes {0};
 	
 	/**
 	 * list of all startingVertexes of state diagram
@@ -93,13 +93,13 @@ private:
 	/**
 	 * Vertex that circuit() was originally called on, serve for comparing to find end of circuit
 	 */
-    int startVertex;
+    int startVertex {};
 	
 	/**
 	 * Array indicating if Vertex on given index is blocked.
 	 * Vertexes are blocked if they were already visited and They are unblocked when circuit is found
 	 */
-    bool *blocked;
+    bool *blocked {nullptr};
 	
 	/**
 	 * Vector of circuits found. Is returned by find() when all circuits were found

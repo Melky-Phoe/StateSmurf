@@ -82,7 +82,7 @@ def compare_outputs() -> bool:
         compared_file = os.path.join("output", scenario["name"] + ".log")
         return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file +
                                 " --compare " + compared_file +
-                                " > compare_out/" + scenario["name"])
+                                " > evaluator_output/" + scenario["name"])
         if return_code > 0:
             tests_passed = False
             print("WARNING: test didn't pass: ", scenario["name"])
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     setup()
     if not run_scenarios():
         exit_code = 2
-        print("WARNING: Some test have different transition logs, check \'<smurf_dir>/compare_out/\' for output")
+        print("WARNING: Some test have different transition logs, check \'<smurf_dir>/evaluator_output/\' for output")
     if args.create_etalons:
         print("Raw transition etalons were created in:", workDir + "/etalons/")
         print("Aggregated etalons were created in ", workDir + "/aggregated_etalons/")
