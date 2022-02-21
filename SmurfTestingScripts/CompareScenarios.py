@@ -1,17 +1,24 @@
 import os.path
+import signal
 import subprocess
 from pathlib import Path
 import sys
 import json
 import argparse
 
+# Time in second to timeout if timeout argument is not set
+default_timeout = 5*60
+# Time after SIGINT to send SIGKILL
+kill_timeout = 10
+
 
 def run_commands(key):
     for action in scenario_json[key]:
-        return_code = os.system(action)
-        print("'" + action + "' ended with exit code: ", return_code)
-        if return_code > 0:
-            return False
+        if action != "":
+            return_code = os.system(action)
+            print("'" + action + "' ended with exit code: ", return_code)
+            if return_code > 0:
+                return False
     return True
 
 
@@ -29,6 +36,7 @@ def tidy_up():
 
 
 def run_scenarios():
+    tests_passed = True
     for scenario in scenario_json["scenarios"]:
         print("Running test: ", scenario["name"], " .....")
         process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir)
@@ -37,13 +45,21 @@ def run_scenarios():
                 process.wait(timeout=scenario["timeout"])
             else:
                 # setting default timeout to 5 minutes
-                process.wait(timeout=5 * 60)
+                process.wait(timeout=default_timeout)
         except subprocess.TimeoutExpired:
             print("Timed out")
-            process.kill()
-            # TODO interrupt, then kill
+            process.send_signal(signal.SIGINT)
+            process.wait(timeout=kill_timeout)
+            process.send_signal(signal.SIGKILL)
         print("..... Done")
+
+        if not aggregate_circuits_and_compare(scenario["name"]):
+            tests_passed = False
+
+        # TODO Honza rikal at porovnavam rovnou, je to hezci nez na konci
+        # chci nechavat RAW vystup?? Neni to 2x prehledne, ale zatim ano, muzu jeste najit chybu v circuitech
         tidy_up()
+    return tests_passed
 
 
 def check_executable(path_to_executable) -> bool:
@@ -57,6 +73,7 @@ def check_executable(path_to_executable) -> bool:
     return True
 
 
+"""
 def compare_outputs() -> bool:
     tests_passed = True
     for scenario in scenario_json["scenarios"]:
@@ -69,6 +86,7 @@ def compare_outputs() -> bool:
             tests_passed = False
             print("WARNING: test didn't pass: ", scenario["name"])
     return tests_passed
+    """
 
 
 def create_command_string(scenario: dict) -> str:
@@ -82,6 +100,26 @@ def create_command_string(scenario: dict) -> str:
     return command
 
 
+def aggregate_circuits_and_compare(filename: str) -> bool:
+    if args.create_etalons:
+        file = os.path.join("etalons", filename + ".log")
+        target_file = os.path.join("aggregated_etalons", filename)
+        return_code = os.system(evaluator_bin_path + " --aggregate " + file + " --target " + target_file)
+        if return_code > 0:
+            print("WARNING: Couldn't aggregate etalon file: ", filename)
+            return False
+    else:
+        etalon_file = os.path.join("aggregated_etalons", filename)
+        compare_file = os.path.join("output", filename + ".log")
+        target_file = os.path.join("aggregated_output", filename)
+        return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file + " --compare " + compare_file +
+                                " --target " + target_file)
+        if return_code > 0:
+            print("WARNING: test didn't pass: ", filename)
+            return False
+    return True
+
+
 def cleanup():
     run_commands("cleanup")
 
@@ -90,7 +128,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
     parser.add_argument("-e", "--executable", type=str, required=True, help="Path to executable")
-    parser.add_argument("-E", "--evaluator", type=str, default="", help="Path to SmurfEvaluator binary")
+    parser.add_argument("--evaluator", type=str, required=True, help="Path to SmurfEvaluator binary")
     parser.add_argument("-C", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
 
@@ -101,12 +139,9 @@ if __name__ == "__main__":
 
     if not check_executable(executable_path):
         exit(1)
-    if not args.create_etalons:
-        if evaluator_bin_path == "":
-            print("Path to SmurfEvaluator executable needed, pass in --evaluator argument ")
-            exit(2)
-        if not check_executable(evaluator_bin_path):
-            exit(1)
+
+    if not check_executable(evaluator_bin_path):
+        exit(1)
 
     if not os.path.isfile(args.scenario):
         print("ERROR: File given by argument --scenario is not a valid file: " + args.scenario)
@@ -125,17 +160,19 @@ if __name__ == "__main__":
     workDir = os.path.realpath(workDir)
     os.chdir(workDir)
     Path("./etalons/").mkdir(parents=True, exist_ok=True)
+    Path("./aggregated_etalons/").mkdir(parents=True, exist_ok=True)
     Path("./output/").mkdir(parents=True, exist_ok=True)
-    Path("./compare_out/").mkdir(parents=True, exist_ok=True)
+    Path("./aggregated_output/").mkdir(parents=True, exist_ok=True)
+    Path("./evaluator_output/").mkdir(parents=True, exist_ok=True)
 
     exit_code = 0
     setup()
-    run_scenarios()
-    if not args.create_etalons:
-        if not compare_outputs():
-            exit_code = 2
-            print("WARNING: Some test have different transition logs, check \'<smurf_dir>/compare_out/\' for output")
-
+    if not run_scenarios():
+        exit_code = 2
+        print("WARNING: Some test have different transition logs, check \'<smurf_dir>/compare_out/\' for output")
+    if args.create_etalons:
+        print("Raw transition etalons were created in:", workDir + "/etalons/")
+        print("Aggregated etalons were created in ", workDir + "/aggregated_etalons/")
     cleanup()
 
     exit(exit_code)
