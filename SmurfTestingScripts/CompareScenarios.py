@@ -173,7 +173,7 @@ if __name__ == "__main__":
         print("WARNING: Some test have different transition logs, check \'<smurf_dir>/evaluator_output/\' for output")
     if args.create_etalons:
         print("Raw transition etalons were created in:", workDir + "/etalons/")
-        print("Aggregated etalons were created in ", workDir + "/aggregated_etalons/")
+        print("aggregated etalons were created in ", workDir + "/aggregated_etalons/")
     cleanup()
 
     exit(exit_code)

@@ -17,13 +17,6 @@ namespace state_smurf::log_evaluator {
 		sourceLogFile.seekg(std::ios::beg);
 		state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
 		_circuitList = CF.find();
-		/* DEBUG print
-		for (const auto& cir : _circuitList) {
-			for (const auto& n: cir) {
-				std::cout<< n << " ";
-			}
-			std::cout<< std::endl;
-		}*/
 	}
 	
 	void CircuitAggregator::createAggregatedFile(const std::string& newFileName) {
@@ -40,7 +33,7 @@ namespace state_smurf::log_evaluator {
 			long nextCircuit = getCircuit();
 			if (nextCircuit == END_FOUND) {
 				if (LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
-					targetFile << _transitionLogVector[_transitionIndex] << " -- Aggregated" << std::endl;
+					targetFile << _transitionLogVector[_transitionIndex] << " -- aggregated" << std::endl;
 				}
 				if (!handleEnd(currentCircuit)) {
 					while (_transitionIndex < _transitionLogVector.size() && !LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {

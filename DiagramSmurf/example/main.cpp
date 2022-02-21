@@ -6,6 +6,7 @@ int main() {
     auto b = stateGraph.addVertex("B");
     auto c = stateGraph.addVertex("C");
     stateGraph.addVertex("D");
+	stateGraph.setStartVertex(a);
     stateGraph.setEdge(a, b);
     stateGraph.setEdge(b, c);
     stateGraph.changeStateByName("A");

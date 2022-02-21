@@ -14,6 +14,7 @@ Following dependencies must be installed on the host system
 - C++20
 - [cmlib](https://github.com/cmakelib/cmakelib)
 - [cxxopts](https://github.com/jarro2783/cxxopts)
+- Boost [>= 1.71]
 
 ## Build
 
@@ -32,7 +33,7 @@ Comparing runs:
 ### arguments
 - **-e | --etalon**: Path to EtalonAggregated file.
 - **-c | --compare**: Path to .log file which we want to compare with etalon
-- **-a | --create-circuits**: Path to .log file to create AggregatedFile from
+- **-a | --aggregate**: Path to .log file to create AggregatedFile from
 - **-t | --target**: Target AggregatedFile name
 
 
