@@ -5,12 +5,13 @@
 
 namespace state_smurf::log_evaluator {
 /**
- * Class used for aggregating Logs of application using TransitionSmurf into Circuits
+ * Class used for aggregating TransitionSmurf Logs into Circuits
+ * Circuit is set of Vertexes that can appear in loops, based od State Diagram
  */
 class CircuitAggregator {
 public:
 	/**
-	 * Constructor, filters non-TransitionSmurf logs out of sourceLogFile and finds circuits of state diagram in StateDiagramDefinition.hpp
+	 * Constructor, filters non-TransitionSmurf logs out of sourceLogFile and finds circuits of state diagram
 	 * @param sourceLogFile
 	 */
 	explicit CircuitAggregator(std::istream& sourceLogFile);
@@ -23,7 +24,7 @@ public:
 
 private:
 	/**
-	 * Finds longest possible circuit in file
+	 * Finds longest possible circuit in file starting with current vertex
 	 * @return index of circuit
 	 */
 	long getCircuit();
@@ -37,7 +38,7 @@ private:
 	bool handleEnd(long currentCircuit);
 	
 	/**
-	 * If we find multiple possible Circuits, we have to take the longest
+	 * If multiple possible Circuits are found, the longest is taken
 	 * @param circuitFoundIndexes indexes of circuits that are possible
 	 * @return index of longest circuit
 	 */

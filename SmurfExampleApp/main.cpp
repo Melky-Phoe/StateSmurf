@@ -17,6 +17,8 @@ state_smurf::diagram::StateDiagram createStateDiagram() {
 	auto idle = stateGraph.addVertex("idle");
 	auto drive = stateGraph.addVertex("drive");
 	auto inStop = stateGraph.addVertex("inStop");
+	
+	stateGraph.setStartVertex(disconnected);
 
 	/// Setting Edges, from each state to every state it can transition
 	stateGraph.setEdge(disconnected, idle);
@@ -40,7 +42,7 @@ int main(int argc, char **argv) {
 	namespace log = bringauto::logging;
 	log::Logger::addSink<log::ConsoleSink>();
 	log::Logger::addSink<log::FileSink>({"./","sampleApp.log"});
-	log::Logger::init({"sampleApp", log::Logger::Verbosity::Info});
+	log::Logger::init({"sampleApp", log::Logger::Verbosity::Debug});
 
 	/// Creating State Graph. More in function
     state_smurf::diagram::StateDiagram stateGraph = createStateDiagram();
@@ -48,6 +50,7 @@ int main(int argc, char **argv) {
 	/// Transition class takes StateGraph in constructor, on which it is working on
 	std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(stateGraph);
 
+	transitions->goToState("disconnected");
 	/// Passing transitions as argument
 	connect(transitions);
 

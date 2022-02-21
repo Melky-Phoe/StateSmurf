@@ -1,6 +1,5 @@
 #include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
-#include <state_smurf/StateDiagramDefinition.hpp>
 #include <state_smurf/log_evaluator/Filter.hpp>
 #include <state_smurf/log_evaluator/LineParser.hpp>
 

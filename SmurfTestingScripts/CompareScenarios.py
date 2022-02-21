@@ -74,22 +74,6 @@ def check_executable(path_to_executable) -> bool:
     return True
 
 
-"""
-def compare_outputs() -> bool:
-    tests_passed = True
-    for scenario in scenario_json["scenarios"]:
-        etalon_file = os.path.join("etalons", scenario["name"] + ".log")
-        compared_file = os.path.join("output", scenario["name"] + ".log")
-        return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file +
-                                " --compare " + compared_file +
-                                " > evaluator_output/" + scenario["name"])
-        if return_code > 0:
-            tests_passed = False
-            print("WARNING: test didn't pass: ", scenario["name"])
-    return tests_passed
-    """
-
-
 def create_command_string(scenario: dict) -> str:
     command = executable_path + " "
     for argument in scenario["arguments"]:

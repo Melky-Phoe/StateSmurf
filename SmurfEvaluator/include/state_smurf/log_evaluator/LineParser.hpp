@@ -4,7 +4,9 @@
 #include <vector>
 
 namespace state_smurf::log_evaluator {
-
+/**
+ * Helper functions for parsing lines into tokens. Uses Boost library
+ */
 class LineParser {
 public:
 	/**

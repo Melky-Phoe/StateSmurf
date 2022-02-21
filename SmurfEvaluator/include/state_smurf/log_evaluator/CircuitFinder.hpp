@@ -64,13 +64,7 @@ private:
 	 * For more info check Johnson's algorithm principle
 	 */
 	std::vector<bool*> blockMatrix;
-	
-	/**
-	 * List of vertexes that will be unblocked if a vertex is unblocked
-	 * For more info check Johnson's algorithm principle
-	 */
-    std::vector<std::vector<std::shared_ptr<diagram::Vertex>>> blockMap;
-	
+
 	/**
 	 * Vector of visited vertexes by circuit()
 	 * has stack-like behavior, but has to be iterated-over, therefore is implemented as vector

@@ -17,6 +17,12 @@ public:
      */
 	static std::string findNextTransitionLog(std::istream& srcFile);
 	
+	/**
+	 * Finds log containing prefix [DiagramSmurf] and returns whole line
+	 * all other logs are filtered out. If [TransitionSmurf] log is found, returns empty string
+	 * @param srcFile .log file
+	 * @return line as string
+	 */
 	static std::string findDiagramSmurfLog(std::istream& srcFile);
 
     /**

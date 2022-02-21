@@ -1,5 +1,5 @@
 # TransitionSmurf
-Library for moving on DiagramSmurf and logging transitions
+Library for moving on DiagramSmurf and logging transitions. Logs are used for integration testing of applications
 
 ## Requirements
 
@@ -8,8 +8,7 @@ Following dependencies must be installed on the host system
 - cmake [>= 3.20]
 - C++20
 - [cmlib](https://github.com/cmakelib/cmakelib)
-- DiagramSmurf library
-    * must be in same directory as TransitionSmurf 
+- DiagramSmurf
 
 ## Build
 
