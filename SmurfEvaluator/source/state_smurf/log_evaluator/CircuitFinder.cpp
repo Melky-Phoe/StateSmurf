@@ -118,7 +118,7 @@ namespace state_smurf::log_evaluator {
 			line = Filter::findDiagramSmurfLog(srcFile);
 		}
 		
-		numberOfVertexes = adjacencyTokens.size()-1;
+		numberOfVertexes = adjacencyTokens.size();
 		if (numberOfVertexes < 1) {
 			std::cerr << "ERROR: Invalid state diagram" << std::endl;
 			exit(1);
@@ -126,8 +126,8 @@ namespace state_smurf::log_evaluator {
 		adjacencyMatrix.resize(numberOfVertexes);
 		
 		for (int i = 0; i < numberOfVertexes; ++i) {
-			stateNames.push_back(adjacencyTokens[i+1][ORIGIN_STATE_INDEX]);
-			namesMap[adjacencyTokens[i+1][ORIGIN_STATE_INDEX]] = i;
+			stateNames.push_back(adjacencyTokens[i][ORIGIN_STATE_INDEX]);
+			namesMap[adjacencyTokens[i][ORIGIN_STATE_INDEX]] = i;
 		}
 		for (int i = 0; i < numberOfVertexes; ++i) {
 			if (adjacencyTokens[i][ORIGIN_STATE_INDEX] == "__START__") {    // different approach for starting vertexes
@@ -135,14 +135,12 @@ namespace state_smurf::log_evaluator {
 					// adjacency matrix line i, index of state on index j is true
 					startingVertexes.push_back(namesMap[adjacencyTokens[i][j]]);
 				}
-				i++;
-			} else {
-				adjacencyMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
-				for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
-					// adjacency matrix line i, index of state on index j is true
-					std::string state = adjacencyTokens[i][j];
-					adjacencyMatrix[i][namesMap[state]] = true;
-				}
+			}
+			adjacencyMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
+			for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
+				// adjacency matrix line i, index of state on index j is true
+				std::string state = adjacencyTokens[i][j];
+				adjacencyMatrix[i][namesMap[state]] = true;
 			}
 		}
 		if (startingVertexes.empty()) {
