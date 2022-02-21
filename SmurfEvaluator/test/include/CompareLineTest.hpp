@@ -7,9 +7,9 @@
 class CompareLineTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        etalon.open("../../test/testLogs/compareLines/etalon.log", std::ios_base::in);
+        etalon.open("testLogs/compareLines/etalon.log", std::ios_base::in);
         if (!etalon.is_open()) {
-            std::cerr << "Unable to open ../../test/testLogs/compareLines/etalon.log" << std::endl;
+            std::cerr << "Unable to open testLogs/compareLines/etalon.log" << std::endl;
         }
     }
     void TearDown() override {

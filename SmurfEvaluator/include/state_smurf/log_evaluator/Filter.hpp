@@ -16,6 +16,8 @@ public:
      * @return line as string
      */
 	static std::string findNextTransitionLog(std::istream& srcFile);
+	
+	static std::string findDiagramSmurfLog(std::istream& srcFile);
 
     /**
      * Filters .log file and creates vector of [TransitionSmurf] logs

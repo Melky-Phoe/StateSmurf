@@ -25,5 +25,17 @@ std::vector<std::string> Filter::createTransitionLogVector(std::istream &srcFile
     }
     return filteredLogs;
 }
-
+	
+	std::string Filter::findDiagramSmurfLog(std::istream &srcFile) {
+		std::string line;
+		for (int i = 0; std::getline(srcFile, line); i++) {
+			if (boost::find_first(line,"[DiagramSmurf]")) {
+				return line;
+			} else if (boost::find_first(line,"[TransitionSmurf]")) {
+				return "";
+			}
+		}
+		return "";
+	}
+	
 }

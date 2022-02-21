@@ -12,3 +12,7 @@ TARGET_INCLUDE_DIRECTORIES(smurf_evaluator_tests PUBLIC "${CMAKE_CURRENT_LIST_DI
 TARGET_LINK_LIBRARIES(smurf_evaluator_tests PUBLIC ${GTEST_LIBRARIES} pthread SmurfEvaluatorLib)
 INCLUDE(GoogleTest)
 GTEST_DISCOVER_TESTS(smurf_evaluator_tests)
+
+ADD_CUSTOM_COMMAND(TARGET smurf_evaluator_tests PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_LIST_DIR}/testLogs ${CMAKE_CURRENT_BINARY_DIR}/testLogs)

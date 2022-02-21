@@ -12,6 +12,8 @@ protected:
 		auto b = stateDiagram.addVertex("B");
 		auto c = stateDiagram.addVertex("C");
 		auto d = stateDiagram.addVertex("D");
+		stateDiagram.setStartVertex(a);
+		stateDiagram.setStartVertex(b);
 		stateDiagram.setEdge(a, b);
 		stateDiagram.setEdge(b, c);
 		stateDiagram.setEdge(c, d);

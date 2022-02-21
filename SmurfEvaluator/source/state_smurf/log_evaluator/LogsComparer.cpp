@@ -1,19 +1,25 @@
 #include <state_smurf/log_evaluator/LogsComparer.hpp>
-#include <state_smurf/log_evaluator/Filter.hpp>
-
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include <state_smurf/log_evaluator/LineParser.hpp>
 
 #include <iostream>
 
 namespace state_smurf::log_evaluator {
 
-bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
-    std::vector<std::string> etalonLogs = Filter::createTransitionLogVector(etalon);
+bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile) {
+	// Loading logs of etalonFile to vector
+    std::vector<std::string> etalonLogs;
+	std::string line = {};
+	getline(etalonFile, line);
+	while (etalonFile) {
+		etalonLogs.push_back(line);
+		getline(etalonFile, line);
+	}
     if (!validateEtalon(etalonLogs)) {
         return false;
     }
-    std::string comparedLog = Filter::findNextTransitionLog(compared);
+	
+	std::string comparedLog = {};
+	std::getline(comparedFile, comparedLog);
     bool filesAreSame = true;
     bool runsAreSame = true;
 
@@ -21,34 +27,35 @@ bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
         std::cout << "ERROR: compared Log file isn't starting with Start of Run log" << std::endl;
         return false;
     }
-
+	
     for (int runCount = 1; isStartOfRunLog(comparedLog); ++runCount) {
         std::cout << "Run number " << runCount << ":" << std::endl;
 
         for (int i = 0; i < etalonLogs.size(); ++i) {
-            if (!compareLines(etalonLogs[i], comparedLog)) {
+            if (!LineParser::compareLines(etalonLogs[i], comparedLog)) {
                 runsAreSame = false;
 
-                // Compared file is shorter than Etalon, we need to finish comapring Etalon file
+                // Compared file is shorter than Etalon, we need to finish comparing Etalon file
                 if (isStartOfRunLog(comparedLog)) {
                     if (isStartOfRunLog(etalonLogs[i])) {
                         std::cout << "ERROR: Start of Run is different, are you comparing same application?" << std::endl;
                         return false;
                     }
                     for (i += 1; i < etalonLogs.size(); ++i) {
-                        compareLines(etalonLogs[i], "");
+	                    LineParser::compareLines(etalonLogs[i], "");
                     }
                     break;
                 }
             }
-
-            comparedLog = Filter::findNextTransitionLog(compared);
+	
+	        getline(comparedFile, comparedLog);
+            //comparedLog = Filter::findNextTransitionLog(comparedFile);
         }
         // Etalon run is shorter than compared, needs catching up
-        while (!isStartOfRunLog(comparedLog) && !comparedLog.empty()) {
+        while (!isStartOfRunLog(comparedLog) && comparedFile) {
             runsAreSame = false;
-            compareLines("", comparedLog);
-            comparedLog = Filter::findNextTransitionLog(compared);
+	        LineParser::compareLines("", comparedLog);
+	        getline(comparedFile, comparedLog);
         }
         if (runsAreSame) {
             std::cout << "\tOK" << std::endl;
@@ -63,33 +70,14 @@ bool LogsComparer::compareFiles(std::istream &etalon, std::istream &compared) {
     return filesAreSame;
 }
 
-std::vector<std::string> LogsComparer::parseLine( const std::string& line) {
-    std::vector<std::string> tokens;
-    boost::split(tokens, line, boost::is_any_of(" "));
-    return tokens;
-}
-
-bool LogsComparer::compareLines(const std::string& etalon, const std::string& compared) {
-    std::vector<std::string> etalonTokens = parseLine(etalon);
-    std::vector<std::string> comparedTokens = parseLine(compared);
-
-
-    for (int i = static_cast<int>(LogTokensIndexes::appName); i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
-        if (etalonTokens[i] != comparedTokens[i]) {
-            std::cout << "Logs aren't equal:\n"
-                         "  Etalon: " << etalon << std::endl <<
-                         "  Compared: " << compared << std::endl;
-            return false;
-
-        }
-    }
-    return true;
-}
-
 bool LogsComparer::isStartOfRunLog(const std::string &line) {
-    if (line.ends_with("Start of Run")) {
+    if (line.ends_with("Start of Run -- Aggregated")) {
         return true;
     } else {
+	    if (line.ends_with("Start of Run")) {
+			std::cerr << "ERROR: file was not aggregated to circuits, start application with --create-circuits option\n"
+						 "Created file then use as etalon. For more info read README" << std::endl;
+		}
         return false;
     }
 }
@@ -97,7 +85,7 @@ bool LogsComparer::isStartOfRunLog(const std::string &line) {
 bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
     if (!etalonLogs.empty()) {
         if (!isStartOfRunLog(etalonLogs[0])) {
-            std::cout << "WARNING: Etalon doesn't contain \"Start of Run\" log" << std::endl;
+            std::cerr << "ERROR: Etalon doesn't start with \"Start of Run -- Aggregated\" log" << std::endl;
             return false;
         }
         for (int i = 1; i < etalonLogs.size(); ++i) {
@@ -107,9 +95,9 @@ bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
                 return false;
             }
 
-            std::vector<std::string> etalonTokens = parseLine(etalonLogs[i]);
+            std::vector<std::string> etalonTokens = LineParser::parseLine(etalonLogs[i]);
 
-            if (etalonTokens[static_cast<int>(LogTokensIndexes::verbosity)] == "[warning]") {
+            if (etalonTokens[static_cast<int>(LineParser::LogTokensIndexes::verbosity)] == "[warning]") {
                 std::cout << "WARNING: there is unsuccessful transition in etalon." << std::endl;
             }
 

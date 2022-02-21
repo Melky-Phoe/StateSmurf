@@ -24,10 +24,16 @@ make -j 8
 ```
 
 ## Run
-`./smurfEvaluator -e <path_to_etalon> -c <path_to_compared>`
+Creating aggregated etalon: 
+`./smurfEvaluator --aggregate <path> [--target <new_file_name>]`
+
+Comparing runs:
+`./smurfEvaluator -e <path_to_etalon> -c <path_to_compared> [--target <new_file_name>]`
 ### arguments
-- **-e | --etalon**: path to etalon file.
-- **-c | --compare**: path to file that will be compared.
+- **-e | --etalon**: Path to EtalonAggregated file.
+- **-c | --compare**: Path to .log file which we want to compare with etalon
+- **-a | --create-circuits**: Path to .log file to create AggregatedFile from
+- **-t | --target**: Target AggregatedFile name
 
 
 ### Tests
