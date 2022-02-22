@@ -114,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
     parser.add_argument("-e", "--executable", type=str, required=True, help="Path to executable")
     parser.add_argument("--evaluator", type=str, required=True, help="Path to SmurfEvaluator binary")
-    parser.add_argument("-C", "--create-etalons", dest="create_etalons", action="store_true",
+    parser.add_argument("-c", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
 
     args = parser.parse_args()

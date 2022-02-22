@@ -1,0 +1,21 @@
+{
+  "setup" : [ "echo \"Start testing\"" ],
+  "between_runs" : [ "echo \"action between runs\"" ],
+  "scenarios" : [
+    {
+      "name" : "allOk",
+      "timeout" : 15,
+      "arguments" : {
+        "--speed" : "10"
+      }
+    },
+    {
+      "name" : "timeout",
+      "timeout" : 5,
+      "arguments" : {
+        "--speed" : "10"
+      }
+    }
+  ],
+  "cleanup" : [ "echo \"End testing\"" ]
+}

@@ -1,5 +1,8 @@
 # TransitionSmurf
-Library for moving on DiagramSmurf and logging transitions. Logs are used for integration testing of applications
+Library for moving on DiagramSmurf and logging transitions. Logs are used for integration testing of applications.
+
+State transition logs have `[TransitionSmurf]` prefix.
+On initialization, TransitionSmurf logs State Transition Table that is used. These logs have `[DiagramSmurf]` prefix.
 
 ## Requirements
 
