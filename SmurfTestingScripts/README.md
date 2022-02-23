@@ -2,8 +2,8 @@
 Python script used for automated StateSmurf testing.
 
 # CompareScenarios
-Script runs test-scenarios based on scenario.json file and compares each run's State transitions using [SmurfEvaluator](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfEvaluator)
-
+Script runs test-scenarios based on scenario.json file and compares each run's State transitions using [SmurfEvaluator](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfEvaluator).  
+Test is successful when state transitions are same. Script doesn't consider exit code of application run.
 
 
 ## Usage
