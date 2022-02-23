@@ -71,7 +71,7 @@ bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &compared
 }
 
 bool LogsComparer::isStartOfRunLog(const std::string &line) {
-    if (line.ends_with("Start of Run -- aggregated")) {
+    if (line.ends_with("Start of Run -- Aggregated")) {
         return true;
     } else {
 	    if (line.ends_with("Start of Run")) {
@@ -85,7 +85,7 @@ bool LogsComparer::isStartOfRunLog(const std::string &line) {
 bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
     if (!etalonLogs.empty()) {
         if (!isStartOfRunLog(etalonLogs[0])) {
-            std::cerr << "ERROR: Etalon doesn't start with \"Start of Run -- aggregated\" log" << std::endl;
+            std::cerr << "ERROR: Etalon doesn't start with \"Start of Run -- Aggregated\" log" << std::endl;
             return false;
         }
         for (int i = 1; i < etalonLogs.size(); ++i) {

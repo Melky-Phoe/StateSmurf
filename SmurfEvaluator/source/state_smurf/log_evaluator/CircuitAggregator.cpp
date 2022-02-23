@@ -33,7 +33,7 @@ namespace state_smurf::log_evaluator {
 			long nextCircuit = getCircuit();
 			if (nextCircuit == END_FOUND) {
 				if (LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
-					targetFile << _transitionLogVector[_transitionIndex] << " -- aggregated" << std::endl;
+					targetFile << _transitionLogVector[_transitionIndex] << " -- Aggregated" << std::endl;
 				}
 				if (!handleEnd(currentCircuit)) {
 					while (_transitionIndex < _transitionLogVector.size() && !LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
