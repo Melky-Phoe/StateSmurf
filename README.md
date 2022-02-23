@@ -1,4 +1,4 @@
-# DiagramSmurf
+# StateSmurf
 DiagramSmurf is a framework for Integration testing of systems modelled on Finite State Machine.
 
 ## Components
@@ -13,4 +13,4 @@ DiagramSmurf is a framework for Integration testing of systems modelled on Finit
 
 
 ## Usage
-Example usage of DiagramSmurf and TransitionSmurf is described in [SmurfExampleApp](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfExampleApp)
+Example usage of StateSmurf framework is described in [SmurfExampleApp](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfExampleApp)

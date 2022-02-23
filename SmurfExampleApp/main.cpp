@@ -7,6 +7,7 @@
 #include <bringauto/logging/FileSink.hpp>
 
 #include <string>
+#include <thread>
 
 void connect(const std::shared_ptr<state_smurf::transition::StateTransition>& transitions) {
 	transitions->goToState("idle");
@@ -69,12 +70,12 @@ int main(int argc, char **argv) {
 	
 	for (int i = 0; i < targetSpeed; i++) {
 		drive.increaseSpeed(i);
-		sleep(1);
+		std::this_thread::sleep_for(std::chrono::duration<double>(1));
 	}
 	
 	/// Invalid transition returns false
 	if (!transitions->goToState("idle")) {
-		bringauto::logging::Logger::logWarning("Cant go to while driving idle, stopping...");
+		bringauto::logging::Logger::logWarning("Cant go to idle while driving, stopping...");
 		drive.stop();
 		transitions->goToState("idle");
 	}

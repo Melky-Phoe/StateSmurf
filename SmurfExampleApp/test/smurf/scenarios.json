@@ -1,6 +1,6 @@
 {
   "setup" : [ "echo \"Start testing\"" ],
-  "between_runs" : [ "echo \"action between runs\"" ],
+  "between_runs" : [ "echo $?" ],
   "scenarios" : [
     {
       "name" : "allOk",
@@ -13,7 +13,7 @@
       "name" : "timeout",
       "timeout" : 5,
       "arguments" : {
-        "--speed" : "10"
+        "--speed" : "40"
       }
     }
   ],

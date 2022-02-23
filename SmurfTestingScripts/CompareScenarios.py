@@ -40,7 +40,7 @@ def run_scenarios():
     tests_passed = True
     for scenario in scenario_json["scenarios"]:
         print("Running test: ", scenario["name"], " .....")
-        process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir)
+        process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir, preexec_fn=os.setsid)
         try:
             if "timeout" in scenario.keys():
                 process.wait(timeout=scenario["timeout"])
@@ -49,16 +49,13 @@ def run_scenarios():
                 process.wait(timeout=default_timeout)
         except subprocess.TimeoutExpired:
             print("Timed out")
-            process.send_signal(signal.SIGTERM)
+            os.killpg(os.getpgid(process.pid), signal.SIGTERM)
             time.sleep(kill_timeout)
-            process.send_signal(signal.SIGKILL)
+            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
         print("..... Done")
 
         if not aggregate_circuits_and_compare(scenario["name"]):
             tests_passed = False
-
-        # TODO Honza rikal at porovnavam rovnou, je to hezci nez na konci
-        # chci nechavat RAW vystup?? Neni to 2x prehledne, ale zatim ano, muzu jeste najit chybu v circuitech
         tidy_up()
     return tests_passed
 
@@ -79,24 +76,26 @@ def create_command_string(scenario: dict) -> str:
     for argument in scenario["arguments"]:
         command += argument + " " + str(scenario["arguments"][argument]) + " "
     if args.create_etalons:
-        command += "> etalons/" + scenario["name"] + ".log"
+        target = os.path.join(etalons_dir, scenario["name"] + ".log")
+        command += "> " + str(target)
     else:
-        command += "> output/" + scenario["name"] + ".log"
+        target = os.path.join(output_dir, scenario["name"] + ".log")
+        command += "> " + str(target)
     return command
 
 
 def aggregate_circuits_and_compare(filename: str) -> bool:
     if args.create_etalons:
-        file = os.path.join("etalons", filename + ".log")
-        target_file = os.path.join("aggregated_etalons", filename)
+        file = os.path.join(etalons_dir, filename + ".log")
+        target_file = os.path.join(aggregated_etalons_dir, filename)
         return_code = os.system(evaluator_bin_path + " --aggregate " + file + " --target " + target_file)
         if return_code > 0:
             print("WARNING: Couldn't aggregate etalon file: ", filename)
             return False
     else:
-        etalon_file = os.path.join("aggregated_etalons", filename)
-        compare_file = os.path.join("output", filename + ".log")
-        target_file = os.path.join("aggregated_output", filename)
+        etalon_file = os.path.join(aggregated_etalons_dir, filename)
+        compare_file = os.path.join(output_dir, filename + ".log")
+        target_file = os.path.join(aggregated_output_dir, filename)
         return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file + " --compare " + compare_file +
                                 " --target " + target_file)
         if return_code > 0:
@@ -116,6 +115,7 @@ if __name__ == "__main__":
     parser.add_argument("--evaluator", type=str, required=True, help="Path to SmurfEvaluator binary")
     parser.add_argument("-c", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
+    parser.add_argument("-o", "--output-dir", type=str, dest="output_dir", default="", help="Path to output directory")
 
     args = parser.parse_args()
 
@@ -143,21 +143,33 @@ if __name__ == "__main__":
 
     workDir = args.scenario.rsplit('/', 1)[0]
     workDir = os.path.realpath(workDir)
+    if args.output_dir == "":
+        out_dir = workDir
+    else:
+        out_dir = os.path.realpath(args.output_dir)
+
+    etalons_dir = os.path.join(out_dir, "etalons")
+    aggregated_etalons_dir = os.path.join(out_dir, "aggregated_etalons")
+    output_dir = os.path.join(out_dir, "output")
+    aggregated_output_dir = os.path.join(out_dir, "aggregated_output")
+    evaluator_output_dir = os.path.join(out_dir, "evaluator_output")
+
+    Path(etalons_dir).mkdir(parents=True, exist_ok=True)
+    Path(aggregated_etalons_dir).mkdir(parents=True, exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    Path(aggregated_output_dir).mkdir(parents=True, exist_ok=True)
+    Path(evaluator_output_dir).mkdir(parents=True, exist_ok=True)
+
     os.chdir(workDir)
-    Path("./etalons/").mkdir(parents=True, exist_ok=True)
-    Path("./aggregated_etalons/").mkdir(parents=True, exist_ok=True)
-    Path("./output/").mkdir(parents=True, exist_ok=True)
-    Path("./aggregated_output/").mkdir(parents=True, exist_ok=True)
-    Path("./evaluator_output/").mkdir(parents=True, exist_ok=True)
 
     exit_code = 0
     setup()
     if not run_scenarios():
         exit_code = 2
-        print("WARNING: Some test have different transition logs, check \'<smurf_dir>/evaluator_output/\' for output")
+        print("WARNING: Some test have different transition logs, check \'" + evaluator_output_dir + "\' for output")
     if args.create_etalons:
-        print("Raw transition etalons were created in:", workDir + "/etalons/")
-        print("aggregated etalons were created in ", workDir + "/aggregated_etalons/")
+        print("Raw transition etalons were created in:", etalons_dir)
+        print("aggregated etalons were created in ", aggregated_etalons_dir)
     cleanup()
 
     exit(exit_code)
