@@ -1,7 +1,6 @@
 #pragma once
 
 #include <state_smurf/diagram/Vertex.hpp>
-#include <state_smurf/diagram/Edge.hpp>
 
 #include <vector>
 #include <memory>
@@ -19,7 +18,7 @@ public:
 	 StateDiagram() { _currentState = addVertex("__START__");};
 	 
     /**
-     * Creates edge between two vertexes given by parameters.
+     * Sets edge directed edge between two vertexes. Saves it into Transition matrix
      * Both Vertexes must exist.
      * @param from
      * @param to
@@ -35,8 +34,8 @@ public:
 
 	/**
      * Sets given Vertex as StartVertex. Multiple Starting Vertexes are possible
+     * At least one start vertex must be starting
      * @param shared_ptr to Vertex
-     * @return
      */
 	void setStartVertex(const std::shared_ptr<Vertex>& vertex);
 	
@@ -62,6 +61,11 @@ public:
      */
 	bool stateExist(const std::string &vertexName);
 	
+	/**
+	 * Finds pointer to Vertex by name
+	 * @param vertexName searched vertex
+	 * @return shared_ptr
+	 */
 	std::shared_ptr<Vertex> findStateByName(const std::string &vertexName);
 	
 	/**

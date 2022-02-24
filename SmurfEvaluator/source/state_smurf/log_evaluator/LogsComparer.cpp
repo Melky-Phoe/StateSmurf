@@ -75,7 +75,7 @@ bool LogsComparer::isStartOfRunLog(const std::string &line) {
         return true;
     } else {
 	    if (line.ends_with("Start of Run")) {
-			std::cerr << "ERROR: file was not aggregated to circuits, start application with --create-circuits option\n"
+			std::cerr << "ERROR: file was not aggregated to circuits, start application with --aggregate option\n"
 						 "Created file then use as etalon. For more info read README" << std::endl;
 		}
         return false;

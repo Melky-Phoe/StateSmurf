@@ -20,7 +20,7 @@ void Drive::increaseSpeed(int newSpeed) {
 
 void Drive::stop() {
 	_speed = 0;
-	_transitions->goToState("inStop");
+	_transitions->goToState("stop");
 }
 
 }

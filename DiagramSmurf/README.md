@@ -1,5 +1,6 @@
 # DiagramSmurf
-Library for creating State diagrams and changing states
+Library for creating State diagrams and changing states.
+Diagrams are defined by set of vertexes, starting vertexes and transitions.
 
 ## Requirements
 
@@ -20,14 +21,17 @@ make -j 8
 - For building tests use cmake option -DBRINGAUTO_TESTS=ON 
 - Start tests: `$ ./test/diagram_smurf_tests`
 
-## Usage
-
-Clone directory to your project and add as subdirectory in CMakeLists.txt:
-  ```
-  ADD_SUBDIRECTORY("<Path_to_DiagramSmurf_directory>")
-  
-  TARGET_LINK_LIBRARIES(<target> PUBLIC DiagramSmurfLib)
-  ```
-
 ### Example
-- example use of creating state graph and changing states is in example/main.cpp
+- Example use of creating state graph and changing states is in example/main.cpp
+- To build Example use cmake option -DBRINGAUTO_SAMPLES=ON
+
+## Usage
+Initialization of state diagram:
+1. Create class StateDiagram
+2. Add vertexes.
+3. Add starting vertexes
+4. Add edges between vertexes
+
+## Implementation
+- Vertexes are shared_ptr saved in vector
+- Transitions are defined by State Transition Matrix

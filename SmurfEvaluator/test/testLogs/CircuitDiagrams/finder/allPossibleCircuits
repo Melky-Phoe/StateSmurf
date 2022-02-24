@@ -1,0 +1,5 @@
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] __START__ :	A
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] A :	A B C
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] B :	A B C
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] C :	A B C D
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] D :	A

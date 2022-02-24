@@ -30,7 +30,11 @@ private:
 	 */
 	bool inState(const std::string &stateName);
 
+	/**
+	 * Logs all transitions in specific parsable format
+	 */
 	void printAdjacencyList();
+	
     diagram::StateDiagram _stateGraph;
 };
 

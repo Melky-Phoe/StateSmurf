@@ -6,6 +6,9 @@
 #include <bringauto/logging/ConsoleSink.hpp>
 #include <bringauto/logging/FileSink.hpp>
 
+#include <string>
+#include <thread>
+
 void connect(const std::shared_ptr<state_smurf::transition::StateTransition>& transitions) {
 	transitions->goToState("idle");
 }
@@ -16,21 +19,23 @@ state_smurf::diagram::StateDiagram createStateDiagram() {
 	auto disconnected = stateGraph.addVertex("disconnected");
 	auto idle = stateGraph.addVertex("idle");
 	auto drive = stateGraph.addVertex("drive");
-	auto inStop = stateGraph.addVertex("inStop");
+	auto stop = stateGraph.addVertex("stop");
+	
+	/// Every State diagram must have at least one starting vertex
+	stateGraph.setStartVertex(disconnected);
 
 	/// Setting Edges, from each state to every state it can transition
 	stateGraph.setEdge(disconnected, idle);
 	stateGraph.setEdge(idle, drive);
-	stateGraph.setEdge(idle, inStop);
+	stateGraph.setEdge(idle, stop);
 	stateGraph.setEdge(idle, disconnected);
 
-	stateGraph.setEdge(drive, idle);
-	stateGraph.setEdge(drive, inStop);
+	stateGraph.setEdge(drive, stop);
 	stateGraph.setEdge(drive, drive);
 
-	stateGraph.setEdge(inStop, idle);
-	stateGraph.setEdge(inStop, inStop);
-	stateGraph.setEdge(inStop, drive);
+	stateGraph.setEdge(stop, idle);
+	stateGraph.setEdge(stop, stop);
+	stateGraph.setEdge(stop, drive);
 
 	return stateGraph;
 }
@@ -40,27 +45,39 @@ int main(int argc, char **argv) {
 	namespace log = bringauto::logging;
 	log::Logger::addSink<log::ConsoleSink>();
 	log::Logger::addSink<log::FileSink>({"./","sampleApp.log"});
-	log::Logger::init({"sampleApp", log::Logger::Verbosity::Info});
-
+	log::Logger::init({"sampleApp", log::Logger::Verbosity::Debug});
+	
 	/// Creating State Graph. More in function
     state_smurf::diagram::StateDiagram stateGraph = createStateDiagram();
 
 	/// Transition class takes StateGraph in constructor, on which it is working on
 	std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(stateGraph);
 
-	/// Passing transitions as argument
+	// parsing arguments
+	int targetSpeed = 0;
+	if (argc == 3) {
+		if (strcmp(argv[1], "--speed") == 0) {
+			targetSpeed = std::stol(argv[2]);
+		}
+	}
+	
+	transitions->goToState("disconnected");
+	
+	/// Passing transitions as argument -> not recommended approach
 	connect(transitions);
 
 	state_smurf::example::Drive drive(transitions);
-
-	drive.increaseSpeed(10);
-	drive.increaseSpeed(15);
-	drive.stop();
-
-	/// Invalid transition returns false
-	if (!transitions->goToState("disconnected")) {
-		bringauto::logging::Logger::logWarning("Unsuccessful transition");
-		drive.stop();
+	
+	for (int i = 0; i < targetSpeed; i++) {
+		drive.increaseSpeed(i);
+		std::this_thread::sleep_for(std::chrono::duration<double>(1));
 	}
-
+	
+	/// Invalid transition returns false
+	if (!transitions->goToState("idle")) {
+		bringauto::logging::Logger::logWarning("Cant go to idle while driving, stopping...");
+		drive.stop();
+		transitions->goToState("idle");
+	}
+	transitions->goToState("disconnected");
 }

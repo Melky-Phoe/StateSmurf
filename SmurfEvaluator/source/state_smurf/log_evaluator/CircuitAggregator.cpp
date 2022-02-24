@@ -1,6 +1,5 @@
 #include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
-#include <state_smurf/StateDiagramDefinition.hpp>
 #include <state_smurf/log_evaluator/Filter.hpp>
 #include <state_smurf/log_evaluator/LineParser.hpp>
 
@@ -10,6 +9,7 @@ namespace state_smurf::log_evaluator {
 	
 	constexpr long NOT_FOUND = -1;
 	constexpr long END_FOUND = -2;
+	constexpr long LAST_FOUND = -3;
 	
 	CircuitAggregator::CircuitAggregator(std::istream &sourceLogFile) {
 		_transitionLogVector = Filter::createTransitionLogVector(sourceLogFile);
@@ -17,13 +17,6 @@ namespace state_smurf::log_evaluator {
 		sourceLogFile.seekg(std::ios::beg);
 		state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
 		_circuitList = CF.find();
-		/* DEBUG print
-		for (const auto& cir : _circuitList) {
-			for (const auto& n: cir) {
-				std::cout<< n << " ";
-			}
-			std::cout<< std::endl;
-		}*/
 	}
 	
 	void CircuitAggregator::createAggregatedFile(const std::string& newFileName) {
@@ -86,6 +79,9 @@ namespace state_smurf::log_evaluator {
 				if (nextState.empty() || _transitionIndex+j == _transitionLogVector.size()-1) {
 					return END_FOUND;
 				}
+				/*if (_transitionIndex+j == _transitionLogVector.size()-1) {
+					return LAST_FOUND;
+				}*/
 				if (nextState != _circuitList[i][j]) {
 					break;
 				} else if (j == _circuitList[i].size() - 1) { // all elements are equal
@@ -102,8 +98,10 @@ namespace state_smurf::log_evaluator {
 	}
 	
 	bool CircuitAggregator::handleEnd(long currentCircuit) {
-		if (currentCircuit == END_FOUND || currentCircuit == NOT_FOUND) {
+		if (currentCircuit == END_FOUND) { // || currentCircuit == NOT_FOUND) {
 			_transitionIndex++;
+		} else if (currentCircuit == NOT_FOUND) {
+			return false;
 		} else {
 			bool stayInCircuit = true;
 			while (_transitionIndex < _transitionLogVector.size()) {

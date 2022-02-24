@@ -1,0 +1,7 @@
+[2022-02-23 15:31:25.229] [sampleApp] [debug] [TransitionSmurf] Start of Run -- Aggregated
+In circuit 0: [disconnected, idle, ]
+In circuit 3: [drive, ]
+[2022-02-23 15:31:35.232] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":idle "from": drive }
+In circuit 5: [stop, ]
+[2022-02-23 15:31:35.232] [sampleApp] [debug] [TransitionSmurf] Going to state idle
+[2022-02-23 15:31:35.232] [sampleApp] [debug] [TransitionSmurf] Going to state disconnected

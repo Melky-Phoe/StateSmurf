@@ -6,9 +6,9 @@ namespace state_smurf::log_evaluator {
 class LogsComparer {
 public:
     /**
-     * Compares [TransitionSmurf] logs of files given by param, writes differences on stdout
-     * @param etalonFile log file, that we take as correct one
-     * @param comparedFile tested log file
+     * Compares logs of aggregated TransitionSmurf files given by param, writes differences on stdout
+     * @param etalonFile file, that we take as correct one
+     * @param comparedFile tested file
      * @return true if StateTransition logs are same, false otherwise
      */
     static bool compareFiles(std::istream& etalonFile, std::istream& comparedFile);
