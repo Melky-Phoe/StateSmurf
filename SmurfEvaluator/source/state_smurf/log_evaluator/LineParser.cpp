@@ -22,7 +22,10 @@ namespace state_smurf::log_evaluator {
 		
 		bool logsAreSame = true;
 		if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE && etalonTokens[CIRCUIT_WORD_INDEX] == "circuit") { // circuit log
-			for (int i = 0; i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {    // If circuits can have different numbers for same application, here will be a problem
+			for (int i = MINIMAL_CIRCUIT_LOG_SIZE; i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
+				/// Circuits can have different numbers for same application, because of transition table is implemented
+				/// as map, therefore its printed in different order and circuits are found in different order
+				/// -> Must compare states in circuit, not numbers
 				if (etalonTokens[i] != comparedTokens[i]) {
 					logsAreSame = false;
 				}
