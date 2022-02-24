@@ -29,10 +29,11 @@ TARGET_LINK_LIBRARIES(smurfExampleApp PUBLIC SmurfExampleAppLib)
 IF(BRINGAUTO_TESTS AND STATESMURF_TESTS)
 	ENABLE_TESTING()
 	FIND_PACKAGE(Python3 COMPONENTS Interpreter Development)
-	ADD_TEST(NAME automatedEvaluatorTests COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/../SmurfTestingScripts/CompareScenarios.py
-			-s ${CMAKE_SOURCE_DIR}/test/smurf/scenarios.json
-			-e ${CMAKE_BINARY_DIR}/smurfExampleApp
-			--evaluator ${CMAKE_SOURCE_DIR}/../SmurfEvaluator/_build/smurfEvaluator
+	SET(STATESMURF_DIR ${CMAKE_SOURCE_DIR}/..)
+	ADD_TEST(NAME automatedEvaluatorTests COMMAND ${Python3_EXECUTABLE} ${STATESMURF_DIR}/SmurfTestingScripts/CompareScenarios.py
+			--scenario ${CMAKE_SOURCE_DIR}/test/smurf/scenarios.json
+			--executable ${CMAKE_BINARY_DIR}/smurfExampleApp
+			--evaluator ${STATESMURF_DIR}/SmurfEvaluator/_build/smurfEvaluator
 			--output ${CMAKE_SOURCE_DIR}/test/smurf/
 			#-c
 			)
