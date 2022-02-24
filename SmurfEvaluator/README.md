@@ -1,9 +1,12 @@
 # SmurfEvaluator
 Application serves for filtering and comparing TransitionSmurf application's logs.
 
-SmurfEvaluator work on principle of Etalon -> file that contains one run of tested application and that is manually verified and assumed as correct.
+SmurfEvaluator work on principle of Etalon -> file that contains one tested application's run, that is manually verified and assumed as correct.
 
-All other runs of tested application are compared to Etalon
+All other runs of tested application are compared to this Etalon.
+
+Logs are aggregated to circuits based on their state diagram. Circuit is set of vertexes, that can be repeated multiple times.  
+This aggregation removes errors caused by delays in communication, high cpu usage, etc.
 
 ## Requirements
 
@@ -12,8 +15,7 @@ Following dependencies must be installed on the host system
 - cmake [>= 3.20]
 - C++20
 - [cmlib](https://github.com/cmakelib/cmakelib)
-- [cxxopts](https://github.com/jarro2783/cxxopts)
-- Boost [>= 1.71]
+
 
 ## Build
 
@@ -29,7 +31,7 @@ Then use --aggregate option to create Aggregated-Etalon. Save this file for late
 This file will be passed to Evaluator with --etalon option
 
 #### Compared files
-Other tested-application run's .log files are passed with --compare option.
+Other tested-application's runs .log files are passed with --compare option.
 This file can contain multiple runs of tested application. File will be automatically aggregated to circuits and compared.
 New aggregated file is saved to --target file and compare output is printed to stdout
 

@@ -12,7 +12,7 @@ make -j 8
 ./smurfExampleApp --speed <int>
 ```
 #### Arguments
-- **--speed**: target speed. Each increment take 1 second -> is duration of run.
+- **--speed**: target speed. Each increment take 1 second => is duration of run.
 
 ### Test
 ```

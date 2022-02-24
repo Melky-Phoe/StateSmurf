@@ -7,7 +7,7 @@
 namespace state_smurf::log_evaluator {
 
 	constexpr int MINIMAL_CIRCUIT_LOG_SIZE = 3;
-	constexpr int CIRCUIT_WORD_INDEX = 3;
+	constexpr int CIRCUIT_WORD_INDEX = 1;
 	
 	std::vector<std::string> LineParser::parseLine(std::string line) {
 		std::vector<std::string> tokens;
@@ -47,8 +47,8 @@ namespace state_smurf::log_evaluator {
 	
 	std::string LineParser::getState(const std::string &line) {
 		std::vector<std::string> tokens = parseLine(line);
-		if (tokens[static_cast<unsigned long>(LogTokensIndexes::inOrGoing)] != "Start") {
-			return tokens[static_cast<unsigned long>(LogTokensIndexes::goingState)];
+		if (tokens[static_cast<unsigned long>(LogTokensIndexes::startOrGoing)] != "Start") {
+			return tokens[static_cast<unsigned long>(LogTokensIndexes::state)];
 		} else {
 			return "";
 		}

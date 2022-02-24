@@ -1,19 +1,22 @@
 # StateSmurf
-DiagramSmurf is a framework for Integration testing of systems modelled on Finite State Machine.
+DiagramSmurf is a framework for Integration testing of systems based on Finite State Machine.
 
 ## Components
 #### DiagramSmurf
 - Library for creating state diagrams and moving around them
 #### TransitionSmurf
-- API for controlling state diagram and logging state transitions. Implemented on DiagramSmurf
+- API for controlling state transitions in state diagram and logging them. Implemented on DiagramSmurf
 #### SmurfEvaluator
 - Application for comparing StateTransitions of different runs
 #### SmurfTestingScript
 - Python scripts for automated testing and comparing
 
 ## Install
-Clone repository to your project and use `ADD_SUBDIRECTORY(StateSmurf)` in CMakeLists.txt.
-Then link libraries DiagramSmurfLib and TransitionSmurfLib to target
+Clone repository to your project and add following to CMakeLists.txt:
+```
+ADD_SUBDIRECTORY(StateSmurf)
+TARGET_LINK_LIBRARIES(<target> PUBLIC DiagramSmurfLib TransitionSmurfLib)
+```
 
 ## Usage
 Example usage of StateSmurf framework is described in [SmurfExampleApp](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfExampleApp)
@@ -33,5 +36,5 @@ Automated evaluating:
 2. Use SmurfTestingScripts CompareScenarios.py with --create-etalons option to create etalons
 3. Verify etalons. Check if all transitions were successful, runs were ended as expected etc.
    - For better orientation in logs, it is recommended to verify aggregated etalons. 
-   - Etalons shouldn't change until some major change in tested system is made that invalidates etalons.
+   - Etalons shouldn't change until some major change in tested system is made that invalidates them.
 4. Add CompareScenarios.py to test set.
