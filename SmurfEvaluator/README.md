@@ -6,7 +6,8 @@ SmurfEvaluator work on principle of Etalon -> file that contains one tested appl
 All other runs of tested application are compared to this Etalon.
 
 Logs are aggregated to circuits based on their state diagram. Circuit is set of vertexes, that can be repeated multiple times.  
-This aggregation removes errors caused by delays in communication, high cpu usage, etc.
+This aggregation removes errors caused by delays in communication, high cpu usage, etc. 
+Same circuits can have different numbers in different runs and only circuit's states are compared.
 
 ## Requirements
 
