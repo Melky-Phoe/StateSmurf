@@ -52,6 +52,9 @@ private:
 	 */
 	bool createAdjacencyMatrix(std::istream& srcFile);
 
+	/**
+	 * Vector of state names according to their indexes
+	 */
 	std::vector<std::string> stateNames;
 	
 	/**

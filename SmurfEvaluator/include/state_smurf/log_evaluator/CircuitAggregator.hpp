@@ -25,15 +25,17 @@ public:
 private:
 	/**
 	 * Finds longest possible circuit in file starting with current vertex
+	 * If end of run is found, returns END_FOUND.
+	 * If no circuit was found, returns NOT_FOUND.
 	 * @return index of circuit
 	 */
 	long getCircuit();
 	
 	/**
 	 * Called if end of file or new run was found
-	 * application runs should end in 1 circuit. Checks if all states are in the circuit
+	 * Check if application run ends in 1 circuit. This circuit doesn't have to be finished
 	 * @param currentCircuit index of last circuit found
-	 * @return true if states are from same circuit
+	 * @return true if states are from same circuit or end was found
 	 */
 	bool handleEnd(long currentCircuit);
 	
@@ -44,7 +46,10 @@ private:
 	 */
 	long getLongestCircuitIndex(const std::vector<int>& circuitFoundIndexes);
 	
+	/// All possible circuits
 	std::vector<std::vector<std::string>> _circuitList;
+	
+	/// All TransitionSmurf logs saved in Vector
 	std::vector<std::string> _transitionLogVector;
 	u_long _transitionIndex {0};
 };

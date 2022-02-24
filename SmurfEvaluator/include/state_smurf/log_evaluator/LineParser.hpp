@@ -30,6 +30,7 @@ public:
 	 * @return name of state
 	 */
 	static std::string getState(const std::string &line);
+	
 	/**
 	 * Enum for addressing tokens created by parseLine
 	 */
@@ -39,9 +40,8 @@ public:
 		appName = 2,
 		verbosity = 3,
 		transitionSmurf = 4,
-		inOrGoing = 5,
-		inState = 7,
-		goingState = 8
+		startOrGoing = 5,
+		state = 8
 	};
 };
 
