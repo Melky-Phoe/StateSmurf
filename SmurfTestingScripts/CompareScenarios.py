@@ -96,8 +96,9 @@ def aggregate_circuits_and_compare(filename: str) -> bool:
         etalon_file = os.path.join(aggregated_etalons_dir, filename)
         compare_file = os.path.join(output_dir, filename + ".log")
         target_file = os.path.join(aggregated_output_dir, filename)
+        output_file = os.path.join(evaluator_output_dir, filename)
         return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file + " --compare " + compare_file +
-                                " --target " + target_file)
+                                " --target " + target_file + " > " + output_file)
         if return_code > 0:
             print("WARNING: test didn't pass: ", filename)
             return False

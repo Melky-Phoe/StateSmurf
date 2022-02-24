@@ -11,9 +11,13 @@ DiagramSmurf is a framework for Integration testing of systems modelled on Finit
 #### SmurfTestingScript
 - Python scripts for automated testing and comparing
 
+## Install
+Clone repository to your project and use `ADD_SUBDIRECTORY(StateSmurf)` in CMakeLists.txt.
+Then link libraries DiagramSmurfLib and TransitionSmurfLib to target
 
 ## Usage
 Example usage of StateSmurf framework is described in [SmurfExampleApp](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfExampleApp)
+
 
 #### Integration Steps
 Code:
