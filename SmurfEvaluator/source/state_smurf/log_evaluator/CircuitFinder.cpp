@@ -7,28 +7,28 @@ namespace state_smurf::log_evaluator {
 	
 	constexpr int ORIGIN_STATE_INDEX = 5;
 	constexpr int DEST_STATES_INDEX = 7;
-
-    CircuitFinder::CircuitFinder(std::istream& srcFile) {
-	    if (!createAdjacencyMatrix(srcFile)) {
-		    exit(1);
-		}
-        blocked = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
-		blockMatrix.resize(numberOfVertexes);
-	    for (int i = 0; i < numberOfVertexes; ++i) {
-		    blockMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
-		    if (blockMatrix[i] == nullptr) {
-			    std::cerr << "ERROR: bad allocation" << std::endl;
-			    exit(1);
-		    }
-	    }
-		
-        if (blocked == nullptr) {
-	        std::cerr << "ERROR: bad allocation" << std::endl;
-            exit(1); // exception
-        }
-    }
 	
-	std::vector<std::vector<std::string>>  CircuitFinder::find() {
+	CircuitFinder::CircuitFinder(std::istream &srcFile) {
+		if (!createAdjacencyMatrix(srcFile)) {
+			exit(1);
+		}
+		blocked = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
+		blockMatrix.resize(numberOfVertexes);
+		for (int i = 0; i < numberOfVertexes; ++i) {
+			blockMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
+			if (blockMatrix[i] == nullptr) {
+				std::cerr << "ERROR: bad allocation" << std::endl;
+				exit(1);
+			}
+		}
+		
+		if (blocked == nullptr) {
+			std::cerr << "ERROR: bad allocation" << std::endl;
+			exit(1); // exception
+		}
+	}
+	
+	std::vector<std::vector<std::string>> CircuitFinder::find() {
 		for (int i = 0; i < startingVertexes.size(); ++i) {
 			if (!adjacencyMatrix.empty()) {
 				for (int j = 0; j < numberOfVertexes; j++) {
@@ -59,21 +59,21 @@ namespace state_smurf::log_evaluator {
 		return circuits;
 	}
 	
-    void CircuitFinder::unblock(const int& vertex) {
-        blocked[vertex] = false;
-	    for (int i = 0; i < numberOfVertexes; ++i) {
-		    if (blockMatrix[vertex][i]) {
-			    blockMatrix[vertex][i] = false;
-			    unblock(i);
+	void CircuitFinder::unblock(const int &vertex) {
+		blocked[vertex] = false;
+		for (int i = 0; i < numberOfVertexes; ++i) {
+			if (blockMatrix[vertex][i]) {
+				blockMatrix[vertex][i] = false;
+				unblock(i);
 			}
-	    }
-    }
-
-
-    bool CircuitFinder::circuit(const int& vertex) {
-        bool found = false;
-        visitedVertexes.push_back(vertex);
-        blocked[vertex] = true;
+		}
+	}
+	
+	
+	bool CircuitFinder::circuit(const int &vertex) {
+		bool found = false;
+		visitedVertexes.push_back(vertex);
+		blocked[vertex] = true;
 		int nextVertex = -1;
 		for (int i = 0; i < numberOfVertexes; ++i) {
 			if (adjacencyMatrix[vertex][i]) {
@@ -106,9 +106,9 @@ namespace state_smurf::log_evaluator {
 		}
 		visitedVertexes.pop_back();
 		return found;
-    }
+	}
 	
-	bool CircuitFinder::createAdjacencyMatrix(std::istream& srcFile) {
+	bool CircuitFinder::createAdjacencyMatrix(std::istream &srcFile) {
 		std::string line = Filter::findDiagramSmurfLog(srcFile);
 		std::map<std::string, int> namesMap;
 		

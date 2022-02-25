@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace state_smurf::log_evaluator {
-
+	
 	constexpr int MINIMAL_CIRCUIT_LOG_SIZE = 3;
 	constexpr int CIRCUIT_WORD_INDEX = 1;
 	
@@ -21,7 +21,8 @@ namespace state_smurf::log_evaluator {
 		std::vector<std::string> comparedTokens = parseLine(compared);
 		
 		bool logsAreSame = true;
-		if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE && etalonTokens[CIRCUIT_WORD_INDEX] == "circuit") { // circuit log
+		if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE &&
+		    etalonTokens[CIRCUIT_WORD_INDEX] == "circuit") { // circuit log
 			for (int i = MINIMAL_CIRCUIT_LOG_SIZE; i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
 				/// Circuits can have different numbers for same application, because of transition table is implemented
 				/// as map, therefore its printed in different order and circuits are found in different order
@@ -41,7 +42,7 @@ namespace state_smurf::log_evaluator {
 		if (!logsAreSame) {
 			std::cout << "Logs aren't equal:\n"
 			             "  Etalon: " << etalon << std::endl <<
-						 "  Compared: " << compared << std::endl;
+			          "  Compared: " << compared << std::endl;
 			return false;
 		} else {
 			return true;

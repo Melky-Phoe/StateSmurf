@@ -9,17 +9,18 @@
 
 
 static cxxopts::Options createArgOpts() {
-	cxxopts::Options options {"BringAuto daemon"};
+	cxxopts::Options options{"BringAuto daemon"};
 	options.add_options()
 			("e, etalon", "Path to EtalonAggregated file", cxxopts::value<std::string>())
 			("c, compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
 			("a, aggregate", "Path to .log file to create AggregatedFile from", cxxopts::value<std::string>())
-			("t, target", "Target AggregatedFile name", cxxopts::value<std::string>()->default_value("./aggregatedFile"))
+			("t, target", "Target AggregatedFile name",
+			 cxxopts::value<std::string>()->default_value("./aggregatedFile"))
 			("h,help", "Print help message");
 	return options;
 }
 
-cxxopts::ParseResult parseArgOpts(int argc, char** argv) {
+cxxopts::ParseResult parseArgOpts(int argc, char **argv) {
 	cxxopts::Options options = createArgOpts();
 	try {
 		auto parsedOptions = options.parse(argc, argv);
@@ -60,7 +61,7 @@ int main(int argc, char **argv) {
 		etalonFilePath = args["etalon"].as<std::string>();
 	}
 	std::string targetFileName = args["target"].as<std::string>();
-
+	
 	if (createEtalonCircuits) {
 		std::ifstream sourceFile;
 		std::string sourceFileName = args["aggregate"].as<std::string>();
@@ -97,13 +98,13 @@ int main(int argc, char **argv) {
 		std::cerr << "Unable to open created file " << targetFileName << std::endl;
 		return EXIT_FAILURE;
 	}
-
-    if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, aggregatedCompareFile)) {
-        return EXIT_FAILURE;
-    }
-
+	
+	if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, aggregatedCompareFile)) {
+		return EXIT_FAILURE;
+	}
+	
 	etalonFile.close();
-    compareFile.close();
+	compareFile.close();
 	return EXIT_SUCCESS;
-
+	
 }

@@ -19,7 +19,7 @@ namespace state_smurf::log_evaluator {
 		_circuitList = CF.find();
 	}
 	
-	void CircuitAggregator::createAggregatedFile(const std::string& newFileName) {
+	void CircuitAggregator::createAggregatedFile(const std::string &newFileName) {
 		// Opening new file
 		std::ofstream targetFile(newFileName);
 		if (!targetFile.is_open()) {
@@ -36,7 +36,8 @@ namespace state_smurf::log_evaluator {
 					targetFile << _transitionLogVector[_transitionIndex] << " -- Aggregated" << std::endl;
 				}
 				if (!handleEnd(currentCircuit)) {
-					while (_transitionIndex < _transitionLogVector.size() && !LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
+					while (_transitionIndex < _transitionLogVector.size() &&
+					       !LineParser::getState(_transitionLogVector[_transitionIndex]).empty()) {
 						targetFile << _transitionLogVector[_transitionIndex] << std::endl;
 						_transitionIndex++;
 					}
@@ -49,7 +50,7 @@ namespace state_smurf::log_evaluator {
 			} else {
 				if (nextCircuit != currentCircuit) {
 					targetFile << "In circuit " << nextCircuit << ": [";
-					for (const auto& state : _circuitList[nextCircuit]) {
+					for (const auto &state: _circuitList[nextCircuit]) {
 						targetFile << state << ", ";
 					}
 					targetFile << "]" << std::endl;
@@ -61,9 +62,9 @@ namespace state_smurf::log_evaluator {
 		targetFile.close();
 	}
 	
-	long CircuitAggregator::getLongestCircuitIndex(const std::vector<int>& circuitFoundIndexes) {
+	long CircuitAggregator::getLongestCircuitIndex(const std::vector<int> &circuitFoundIndexes) {
 		long max = 0;
-		for (auto index : circuitFoundIndexes) {
+		for (auto index: circuitFoundIndexes) {
 			if (_circuitList[index].size() > max) {
 				max = index;
 			}
@@ -76,7 +77,7 @@ namespace state_smurf::log_evaluator {
 		for (int i = 0; i < _circuitList.size(); ++i) {
 			for (int j = 0; j < _circuitList[i].size(); ++j) {
 				auto nextState = LineParser::getState(_transitionLogVector[_transitionIndex + j]);
-				if (nextState.empty() || _transitionIndex+j == _transitionLogVector.size()-1) {
+				if (nextState.empty() || _transitionIndex + j == _transitionLogVector.size() - 1) {
 					return END_FOUND;
 				}
 				/*if (_transitionIndex+j == _transitionLogVector.size()-1) {
