@@ -56,53 +56,53 @@ namespace state_smurf::log_evaluator {
 		/**
 		 * Vector of state names according to their indexes
 		 */
-		std::vector<std::string> stateNames;
+		std::vector<std::string> stateNames_;
 		
 		/**
 		 * Adjacency matrix is set of possible destination vertexes for each vertex
 		 */
-		std::vector<bool *> adjacencyMatrix;
+		std::vector<bool *> adjacencyMatrix_;
 		
 		/**
 		 * matrix of vertexes that will be unblocked if a vertex is unblocked
 		 * For more info check Johnson's algorithm principle
 		 */
-		std::vector<bool *> blockMatrix;
+		std::vector<bool *> blockMatrix_;
 		
 		/**
 		 * Vector of visited vertexes by circuit()
 		 * has stack-like behavior, but has to be iterated-over, therefore is implemented as vector
 		 * If circuit() finds startVertex, all vertexes in vector are part of a new 4circuit
 		 */
-		std::vector<int> visitedVertexes;
+		std::vector<int> visitedVertexes_;
 		
 		/**
 		 * total vertexes in state diagram
 		 */
-		int numberOfVertexes{0};
+		int numberOfVertexes_{0};
 		
 		/**
 		 * list of all startingVertexes of state diagram
 		 * find() starts searching for cycles vertexes of this vector
 		 * after every circuit is found, adjacent vertexes are appended
 		 */
-		std::vector<int> startingVertexes;
+		std::vector<int> startingVertexes_;
 		
 		/**
 		 * Vertex that circuit() was originally called on, serve for comparing to find end of circuit
 		 */
-		int startVertex{};
+		int startVertex_{};
 		
 		/**
 		 * Array indicating if Vertex on given index is blocked.
 		 * Vertexes are blocked if they were already visited and They are unblocked when circuit is found
 		 */
-		bool *blocked{nullptr};
+		bool *blocked_{nullptr};
 		
 		/**
 		 * Vector of circuits found. Is returned by find() when all circuits were found
 		 */
-		std::vector<std::vector<std::string>> circuits;
+		std::vector<std::vector<std::string>> circuits_;
 	};
 	
 }

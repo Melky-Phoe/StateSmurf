@@ -32,7 +32,7 @@ namespace state_smurf::log_evaluator {
 				}
 			}
 		} else {    // normal StateTransition log
-			for (int i = static_cast<int>(LogTokensIndexes::appName);
+			for (int i = static_cast<int>(LogTokensIndexes::APP_NAME);
 			     i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
 				if (etalonTokens[i] != comparedTokens[i]) {
 					logsAreSame = false;
@@ -51,8 +51,8 @@ namespace state_smurf::log_evaluator {
 	
 	std::string LineParser::getState(const std::string &line) {
 		std::vector<std::string> tokens = parseLine(line);
-		if (tokens[static_cast<unsigned long>(LogTokensIndexes::startOrGoing)] != "Start") {
-			return tokens[static_cast<unsigned long>(LogTokensIndexes::state)];
+		if (tokens[static_cast<unsigned long>(LogTokensIndexes::START_OR_GOING)] != "Start") {
+			return tokens[static_cast<unsigned long>(LogTokensIndexes::STATE)];
 		} else {
 			return "";
 		}

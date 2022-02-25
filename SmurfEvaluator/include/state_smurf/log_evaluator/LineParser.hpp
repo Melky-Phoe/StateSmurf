@@ -35,13 +35,13 @@ namespace state_smurf::log_evaluator {
 		 * Enum for addressing tokens created by parseLine
 		 */
 		enum class LogTokensIndexes {
-			date = 0,
-			time = 1,
-			appName = 2,
-			verbosity = 3,
-			transitionSmurf = 4,
-			startOrGoing = 5,
-			state = 8
+			DATE = 0,
+			TIME = 1,
+			APP_NAME = 2,
+			VERBOSITY = 3,
+			TRANSITION_SMURF_PREFIX = 4,
+			START_OR_GOING = 5,
+			STATE = 8
 		};
 	};
 	

@@ -15,7 +15,7 @@ namespace state_smurf::diagram {
 	 */
 	class StateDiagram {
 	public:
-		StateDiagram() { _currentState = addVertex("__START__"); };
+		StateDiagram() { currentState_ = addVertex("__START__"); };
 		
 		/**
 		 * Sets edge directed edge between two vertexes. Saves it into Transition matrix
@@ -72,23 +72,23 @@ namespace state_smurf::diagram {
 		 * @return adjacency list implemented by std::map
 		 */
 		std::map<std::shared_ptr<Vertex>, std::vector<std::shared_ptr<Vertex>>>
-		getAdjacencyList() { return adjacencyList; };
+		getAdjacencyList() { return adjacencyList_; };
 		
 		/**
 		 * Returns name of current state
 		 * @return name (string)
 		 */
-		std::string getCurrentStateName() { return _currentState != nullptr ? _currentState->getName() : ""; }
+		std::string getCurrentStateName() { return currentState_ != nullptr ? currentState_->getName() : ""; }
 
 	private:
-		std::shared_ptr<Vertex> _currentState{nullptr};
+		std::shared_ptr<Vertex> currentState_{nullptr};
 		/**
 		 * adjacency list of current diagram
 		 * implemented by std::map
 		 * every vertex in StateDiagram is key for its set of destination vertexes
 		 * https://en.wikipedia.org/wiki/Adjacency_list
 		 */
-		std::map<std::shared_ptr<diagram::Vertex>, std::vector<std::shared_ptr<diagram::Vertex>>> adjacencyList{};
+		std::map<std::shared_ptr<diagram::Vertex>, std::vector<std::shared_ptr<diagram::Vertex>>> adjacencyList_{};
 	};
 	
 }

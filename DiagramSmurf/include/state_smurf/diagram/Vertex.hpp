@@ -10,12 +10,12 @@ namespace state_smurf::diagram {
 	 */
 	class Vertex {
 	public:
-		explicit Vertex(std::string newName) : name{std::move(newName)} {};
+		explicit Vertex(std::string newName) : name_{std::move(newName)} {};
 		
-		std::string getName() { return name; }
+		std::string getName() { return name_; }
 	
 	private:
-		const std::string name;
+		const std::string name_;
 	};
 	
 }

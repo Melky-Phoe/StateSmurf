@@ -11,7 +11,7 @@ namespace state_smurf::log_evaluator {
 	class CircuitAggregator {
 	public:
 		/**
-		 * Constructor, filters non-TransitionSmurf logs out of sourceLogFile and finds circuits of state diagram
+		 * Constructor, filters non-TransitionSmurf logs out of sourceLogFile and finds circuits_ of state diagram
 		 * @param sourceLogFile
 		 */
 		explicit CircuitAggregator(std::istream &sourceLogFile);
@@ -47,11 +47,11 @@ namespace state_smurf::log_evaluator {
 		long getLongestCircuitIndex(const std::vector<int> &circuitFoundIndexes);
 		
 		/// All possible circuits
-		std::vector<std::vector<std::string>> _circuitList;
+		std::vector<std::vector<std::string>> circuitList_;
 		
 		/// All TransitionSmurf logs saved in Vector
-		std::vector<std::string> _transitionLogVector;
-		u_long _transitionIndex{0};
+		std::vector<std::string> transitionLogVector_;
+		u_long transitionIndex_{0};
 	};
 	
 }

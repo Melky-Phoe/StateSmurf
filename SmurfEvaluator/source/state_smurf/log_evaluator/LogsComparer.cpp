@@ -98,7 +98,7 @@ namespace state_smurf::log_evaluator {
 				
 				std::vector<std::string> etalonTokens = LineParser::parseLine(etalonLogs[i]);
 				
-				if (etalonTokens[static_cast<int>(LineParser::LogTokensIndexes::verbosity)] == "[warning]") {
+				if (etalonTokens[static_cast<int>(LineParser::LogTokensIndexes::VERBOSITY)] == "[warning]") {
 					std::cout << "WARNING: there is unsuccessful transition in etalon." << std::endl;
 				}
 				
