@@ -79,9 +79,7 @@ namespace state_smurf::diagram {
 		 * @return name (string)
 		 */
 		std::string getCurrentStateName() { return _currentState != nullptr ? _currentState->getName() : ""; }
-		
-		/* State Reduction algorithm, no use atm
-		 bool isOptimized();*/
+
 	private:
 		std::shared_ptr<Vertex> _currentState{nullptr};
 		/**

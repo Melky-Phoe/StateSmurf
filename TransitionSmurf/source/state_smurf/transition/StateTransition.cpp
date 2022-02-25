@@ -33,7 +33,6 @@ namespace state_smurf::transition {
 	
 	bool StateTransition::inState(const std::string &stateName) {
 		if (_stateGraph.getCurrentStateName() == stateName) {
-			//bringauto::logging::Logger::logInfo("[TransitionSmurf] In state {}", _stateGraph.getCurrentStateName());
 			return true;
 		} else {
 			bringauto::logging::Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",

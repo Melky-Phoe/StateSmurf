@@ -79,30 +79,4 @@ namespace state_smurf::diagram {
 			std::cerr << "ERROR in setStartVertex: given Vertex must be existing Vertex of StateDiagram" << std::endl;
 		}
 	}
-
-/*
-bool StateDiagram::isOptimized() {
-	auto adjacencyMap = createAdjacencyMap();
-	bool vertexRemovable = false;
-	for (auto it : adjacencyMap) {
-		if (it.second.size() == 1) {
-			for (auto it2 : adjacencyMap) {
-				if (std::find(it2.second.begin(), it2.second.end(), it.first) != it2.second.end()) {
-					if (std::find(it2.second.begin(), it2.second.end(), it.second.front()) != it2.second.end()) {
-						vertexRemovable = false;
-						continue;
-					} else {
-						vertexRemovable = true;
-					}
-					
-				}
-			}
-			if (vertexRemovable) {
-				std::cout << "removable " << it.first->getName();
-			}
-		}
-	}
-	return true;
-}*/
-
 }
