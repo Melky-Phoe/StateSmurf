@@ -31,7 +31,7 @@ namespace state_smurf::log_evaluator {
 		
 		int i = 0;
 		if (!isStartOfRunLog(comparedLogs[i])) {
-			std::cout << "ERROR: compared Log file isn't starting with Start of Run log" << std::endl;
+			std::cerr << "ERROR: compared Log file isn't starting with Start of Run log" << std::endl;
 			return false;
 		}
 		for (int runCount = 1; i < comparedLogs.size() && isStartOfRunLog(comparedLogs[i]); ++runCount) {
@@ -44,7 +44,7 @@ namespace state_smurf::log_evaluator {
 					// Compared file is shorter than Etalon, we need to finish comparing Etalon file
 					if (isStartOfRunLog(comparedLogs[i])) {
 						if (isStartOfRunLog(etalonLogs[j])) {
-							std::cout << "ERROR: Start of Run is different, are you comparing same application?"
+							std::cerr << "ERROR: Start of Run is different, are you comparing same application?"
 							          << std::endl;
 							return false;
 						}
@@ -118,7 +118,7 @@ namespace state_smurf::log_evaluator {
 			}
 			return true;
 		} else {
-			std::cout << "ERROR: empty etalon" << std::endl;
+			std::cerr << "ERROR: empty etalon" << std::endl;
 			return false;
 		}
 	}

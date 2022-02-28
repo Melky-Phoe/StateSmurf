@@ -21,3 +21,8 @@ cmake ../ -DCMAKE_BUILD_TYPE=Debug -DBRINGAUTO_TESTS=ON
 make -j 8
 ctest
 ```
+
+### State Diagram
+State diagram on which SmurfExampleApp is working
+
+<img src="StateDiagram.svg" width="350">

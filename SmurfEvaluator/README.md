@@ -42,7 +42,8 @@ Basic state transition logs, where every word expect time is compared:
 [YYYY-MM-DD hh:mm:ss.ms] [appName] [debug] [TransitionSmurf] Going to state <state>
 ```
 
-If circuit is found, SmurfEvaluator is comparing only states in circuit, not circuit number. The number serves only for debugging:
+If circuit is found. Time of first transition of circuit is logged.
+SmurfEvaluator is comparing only states in circuit, not circuit number N. The number serves only for debugging:
 ```log
 [YYYY-MM-DD hh:mm:ss.ms] In circuit N: [<list of states in circuit>]
 ```
@@ -57,11 +58,9 @@ This file can contain multiple runs of tested application.
 
 
 ## Run
-#### Creating aggregated etalon: 
-`./smurfEvaluator --aggregate <path> [--target <new_file_name>]`
-
-#### Comparing runs:
-`./smurfEvaluator --etalon <path_to_etalon> --compare <path_to_compared> [--target <new_file_name>]`
+```
+./smurfEvaluator --etalon <path_to_etalon> --compare <path_to_compared> [--save-aggregated <directory>]
+```
 ### arguments
 - **-e | --etalon**: Path to etalon .log file.
 - **-c | --compare**: Path to .log file which we want to compare with etalon.
