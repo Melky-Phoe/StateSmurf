@@ -23,8 +23,6 @@ namespace state_smurf::log_evaluator {
 		 */
 		explicit CircuitFinder(std::istream &srcFile);
 		
-		~CircuitFinder();
-		
 		/**
 		 * Find all elementary non-duplicit circuits in state diagram
 		 * @return vector of string-vectors, each representing one circuit
@@ -61,13 +59,13 @@ namespace state_smurf::log_evaluator {
 		/**
 		 * Adjacency matrix is set of possible destination vertexes for each vertex
 		 */
-		std::vector<bool *> adjacencyMatrix_;
+		std::vector<std::vector<bool>> adjacencyMatrix_;
 		
 		/**
 		 * matrix of vertexes that will be unblocked if a vertex is unblocked
 		 * For more info check Johnson's algorithm principle
 		 */
-		std::vector<bool *> blockMatrix_;
+		std::vector<std::vector<bool>> blockMatrix_;
 		
 		/**
 		 * Vector of visited vertexes by circuit()
@@ -97,7 +95,7 @@ namespace state_smurf::log_evaluator {
 		 * Array indicating if Vertex on given index is blocked.
 		 * Vertexes are blocked if they were already visited and They are unblocked when circuit is found
 		 */
-		bool *blocked_{nullptr};
+		std::vector<bool> blocked_;
 		
 		/**
 		 * Vector of circuits found. Is returned by find() when all circuits were found

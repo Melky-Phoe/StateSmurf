@@ -35,6 +35,5 @@ Automated evaluating:
 1. Create scenarios.json file containing arguments for each tested scenario
 2. Use SmurfTestingScripts CompareScenarios.py with --create-etalons option to create etalons
 3. Verify etalons. Check if all transitions were successful, runs were ended as expected etc.
-   - For better orientation in logs, it is recommended to verify aggregated etalons. 
    - Etalons shouldn't change until some major change in tested system is made that invalidates them.
 4. Add CompareScenarios.py to test set.

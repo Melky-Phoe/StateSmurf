@@ -10,21 +10,12 @@ namespace state_smurf::log_evaluator {
 	
 	CircuitFinder::CircuitFinder(std::istream &srcFile) {
 		if (!createAdjacencyMatrix(srcFile)) {
-			exit(1);
+			return;
 		}
-		blocked_ = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes_));
+		blocked_.resize(numberOfVertexes_, false);
 		blockMatrix_.resize(numberOfVertexes_);
 		for (int i = 0; i < numberOfVertexes_; ++i) {
-			blockMatrix_[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes_));
-			if (blockMatrix_[i] == nullptr) {
-				std::cerr << "ERROR: bad allocation" << std::endl;
-				exit(1);
-			}
-		}
-		
-		if (blocked_ == nullptr) {
-			std::cerr << "ERROR: bad allocation" << std::endl;
-			exit(1); // exception
+			blockMatrix_[i].resize(numberOfVertexes_, false);
 		}
 	}
 	
@@ -130,7 +121,7 @@ namespace state_smurf::log_evaluator {
 			namesMap[adjacencyTokens[i][ORIGIN_STATE_INDEX]] = i;
 		}
 		for (int i = 0; i < numberOfVertexes_; ++i) {
-			adjacencyMatrix_[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes_));
+			adjacencyMatrix_[i].resize(numberOfVertexes_, false);
 			if (adjacencyTokens[i][ORIGIN_STATE_INDEX] == "__START__") {    // different approach for starting vertexes
 				for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
 					startingVertexes_.push_back(namesMap[adjacencyTokens[i][j]]);
@@ -149,14 +140,5 @@ namespace state_smurf::log_evaluator {
 			return false;
 		}
 		return true;
-	}
-	
-	CircuitFinder::~CircuitFinder() {
-		free(blocked_);
-		blocked_ = nullptr;
-		for (int i = 0; i < numberOfVertexes_; ++i) {
-			free(adjacencyMatrix_[i]);
-			adjacencyMatrix_[i] = nullptr;
-		}
 	}
 }

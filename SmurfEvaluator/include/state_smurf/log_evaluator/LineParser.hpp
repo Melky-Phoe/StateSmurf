@@ -31,6 +31,8 @@ namespace state_smurf::log_evaluator {
 		 */
 		static std::string getState(const std::string &line);
 		
+		static std::string getTime(const std::string &line);
+		
 		/**
 		 * Enum for addressing tokens created by parseLine
 		 */

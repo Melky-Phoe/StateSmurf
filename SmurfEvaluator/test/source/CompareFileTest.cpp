@@ -40,19 +40,6 @@ TEST_F(CompareFileTest, differentFiles) {
     compare.close();
 }
 
-TEST_F(CompareFileTest, corruptedFile) {
-    std::ifstream compare = openFile("corrupted.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
-    compare.close();
-}
-
-TEST_F(CompareFileTest, notExistingFile) {
-    // TODO je tento test potreba? O otevirani souboru se stara nekdo jiny
-    std::ifstream compare = openFile("notExisting.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
-    compare.close();
-}
-
 TEST_F(CompareFileTest, emptyFile) {
     std::ifstream compare = openFile("empty.log");
     EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));

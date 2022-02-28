@@ -1,63 +1,70 @@
 #include <state_smurf/log_evaluator/LogsComparer.hpp>
 #include <state_smurf/log_evaluator/LineParser.hpp>
+#include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 
 #include <iostream>
 
 namespace state_smurf::log_evaluator {
 	
 	bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile) {
-		// Loading logs of etalonFile to vector
-		std::vector<std::string> etalonLogs;
-		std::string line = {};
-		getline(etalonFile, line);
-		while (etalonFile) {
-			etalonLogs.push_back(line);
-			getline(etalonFile, line);
-		}
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile);
+		std::vector<std::string> etalonLogs = circuitAggregator.createAggregatedFile(etalonFile);
+		
+		std::vector<std::string> comparedLogs = circuitAggregator.createAggregatedFile(comparedFile);
+		
 		if (!validateEtalon(etalonLogs)) {
 			return false;
 		}
-		
-		std::string comparedLog = {};
-		std::getline(comparedFile, comparedLog);
+		if (comparedLogs.empty()) {
+			std::cerr << "ERROR: Empty Compare file" << std::endl;
+			return false;
+		}
+
 		bool filesAreSame = true;
 		bool runsAreSame = true;
 		
-		if (!isStartOfRunLog(comparedLog)) {
+		int i = 0;
+		if (!isStartOfRunLog(comparedLogs[i])) {
 			std::cout << "ERROR: compared Log file isn't starting with Start of Run log" << std::endl;
 			return false;
 		}
-		
-		for (int runCount = 1; isStartOfRunLog(comparedLog); ++runCount) {
+		for (int runCount = 1; i < comparedLogs.size() && isStartOfRunLog(comparedLogs[i]); ++runCount) {
 			std::cout << "Run number " << runCount << ":" << std::endl;
 			
-			for (int i = 0; i < etalonLogs.size(); ++i) {
-				if (!LineParser::compareLines(etalonLogs[i], comparedLog)) {
+			for (int j = 0; j < etalonLogs.size() && i < comparedLogs.size(); ++j) {
+				if (!LineParser::compareLines(etalonLogs[j], comparedLogs[i])) {
 					runsAreSame = false;
 					
 					// Compared file is shorter than Etalon, we need to finish comparing Etalon file
-					if (isStartOfRunLog(comparedLog)) {
-						if (isStartOfRunLog(etalonLogs[i])) {
+					if (isStartOfRunLog(comparedLogs[i])) {
+						if (isStartOfRunLog(etalonLogs[j])) {
 							std::cout << "ERROR: Start of Run is different, are you comparing same application?"
 							          << std::endl;
 							return false;
 						}
-						for (i += 1; i < etalonLogs.size(); ++i) {
-							LineParser::compareLines(etalonLogs[i], "");
+						for (j += 1; j < etalonLogs.size(); ++j) {
+							LineParser::compareLines(etalonLogs[j], "");
 						}
 						break;
 					}
 				}
-				
-				getline(comparedFile, comparedLog);
-				//comparedLog = Filter::findNextTransitionLog(comparedFile);
+				i++;
 			}
-			// Etalon run is shorter than compared, needs catching up
-			while (!isStartOfRunLog(comparedLog) && comparedFile) {
-				runsAreSame = false;
-				LineParser::compareLines("", comparedLog);
-				getline(comparedFile, comparedLog);
+			if (comparedLogs.size() > etalonLogs.size()) {
+				// Etalon run is shorter than compared, needs catching up
+				while (i < comparedLogs.size() && !isStartOfRunLog(comparedLogs[i])) {
+					runsAreSame = false;
+					LineParser::compareLines("", comparedLogs[i]);
+					i++;
+				}
+			} else if (comparedLogs.size() < etalonLogs.size()) {
+				for (u_long j = comparedLogs.size(); j < etalonLogs.size(); ++j) {
+					runsAreSame = false;
+					LineParser::compareLines(etalonLogs[j], "");
+				}
 			}
+			
+			
 			if (runsAreSame) {
 				std::cout << "\tOK" << std::endl;
 			} else {
@@ -105,7 +112,7 @@ namespace state_smurf::log_evaluator {
 			}
 			return true;
 		} else {
-			std::cout << "WARNING: empty etalon" << std::endl;
+			std::cout << "ERROR: empty etalon" << std::endl;
 			return false;
 		}
 	}

@@ -7,18 +7,18 @@
 
 TEST(CircuitFinder, emptyDiagram) {
 	std::ifstream file("testLogs/CircuitDiagrams/invalid/emptyDiagram");
-	if (!file.is_open()) {
-		std::cerr << "Unable to open empty" << std::endl;
-	}
-	EXPECT_EXIT(new state_smurf::log_evaluator::CircuitFinder(file), ::testing::ExitedWithCode(1), "");
+	EXPECT_TRUE(file.is_open());
+	testing::internal::CaptureStderr();
+	new state_smurf::log_evaluator::CircuitFinder(file);
+	EXPECT_EQ("ERROR: Invalid state diagram\n", testing::internal::GetCapturedStderr());
 }
 
 TEST(CircuitFinder, noStart) {
 	std::ifstream file("testLogs/CircuitDiagrams/invalid/noStart");
-	if (!file.is_open()) {
-		std::cerr << "Unable to open noStart" << std::endl;
-	}
-	EXPECT_EXIT(new state_smurf::log_evaluator::CircuitFinder(file), ::testing::ExitedWithCode(1), "");
+	EXPECT_TRUE(file.is_open());
+	testing::internal::CaptureStderr();
+	new state_smurf::log_evaluator::CircuitFinder(file);
+	EXPECT_EQ("ERROR: no starting vertexes\n", testing::internal::GetCapturedStderr());
 }
 
 TEST(CircuitFinder, simpleCircuit) {

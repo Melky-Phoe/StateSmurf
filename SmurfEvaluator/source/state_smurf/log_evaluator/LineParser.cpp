@@ -57,4 +57,12 @@ namespace state_smurf::log_evaluator {
 			return "";
 		}
 	}
+	
+	std::string LineParser::getTime(const std::string &line) {
+		std::vector<std::string> tokens = parseLine(line);
+		std::string timeString = tokens[static_cast<unsigned long>(LogTokensIndexes::DATE)];
+		timeString.append(" ");
+		timeString.append(tokens[static_cast<unsigned long>(LogTokensIndexes::TIME)]);
+		return timeString;
+	}
 }
