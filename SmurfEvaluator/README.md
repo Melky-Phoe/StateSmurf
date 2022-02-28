@@ -27,16 +27,34 @@ make -j 8
 ```
 ## Usage
 ### Logs format
+State transition table in which circuits are found:
+```log
+[YYYY-MM-DD hh:mm:ss.ms] [appName] [debug] [DiagramSmurf] <Origin Vertex> : <List of destination vertexes>
+```
 
-#### Creating Etalon:
-First take .log file of tested application run. Verify if everything worked as expected.
-Then use --aggregate option to create Aggregated-Etalon. Save this file for later comparison.
-This file will be passed to Evaluator with --etalon option
+After aggregation, every Start of run log is changed to:
+```log
+[YYYY-MM-DD hh:mm:ss.ms] [appName] [debug] [TransitionSmurf] Start of Run - Aggregated
+```
 
+Basic state transition logs, where every word expect time is compared:
+```log
+[YYYY-MM-DD hh:mm:ss.ms] [appName] [debug] [TransitionSmurf] Going to state <state>
+```
+
+If circuit is found, SmurfEvaluator is comparing only states in circuit, not circuit number. The number serves only for debugging:
+```log
+[YYYY-MM-DD hh:mm:ss.ms] In circuit N: [<list of states in circuit>]
+```
+
+#### Etalon
+Etalon is .log file taken as correct one for given run of tested application. Etalon should be human-verified and saved to VCS.
+Etalon file is passed by --etalon argument.
 #### Compared files
-Other tested-application's runs .log files are passed with --compare option.
-This file can contain multiple runs of tested application. File will be automatically aggregated to circuits and compared.
-New aggregated file is saved to --target file and compare output is printed to stdout
+Tested-application's .log files are passed with --compare option.
+This file can contain multiple runs of tested application.
+
+
 
 ## Run
 #### Creating aggregated etalon: 
@@ -45,9 +63,9 @@ New aggregated file is saved to --target file and compare output is printed to s
 #### Comparing runs:
 `./smurfEvaluator --etalon <path_to_etalon> --compare <path_to_compared> [--target <new_file_name>]`
 ### arguments
-- **-e | --etalon**: Path to EtalonAggregated file.
-- **-c | --compare**: Path to .log file which we want to compare with etalon
-- **-s | --save-aggregated**: If set, aggregated files will be saved
+- **-e | --etalon**: Path to etalon .log file.
+- **-c | --compare**: Path to .log file which we want to compare with etalon.
+- **-s | --save-aggregated**: If set, aggregated files will be saved to directory given.
 
 
 ### Tests
@@ -55,9 +73,8 @@ New aggregated file is saved to --target file and compare output is printed to s
 - Start tests: `$ ./test/diagram_smurf_tests`
 
 ## Implementation
-- Files are filtered using Boost library, only lines with [TransitionSmurf] are compared.
+- Files are filtered using Boost library, only lines with [TransitionSmurf] prefix are compared.
 - Comparer compares every word of logs except timestamp
 - State diagram used for finding circuits is built from [DiagramSmurf] logs on begin of .log file
 - Circuits in diagrams are found by CircuitFinder using Johnson's algorithm for finding elementary circuits
-- Algorithm only find unique elementary circuits, therefore in some application runs there are logged as StateTransition
-instead of as "In circuit". This doesn't influence correct behavior.
+- Algorithm only find unique elementary circuits

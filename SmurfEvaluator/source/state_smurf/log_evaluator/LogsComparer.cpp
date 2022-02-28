@@ -125,8 +125,9 @@ namespace state_smurf::log_evaluator {
 	
 	bool LogsComparer::saveAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path) {
 		std::filesystem::path dir(path);
-		std::filesystem::path etalonPath = dir / "etalonPath";
-		std::filesystem::path comparedPath = dir / "comparedPath";
+		std::filesystem::create_directories(path);
+		std::filesystem::path etalonPath = dir / "etalon";
+		std::filesystem::path comparedPath = dir / "compared";
 		std::ofstream newEtalonFile(etalonPath.string());
 		std::ofstream newComparedFile(comparedPath.string());
 		if (!newComparedFile.is_open() || !newEtalonFile.is_open()) {
@@ -134,10 +135,10 @@ namespace state_smurf::log_evaluator {
 			return false;
 		}
 		for (const auto& line : etalonLogs) {
-			newEtalonFile << line;
+			newEtalonFile << line << std::endl;
 		}
 		for (const auto& line : comparedLogs) {
-			newComparedFile << line;
+			newComparedFile << line << std::endl;
 		}
 		std::cout << "Aggregated files are saved in directory " << absolute(dir) << std::endl;
 		return true;

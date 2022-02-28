@@ -9,9 +9,9 @@
 
 
 static cxxopts::Options createArgOpts() {
-	cxxopts::Options options{"BringAuto daemon"};
+	cxxopts::Options options{"SmurfEvaluator"};
 	options.add_options()
-			("e, etalon", "Path to EtalonAggregated file", cxxopts::value<std::string>())
+			("e, etalon", "Path to etalon .log file", cxxopts::value<std::string>())
 			("c, compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
 			("s, save-aggregated", "If set, aggregated files will be saved. "
 									   "Value is path to directory where aggregated files will be created.", cxxopts::value<std::string>()->default_value(""))

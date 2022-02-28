@@ -54,7 +54,7 @@ def run_scenarios():
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
         print("..... Done")
 
-        if not aggregate_circuits_and_compare(scenario["name"]):
+        if not compare_output(scenario["name"]):
             tests_passed = False
         tidy_up()
     return tests_passed
@@ -84,24 +84,16 @@ def create_command_string(scenario: dict) -> str:
     return command
 
 
-def aggregate_circuits_and_compare(filename: str) -> bool:
-    if args.create_etalons:
-        file = os.path.join(etalons_dir, filename + ".log")
-        target_file = os.path.join(aggregated_etalons_dir, filename)
-        return_code = os.system(evaluator_bin_path + " --aggregate " + file + " --target " + target_file)
-        if return_code > 0:
-            print("WARNING: Couldn't aggregate etalon file: ", filename)
-            return False
-    else:
-        etalon_file = os.path.join(aggregated_etalons_dir, filename)
-        compare_file = os.path.join(output_dir, filename + ".log")
-        target_file = os.path.join(aggregated_output_dir, filename)
-        output_file = os.path.join(evaluator_output_dir, filename)
-        return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file + " --compare " + compare_file +
-                                " --target " + target_file + " > " + output_file)
-        if return_code > 0:
-            print("WARNING: test didn't pass: ", filename)
-            return False
+def compare_output(filename: str) -> bool:
+    etalon_file = os.path.join(etalons_dir, filename + ".log")
+    compare_file = os.path.join(output_dir, filename + ".log")
+    aggregate_dir = os.path.join(aggregated_output_dir, filename)
+    output_file = os.path.join(evaluator_output_dir, filename)
+    return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file + " --compare " + compare_file +
+                            " --save-aggregated " + aggregate_dir + " > " + output_file)
+    if return_code > 0:
+        print("WARNING: test didn't pass: ", filename)
+        return False
     return True
 
 
@@ -150,13 +142,11 @@ if __name__ == "__main__":
         out_dir = os.path.realpath(args.output_dir)
 
     etalons_dir = os.path.join(out_dir, "etalons")
-    aggregated_etalons_dir = os.path.join(out_dir, "aggregated_etalons")
     output_dir = os.path.join(out_dir, "output")
     aggregated_output_dir = os.path.join(out_dir, "aggregated_output")
     evaluator_output_dir = os.path.join(out_dir, "evaluator_output")
 
     Path(etalons_dir).mkdir(parents=True, exist_ok=True)
-    Path(aggregated_etalons_dir).mkdir(parents=True, exist_ok=True)
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     Path(aggregated_output_dir).mkdir(parents=True, exist_ok=True)
     Path(evaluator_output_dir).mkdir(parents=True, exist_ok=True)
