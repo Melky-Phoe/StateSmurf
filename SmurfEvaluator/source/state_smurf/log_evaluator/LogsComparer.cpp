@@ -7,7 +7,8 @@
 
 namespace state_smurf::log_evaluator {
 	
-	bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile, std::string saveAggregatedPath) {
+	bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile,
+									std::string saveAggregatedPath) {
 		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile);
 		std::vector<std::string> etalonLogs = circuitAggregator.createAggregatedFile(etalonFile);
 		std::vector<std::string> comparedLogs = circuitAggregator.createAggregatedFile(comparedFile);

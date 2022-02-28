@@ -3,26 +3,26 @@
 #include <bringauto/logging/Logger.hpp>
 
 namespace state_smurf::transition {
-	StateTransition::StateTransition(diagram::StateDiagram stateGraph) {
-		_stateGraph = std::move(stateGraph);
+	StateTransition::StateTransition(diagram::StateDiagram stateDiagram) {
+		stateDiagram_ = std::move(stateDiagram);
 		printAdjacencyList();
 		bringauto::logging::Logger::logDebug("[TransitionSmurf] Start of Run");
 	}
 	
 	bool StateTransition::goToState(const std::string &stateName) {
-		if (_stateGraph.changeStateByName(stateName)) {
+		if (stateDiagram_.changeStateByName(stateName)) {
 			bringauto::logging::Logger::logDebug("[TransitionSmurf] Going to state {}", stateName);
 			return inState(stateName);
 		} else {
-			if (_stateGraph.stateExist(stateName)) {
-				if (_stateGraph.getCurrentStateName().empty()) {
+			if (stateDiagram_.stateExist(stateName)) {
+				if (stateDiagram_.getCurrentStateName().empty()) {
 					bringauto::logging::Logger::logWarning(
 							R"([TransitionSmurf] Invalid Starting state {{ "state":{} }})",
 							stateName);
 				} else {
 					bringauto::logging::Logger::logWarning(
 							R"([TransitionSmurf] Couldn't change state {{ "to":{} "from": {} }})",
-							stateName, _stateGraph.getCurrentStateName());
+							stateName, stateDiagram_.getCurrentStateName());
 				}
 			} else {
 				bringauto::logging::Logger::logWarning("[TransitionSmurf] State doesnt exist {}", stateName);
@@ -32,17 +32,17 @@ namespace state_smurf::transition {
 	}
 	
 	bool StateTransition::inState(const std::string &stateName) {
-		if (_stateGraph.getCurrentStateName() == stateName) {
+		if (stateDiagram_.getCurrentStateName() == stateName) {
 			return true;
 		} else {
 			bringauto::logging::Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",
-			                                     stateName, _stateGraph.getCurrentStateName());
+			                                     stateName, stateDiagram_.getCurrentStateName());
 			return false;
 		}
 	}
 	
 	void StateTransition::printAdjacencyList() {
-		auto adjacencyList = _stateGraph.getAdjacencyList();
+		auto adjacencyList = stateDiagram_.getAdjacencyList();
 		
 		for (const auto &it: adjacencyList) {
 			std::string states = {};

@@ -54,8 +54,9 @@ def run_scenarios():
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
         print("..... Done")
 
-        if not compare_output(scenario["name"]):
-            tests_passed = False
+        if not args.create_etalons:
+            if not compare_output(scenario["name"]):
+                tests_passed = False
         tidy_up()
     return tests_passed
 
@@ -75,6 +76,7 @@ def create_command_string(scenario: dict) -> str:
     command = executable_path + " "
     for argument in scenario["arguments"]:
         command += argument + " " + str(scenario["arguments"][argument]) + " "
+
     if args.create_etalons:
         target = os.path.join(etalons_dir, scenario["name"] + ".log")
         command += "> " + str(target)
@@ -157,13 +159,9 @@ if __name__ == "__main__":
     setup()
     if not run_scenarios():
         exit_code = 2
-        if args.create_etalons:
-            print("WARNING: Creating etalons failed")
-        else:
-            print("WARNING: Some test have different transition logs, check \'" + evaluator_output_dir + "\' for output")
+        print("WARNING: Some test have different transition logs, check \'" + evaluator_output_dir + "\' for output")
     if args.create_etalons:
-        print("Raw transition etalons were created in:", etalons_dir)
-        print("aggregated etalons were created in ", aggregated_etalons_dir)
+        print("Etalons were created in:", etalons_dir)
     cleanup()
 
     exit(exit_code)

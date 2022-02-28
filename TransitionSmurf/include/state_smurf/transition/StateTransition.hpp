@@ -12,7 +12,7 @@ namespace state_smurf::transition {
 	class StateTransition {
 	public:
 		
-		explicit StateTransition(diagram::StateDiagram stateGraph);
+		explicit StateTransition(diagram::StateDiagram stateDiagram);
 		
 		/**
 		 * Method used for moving around state diagram. Changes current state if possible
@@ -36,7 +36,7 @@ namespace state_smurf::transition {
 		 */
 		void printAdjacencyList();
 		
-		diagram::StateDiagram _stateGraph;
+		diagram::StateDiagram stateDiagram_;
 	};
 	
 }

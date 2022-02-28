@@ -31,6 +31,11 @@ namespace state_smurf::log_evaluator {
 		 */
 		static std::string getState(const std::string &line);
 		
+		/**
+		 * Gets date and time from log line
+		 * @param line log
+		 * @return time in format: [YYYY-MM-DD hh:mm:ss.ms]
+		 */
 		static std::string getTime(const std::string &line);
 		
 		/**
