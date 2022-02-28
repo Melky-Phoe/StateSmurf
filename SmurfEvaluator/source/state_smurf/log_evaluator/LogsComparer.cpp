@@ -3,14 +3,20 @@
 #include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 
 #include <iostream>
+#include <filesystem>
 
 namespace state_smurf::log_evaluator {
 	
-	bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile) {
+	bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile, std::string saveAggregatedPath) {
 		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile);
 		std::vector<std::string> etalonLogs = circuitAggregator.createAggregatedFile(etalonFile);
-		
 		std::vector<std::string> comparedLogs = circuitAggregator.createAggregatedFile(comparedFile);
+		
+		if (!saveAggregatedPath.empty()) {
+			if (!saveAggregatedFiles(etalonLogs, comparedLogs, saveAggregatedPath)) {
+				return false;
+			}
+		}
 		
 		if (!validateEtalon(etalonLogs)) {
 			return false;
@@ -115,6 +121,26 @@ namespace state_smurf::log_evaluator {
 			std::cout << "ERROR: empty etalon" << std::endl;
 			return false;
 		}
+	}
+	
+	bool LogsComparer::saveAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path) {
+		std::filesystem::path dir(path);
+		std::filesystem::path etalonPath = dir / "etalonPath";
+		std::filesystem::path comparedPath = dir / "comparedPath";
+		std::ofstream newEtalonFile(etalonPath.string());
+		std::ofstream newComparedFile(comparedPath.string());
+		if (!newComparedFile.is_open() || !newEtalonFile.is_open()) {
+			std::cerr << "ERROR: unable to create files in directory " << path << std::endl;
+			return false;
+		}
+		for (const auto& line : etalonLogs) {
+			newEtalonFile << line;
+		}
+		for (const auto& line : comparedLogs) {
+			newComparedFile << line;
+		}
+		std::cout << "Aggregated files are saved in directory " << absolute(dir) << std::endl;
+		return true;
 	}
 	
 }

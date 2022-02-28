@@ -26,6 +26,8 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j 8
 ```
 ## Usage
+### Logs format
+
 #### Creating Etalon:
 First take .log file of tested application run. Verify if everything worked as expected.
 Then use --aggregate option to create Aggregated-Etalon. Save this file for later comparison.
@@ -45,8 +47,7 @@ New aggregated file is saved to --target file and compare output is printed to s
 ### arguments
 - **-e | --etalon**: Path to EtalonAggregated file.
 - **-c | --compare**: Path to .log file which we want to compare with etalon
-- **-a | --aggregate**: Path to .log file to create AggregatedFile from
-- **-t | --target**: Target AggregatedFile name
+- **-s | --save-aggregated**: If set, aggregated files will be saved
 
 
 ### Tests

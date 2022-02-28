@@ -10,9 +10,10 @@ namespace state_smurf::log_evaluator {
 		 * Compares logs of aggregated TransitionSmurf files given by param, writes differences on stdout
 		 * @param etalonFile file, that we take as correct one
 		 * @param comparedFile tested file
+		 * @param saveAggregatedPath path to directory create aggregated files, if empty, files are not saved
 		 * @return true if StateTransition logs are same, false otherwise
 		 */
-		static bool compareFiles(std::istream &etalonFile, std::istream &comparedFile);
+		static bool compareFiles(std::istream &etalonFile, std::istream &comparedFile, std::string saveAggregatedPath);
 	
 	private:
 		/**
@@ -28,6 +29,8 @@ namespace state_smurf::log_evaluator {
 		 * @return
 		 */
 		static bool validateEtalon(std::vector<std::string> etalonLogs);
+		
+		static bool saveAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path);
 		
 	};
 }

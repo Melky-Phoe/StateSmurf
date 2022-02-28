@@ -13,8 +13,8 @@ static cxxopts::Options createArgOpts() {
 	options.add_options()
 			("e, etalon", "Path to EtalonAggregated file", cxxopts::value<std::string>())
 			("c, compare", "Path to .log file which we want to compare with etalon", cxxopts::value<std::string>())
-			("g, generate-aggregated", "If set, aggregated files will be generated. "
-									   "Value is path to directory where aggregated files will be created.", cxxopts::value<std::string>())
+			("s, save-aggregated", "If set, aggregated files will be saved. "
+									   "Value is path to directory where aggregated files will be created.", cxxopts::value<std::string>()->default_value(""))
 			("h,help", "Print help message");
 	return options;
 }
@@ -49,14 +49,9 @@ cxxopts::ParseResult parseArgOpts(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	auto args = parseArgOpts(argc, argv);
-	
-	bool createEtalonCircuits = args.count("aggregate");
-	std::string etalonFilePath = {};
-	std::string compareFilePath = {};
-	if (!createEtalonCircuits) {
-		compareFilePath = args["compare"].as<std::string>();
-		etalonFilePath = args["etalon"].as<std::string>();
-	}
+
+	std::string compareFilePath = args["compare"].as<std::string>();
+	std::string etalonFilePath = args["etalon"].as<std::string>();
 
 	// Opening files
 	std::ifstream etalonFile;
@@ -72,7 +67,7 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 	
-	if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile)) {
+	if (!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile, args["save-aggregated"].as<std::string>())) {
 		return EXIT_FAILURE;
 	}
 	

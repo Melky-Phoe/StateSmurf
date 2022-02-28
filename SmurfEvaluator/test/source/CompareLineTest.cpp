@@ -16,26 +16,26 @@ std::ifstream openFile(std::string filename) {
 
 TEST_F(CompareLineTest, differentTime) {
     std::ifstream compare = openFile("differentTime.log");
-    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareLineTest, differentApp) {
     std::ifstream compare = openFile("differentApp.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareLineTest, emptyTransition1) {
     std::ifstream compare = openFile("emptyTransition.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareLineTest, emptyTransition2) {
     std::ifstream compare1 = openFile("emptyTransition.log");
     std::ifstream compare2 = openFile("emptyTransition.log");
-    EXPECT_TRUE(LogsComparer::compareFiles(compare1, compare2));
+    EXPECT_TRUE(LogsComparer::compareFiles(compare1, compare2, false));
     compare1.close();
     compare2.close();
 }
