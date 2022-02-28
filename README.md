@@ -32,9 +32,8 @@ Code:
 3. Use StateTransition::goToState to change states according to system behavior
 
 Automated evaluating:
-1. Create scenarios.json file containing arguments for each tested scenario
+1. Create scenarios.json file containing environment setup and arguments for each tested scenario 
 2. Use SmurfTestingScripts CompareScenarios.py with --create-etalons option to create etalons
 3. Verify etalons. Check if all transitions were successful, runs were ended as expected etc.
-   - For better orientation in logs, it is recommended to verify aggregated etalons. 
-   - Etalons shouldn't change until some major change in tested system is made that invalidates them.
+   - Etalons should remain same for a working system
 4. Add CompareScenarios.py to test set.

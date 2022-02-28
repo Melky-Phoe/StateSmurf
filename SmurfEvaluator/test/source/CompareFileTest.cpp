@@ -18,76 +18,63 @@ std::ifstream openFile(std::string filename) {
 
 TEST_F(CompareFileTest, shorterCompared) {
     std::ifstream shorterCompare = openFile("shorter.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, shorterCompare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, shorterCompare, false));
     shorterCompare.close();
 }
 
 TEST_F(CompareFileTest, longerCompared) {
     std::ifstream longerCompare = openFile("longer.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, longerCompare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, longerCompare, false));
     longerCompare.close();
 }
 
 TEST_F(CompareFileTest, sameFiles) {
     std::ifstream compare = openFile("etalon.log");
-    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareFileTest, differentFiles) {
     std::ifstream compare = openFile("different.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
-    compare.close();
-}
-
-TEST_F(CompareFileTest, corruptedFile) {
-    std::ifstream compare = openFile("corrupted.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
-    compare.close();
-}
-
-TEST_F(CompareFileTest, notExistingFile) {
-    // TODO je tento test potreba? O otevirani souboru se stara nekdo jiny
-    std::ifstream compare = openFile("notExisting.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareFileTest, emptyFile) {
     std::ifstream compare = openFile("empty.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareFileTest, emptyEtalon) {
     std::ifstream compare = openFile("empty.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(compare, etalon));
+    EXPECT_FALSE(LogsComparer::compareFiles(compare, etalon, false));
     compare.close();
 }
 
 TEST_F(CompareFileTest, bothEmpty) {
     std::ifstream compare1 = openFile("empty.log");
     std::ifstream compare2 = openFile("empty.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(compare1, compare2));
+    EXPECT_FALSE(LogsComparer::compareFiles(compare1, compare2, false));
     compare1.close();
     compare2.close();
 }
 
 TEST_F(CompareFileTest, sameRuns) {
     std::ifstream compare = openFile("multipleRuns/sameRun.log");
-    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareFileTest, longerRun) {
     std::ifstream compare = openFile("multipleRuns/longerRun.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 
 TEST_F(CompareFileTest, shorterRun) {
     std::ifstream compare = openFile("multipleRuns/shorterRun.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
     compare.close();
 }
 

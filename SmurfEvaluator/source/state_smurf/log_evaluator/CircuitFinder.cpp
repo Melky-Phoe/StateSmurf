@@ -7,89 +7,80 @@ namespace state_smurf::log_evaluator {
 	
 	constexpr int ORIGIN_STATE_INDEX = 5;
 	constexpr int DEST_STATES_INDEX = 7;
-
-    CircuitFinder::CircuitFinder(std::istream& srcFile) {
-	    if (!createAdjacencyMatrix(srcFile)) {
-		    exit(1);
-		}
-        blocked = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
-		blockMatrix.resize(numberOfVertexes);
-	    for (int i = 0; i < numberOfVertexes; ++i) {
-		    blockMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
-		    if (blockMatrix[i] == nullptr) {
-			    std::cerr << "ERROR: bad allocation" << std::endl;
-			    exit(1);
-		    }
-	    }
-		
-        if (blocked == nullptr) {
-	        std::cerr << "ERROR: bad allocation" << std::endl;
-            exit(1); // exception
-        }
-    }
 	
-	std::vector<std::vector<std::string>>  CircuitFinder::find() {
-		for (int i = 0; i < startingVertexes.size(); ++i) {
-			if (!adjacencyMatrix.empty()) {
-				for (int j = 0; j < numberOfVertexes; j++) {
-					for (int k = 0; k < numberOfVertexes; k++) {
-						blockMatrix[j][k] = false;
+	CircuitFinder::CircuitFinder(std::istream &srcFile) {
+		if (!createAdjacencyMatrix(srcFile)) {
+			return;
+		}
+		blocked_.resize(numberOfVertexes_, false);
+		blockMatrix_.resize(numberOfVertexes_);
+		for (int i = 0; i < numberOfVertexes_; ++i) {
+			blockMatrix_[i].resize(numberOfVertexes_, false);
+		}
+	}
+	
+	std::vector<std::vector<std::string>> CircuitFinder::find() {
+		for (int i = 0; i < startingVertexes_.size(); ++i) {
+			if (!adjacencyMatrix_.empty()) {
+				for (int j = 0; j < numberOfVertexes_; j++) {
+					for (int k = 0; k < numberOfVertexes_; k++) {
+						blockMatrix_[j][k] = false;
 					}
-					blocked[j] = false;
+					blocked_[j] = false;
 				}
-				startVertex = startingVertexes[i];
-				circuit(startVertex);
+				startVertex_ = startingVertexes_[i];
+				circuit(startVertex_);
 				
 				// adding adjacent vertexes as starting
-				for (int j = 0; j < numberOfVertexes; ++j) {
-					if (adjacencyMatrix[startVertex][j]) {
-						startingVertexes.push_back(j);
+				for (int j = 0; j < numberOfVertexes_; ++j) {
+					if (adjacencyMatrix_[startVertex_][j]) {
+						startingVertexes_.push_back(j);
 					}
 				}
 				// removing all incoming edges to completely discovered vertex
-				for (int j = 0; j < numberOfVertexes; ++j) {
-					if (adjacencyMatrix[j][startVertex]) {
-						adjacencyMatrix[j][startVertex] = false;
+				for (int j = 0; j < numberOfVertexes_; ++j) {
+					if (adjacencyMatrix_[j][startVertex_]) {
+						adjacencyMatrix_[j][startVertex_] = false;
 					}
 				}
 			} else {
 				break;
 			}
 		}
-		return circuits;
+		return circuits_;
 	}
 	
-    void CircuitFinder::unblock(const int& vertex) {
-        blocked[vertex] = false;
-	    for (int i = 0; i < numberOfVertexes; ++i) {
-		    if (blockMatrix[vertex][i]) {
-			    blockMatrix[vertex][i] = false;
-			    unblock(i);
+	void CircuitFinder::unblock(const int &vertex) {
+		blocked_[vertex] = false;
+		for (int i = 0; i < numberOfVertexes_; ++i) {
+			if (blockMatrix_[vertex][i]) {
+				blockMatrix_[vertex][i] = false;
+				unblock(i);
 			}
-	    }
-    }
-
-
-    bool CircuitFinder::circuit(const int& vertex) {
-        bool found = false;
-        visitedVertexes.push_back(vertex);
-        blocked[vertex] = true;
+		}
+	}
+	
+	
+	bool CircuitFinder::circuit(const int &vertex) {
+		bool found = false;
+		visitedVertexes_.push_back(vertex);
+		blocked_[vertex] = true;
 		int nextVertex = -1;
-		for (int i = 0; i < numberOfVertexes; ++i) {
-			if (adjacencyMatrix[vertex][i]) {
+		for (int i = 0; i < numberOfVertexes_; ++i) {
+			if (adjacencyMatrix_[vertex][i]) {
 				nextVertex = i;
 			} else {
 				continue;
 			}
-			// ^^ mam najity dalsi vertex, ted se rozhodnu co s nim
-			if (nextVertex == startVertex) {
+			// ^^ found next Vertex, now decide what to do next
+			if (nextVertex == startVertex_) {
 				std::vector<std::string> newCircuit;
-				for (const auto &circuitVertex: visitedVertexes) {
-					newCircuit.push_back(stateNames[circuitVertex]);
+				for (const auto &circuitVertex: visitedVertexes_) {
+					newCircuit.push_back(stateNames_[circuitVertex]);
 				}
-				circuits.push_back(newCircuit);
+				circuits_.push_back(newCircuit);
 				found = true;
-			} else if (!blocked[nextVertex]) {
+			} else if (!blocked_[nextVertex]) {
 				if (circuit(nextVertex)) {
 					found = true;
 				}
@@ -98,17 +89,17 @@ namespace state_smurf::log_evaluator {
 		if (found) {
 			unblock(vertex);
 		} else {
-			for (int i = 0; i < numberOfVertexes; ++i) {
-				if (adjacencyMatrix[vertex][i]) {
-					blockMatrix[i][vertex] = true;
+			for (int i = 0; i < numberOfVertexes_; ++i) {
+				if (adjacencyMatrix_[vertex][i]) {
+					blockMatrix_[i][vertex] = true;
 				}
 			}
 		}
-		visitedVertexes.pop_back();
+		visitedVertexes_.pop_back();
 		return found;
-    }
+	}
 	
-	bool CircuitFinder::createAdjacencyMatrix(std::istream& srcFile) {
+	bool CircuitFinder::createAdjacencyMatrix(std::istream &srcFile) {
 		std::string line = Filter::findDiagramSmurfLog(srcFile);
 		std::map<std::string, int> namesMap;
 		
@@ -118,45 +109,36 @@ namespace state_smurf::log_evaluator {
 			line = Filter::findDiagramSmurfLog(srcFile);
 		}
 		
-		numberOfVertexes = adjacencyTokens.size();
-		if (numberOfVertexes < 1) {
+		numberOfVertexes_ = adjacencyTokens.size();
+		if (numberOfVertexes_ < 1) {
 			std::cerr << "ERROR: Invalid state diagram" << std::endl;
 			return false;
 		}
-		adjacencyMatrix.resize(numberOfVertexes);
+		adjacencyMatrix_.resize(numberOfVertexes_);
 		
-		for (int i = 0; i < numberOfVertexes; ++i) {
-			stateNames.push_back(adjacencyTokens[i][ORIGIN_STATE_INDEX]);
+		for (int i = 0; i < numberOfVertexes_; ++i) {
+			stateNames_.push_back(adjacencyTokens[i][ORIGIN_STATE_INDEX]);
 			namesMap[adjacencyTokens[i][ORIGIN_STATE_INDEX]] = i;
 		}
-		for (int i = 0; i < numberOfVertexes; ++i) {
-			adjacencyMatrix[i] = static_cast<bool *>(calloc(sizeof(bool), numberOfVertexes));
+		for (int i = 0; i < numberOfVertexes_; ++i) {
+			adjacencyMatrix_[i].resize(numberOfVertexes_, false);
 			if (adjacencyTokens[i][ORIGIN_STATE_INDEX] == "__START__") {    // different approach for starting vertexes
 				for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
-					// adjacency matrix line i, index of state on index j is true
-					startingVertexes.push_back(namesMap[adjacencyTokens[i][j]]);
+					startingVertexes_.push_back(namesMap[adjacencyTokens[i][j]]);
+					// don't need to add to adjacency list since __START__ is never part of circuit
 				}
 			} else {
 				for (int j = DEST_STATES_INDEX; j < adjacencyTokens[i].size(); ++j) {
 					// adjacency matrix line i, index of state on index j is true
 					std::string state = adjacencyTokens[i][j];
-					adjacencyMatrix[i][namesMap[state]] = true;
+					adjacencyMatrix_[i][namesMap[state]] = true;
 				}
 			}
 		}
-		if (startingVertexes.empty()) {
+		if (startingVertexes_.empty()) {
 			std::cerr << "ERROR: no starting vertexes" << std::endl;
 			return false;
 		}
 		return true;
-	}
-	
-	CircuitFinder::~CircuitFinder() {
-		free(blocked);
-		blocked = nullptr;
-		for (int i = 0; i < numberOfVertexes; ++i) {
-			free(adjacencyMatrix[i]);
-			adjacencyMatrix[i] = nullptr;
-		}
 	}
 }

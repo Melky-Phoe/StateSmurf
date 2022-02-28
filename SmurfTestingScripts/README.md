@@ -14,7 +14,6 @@ All paths used in scenario.json are relative to this file.
 
 **Created directories:** 
 * etalons: created when -c option is used, files with raw .log files
-* aggregated_etalons: created when -c option is used, contains aggregated files used for comparing
 * output: raw .log output of test-runs
 * aggregated_output: aggregated output of test-runs
 * evaluator_output: SmurfEvaluator compare output containing differences between etalon and output
@@ -25,15 +24,18 @@ python3 CompareScenarios.py --scenario <path> --executable <path> --evaluator <p
 ```  
 first run must  have option --create-etalons! Etalons aren't created automatically when not found,
 because they demand human-approve.
-### arguments
+### Arguments:
 - **-s | --scenario**: Path to scenario.json file containing run scenarios.
 - **-e | --executable**: Path to executable of tested application.
 - **--evaluator**: Path SmurfEvaluator executable.
-- **-c | --create-etalons**: Switch to create etalons and aggregated-etalons.
+- **-c | --create-etalons**: Switch to create etalons.
 - **-o | --output**: Path to directory, where all output directories are created
 
+#### Exit codes:
+- 0 = Success, everything worked
+- 1 = Error
+- 2 = Some files are different from etalon.
 ### Scenarios
-
 
 #### keys:
 - setup : set of commands, that are run once on the beginning
