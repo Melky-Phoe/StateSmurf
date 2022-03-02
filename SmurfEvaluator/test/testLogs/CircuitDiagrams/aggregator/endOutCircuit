@@ -1,0 +1,12 @@
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] __START__ :	A
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] A :	B
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] B :	C D
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] C :	A
+[2022-02-21 10:44:28.900] [virtual-vehicle-utility] [debug] [DiagramSmurf] D :
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state A
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state B
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state C
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state A
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state B
+[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state D

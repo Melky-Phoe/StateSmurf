@@ -33,7 +33,7 @@ State transition table in which circuits are found:
 
 After aggregation, every Start of run log is changed to:
 ```log
-[YYYY-MM-DD hh:mm:ss.ms] [appName] [debug] [TransitionSmurf] Start of Run - Aggregated
+[YYYY-MM-DD hh:mm:ss.ms] [appName] [debug] [TransitionSmurf] Start of Run -- Aggregated
 ```
 
 Basic state transition logs, where every word expect time is compared:

@@ -20,7 +20,7 @@ namespace state_smurf::log_evaluator {
 		 * Aggregates logs into circuits that are saved to file given by param
 		 * @param newFileName - filename where aggregated logs will be written. Must be existing path.
 		 */
-		std::vector<std::string> createAggregatedFile(std::istream &sourceLogFile);
+		std::vector<std::string> createAggregatedVector(std::istream &sourceLogFile);
 	
 	private:
 		/**
