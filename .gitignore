@@ -32,3 +32,6 @@
 *.app
 /cmake-build-debug/
 _tmp/
+_build/
+*/_build/
+.idea/
