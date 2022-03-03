@@ -6,8 +6,8 @@
 
 namespace state_smurf::log_evaluator {
 	
-	constexpr int MINIMAL_CIRCUIT_LOG_SIZE = 3;
-	constexpr int CIRCUIT_WORD_INDEX = 1;
+	constexpr int MINIMAL_CIRCUIT_LOG_SIZE = 5; // [date time] In circuit N:
+	constexpr int CIRCUIT_WORD_INDEX = 3;
 	
 	std::vector<std::string> LineParser::parseLine(std::string line) {
 		std::vector<std::string> tokens;
