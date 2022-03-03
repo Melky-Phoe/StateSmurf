@@ -103,14 +103,9 @@ namespace circuit_aggregator {
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] In circuit 1: [A, B, C, ]");
 		EXPECT_EQ(constAggregated, logs);
 	}
-	
-	/*
-	 * Known issue
-	 * if there is only one circuit but longer with same vertexes is possible, application will find End (handleEnd function)
-	 * and because no circuit was found before, it will log only transitions (Going to state A, Going to state B)
-	 *
+
 	TEST(CircuitAggregator, shortEnd) {
-	    // Shorter from two circuits, containing same 1st and 2nd vertexes
+	    // Shorter of two circuits, containing same 1st and 2nd vertexes
 		std::ifstream file = openFile("shortEnd");
 		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
@@ -119,7 +114,7 @@ namespace circuit_aggregator {
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] In circuit 0: [A, B, ]");
 		EXPECT_EQ(constAggregated, logs);
 	}
-	*/
+	
 	TEST(CircuitAggregator, doubleShortEnd) {
 		// Shorter of circuits happening twice
 		std::ifstream file = openFile("doubleShortEnd");
