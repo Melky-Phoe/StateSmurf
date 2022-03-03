@@ -141,4 +141,23 @@ namespace circuit_aggregator {
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] In circuit 0: [A, B, ]");
 		EXPECT_EQ(constAggregated, logs);
 	}
+	
+	TEST(CircuitAggregator, multiRun) {
+		// End in shorter circuit, but circuits have different 2nd vertex
+		std::ifstream file = openFile("multiRun");
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
+		std::vector<std::string> constAggregated;
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] In circuit 0: [A, B, C, ]");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state A");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state B");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] In circuit 0: [A, B, C, ]");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state A");
+		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Going to state B");
+		EXPECT_EQ(constAggregated, logs);
+	}
 }

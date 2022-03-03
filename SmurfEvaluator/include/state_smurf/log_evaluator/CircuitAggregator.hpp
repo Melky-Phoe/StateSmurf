@@ -29,7 +29,7 @@ namespace state_smurf::log_evaluator {
 		 * If no circuit was found, returns NOT_FOUND.
 		 * @return index of circuit
 		 */
-		long getCircuit();
+		long getCircuit(long lastCircuit);
 		
 		/**
 		 * Called if end of file or new run was found
