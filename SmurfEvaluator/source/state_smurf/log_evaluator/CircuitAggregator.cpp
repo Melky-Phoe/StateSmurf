@@ -9,7 +9,8 @@ namespace state_smurf::log_evaluator {
 	
 	constexpr long NOT_FOUND = -1;
 	constexpr long END_FOUND = -2;
-	constexpr long NO_CIRCUITS = -3;
+	constexpr long START_FOUND = -3;
+	constexpr long NO_CIRCUITS = -4;
 	
 	CircuitAggregator::CircuitAggregator(std::istream &sourceLogFile) {
 		state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
@@ -18,28 +19,32 @@ namespace state_smurf::log_evaluator {
 		sourceLogFile.seekg(std::ios::beg);
 	}
 	
-	std::vector<std::string> CircuitAggregator::createAggregatedFile(std::istream &sourceLogFile) {
+	std::vector<std::string> CircuitAggregator::createAggregatedVector(std::istream &sourceLogFile) {
 		transitionLogVector_ = Filter::createTransitionLogVector(sourceLogFile);
 		std::vector<std::string> aggregatedLogVector;
 		
 		std::vector<int> circuitFoundIndexes;
 		long currentCircuit = END_FOUND;
 		for (transitionIndex_ = 0; transitionIndex_ < transitionLogVector_.size();) {
-			long nextCircuit = getCircuit();
+			long nextCircuit = getCircuit(currentCircuit);
 			if (nextCircuit == END_FOUND) {
 				if (LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 					std::string newLine = transitionLogVector_[transitionIndex_];
 					newLine.append(" -- Aggregated");
 					aggregatedLogVector.push_back(newLine);
-				}
-				if (!handleEnd(currentCircuit)) {
-					while (transitionIndex_ < transitionLogVector_.size() &&
-					       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
-						aggregatedLogVector.push_back(transitionLogVector_[transitionIndex_]);
-						transitionIndex_++;
+					
+					currentCircuit = START_FOUND;
+					transitionIndex_++;
+				} else {
+					if (!handleEnd(currentCircuit)) {
+						while (transitionIndex_ < transitionLogVector_.size() &&
+						       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+							aggregatedLogVector.push_back(transitionLogVector_[transitionIndex_]);
+							transitionIndex_++;
+						}
 					}
+					currentCircuit = END_FOUND;
 				}
-				currentCircuit = END_FOUND;
 			} else if (nextCircuit == NOT_FOUND) {
 				aggregatedLogVector.push_back(transitionLogVector_[transitionIndex_]);
 				transitionIndex_++;
@@ -85,7 +90,7 @@ namespace state_smurf::log_evaluator {
 		return max;
 	}
 	
-	long CircuitAggregator::getCircuit() {
+	long CircuitAggregator::getCircuit(long lastCircuit) {
 		if (circuitList_.empty()) {
 			return NO_CIRCUITS;
 		}
@@ -93,14 +98,23 @@ namespace state_smurf::log_evaluator {
 		for (int i = 0; i < circuitList_.size(); ++i) {
 			for (int j = 0; j < circuitList_[i].size(); ++j) {
 				auto nextState = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
-				if (nextState.empty() || transitionIndex_ + j == transitionLogVector_.size() - 1) {
-					return END_FOUND;
+				if (nextState.empty() ) { // Start of Run is found
+					if (lastCircuit == START_FOUND) {
+						break;
+					} else {
+						return END_FOUND;
+					}
 				}
-				
 				if (nextState != circuitList_[i][j]) {
 					break;
 				} else if (j == circuitList_[i].size() - 1) { // all elements are equal
 					circuitFoundIndexes.push_back(i);
+				} else if (transitionIndex_ + j == transitionLogVector_.size() - 1) {   // end of vector, any step further will raise exception
+					if (lastCircuit == START_FOUND) {
+						break;
+					} else {
+						return END_FOUND;
+					}
 				}
 			}
 		}
@@ -113,13 +127,11 @@ namespace state_smurf::log_evaluator {
 	}
 	
 	bool CircuitAggregator::handleEnd(long currentCircuit) {
-		if (currentCircuit == END_FOUND) {
-			transitionIndex_++;
-		} else if (currentCircuit == NOT_FOUND) {
+		if (currentCircuit == NOT_FOUND || currentCircuit == START_FOUND) {
 			return false;
 		} else {
 			bool stayInCircuit = true;
-			while (transitionIndex_ < transitionLogVector_.size()) {
+			while (transitionIndex_ < transitionLogVector_.size() && !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 				for (int j = 0; j < circuitList_[currentCircuit].size() &&
 				                (transitionIndex_ + j) < transitionLogVector_.size(); ++j) {
 					auto state = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);

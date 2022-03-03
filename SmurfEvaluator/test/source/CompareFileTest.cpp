@@ -18,63 +18,63 @@ std::ifstream openFile(std::string filename) {
 
 TEST_F(CompareFileTest, shorterCompared) {
     std::ifstream shorterCompare = openFile("shorter.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, shorterCompare, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, shorterCompare, ""));
     shorterCompare.close();
 }
 
 TEST_F(CompareFileTest, longerCompared) {
     std::ifstream longerCompare = openFile("longer.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, longerCompare, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, longerCompare, ""));
     longerCompare.close();
 }
 
 TEST_F(CompareFileTest, sameFiles) {
     std::ifstream compare = openFile("etalon.log");
-    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, false));
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
 }
 
 TEST_F(CompareFileTest, differentFiles) {
     std::ifstream compare = openFile("different.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
 }
 
 TEST_F(CompareFileTest, emptyFile) {
     std::ifstream compare = openFile("empty.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
 }
 
 TEST_F(CompareFileTest, emptyEtalon) {
     std::ifstream compare = openFile("empty.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(compare, etalon, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(compare, etalon, ""));
     compare.close();
 }
 
 TEST_F(CompareFileTest, bothEmpty) {
     std::ifstream compare1 = openFile("empty.log");
     std::ifstream compare2 = openFile("empty.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(compare1, compare2, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(compare1, compare2, ""));
     compare1.close();
     compare2.close();
 }
 
 TEST_F(CompareFileTest, sameRuns) {
     std::ifstream compare = openFile("multipleRuns/sameRun.log");
-    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, false));
+    EXPECT_TRUE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
 }
 
 TEST_F(CompareFileTest, longerRun) {
     std::ifstream compare = openFile("multipleRuns/longerRun.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
 }
 
 TEST_F(CompareFileTest, shorterRun) {
     std::ifstream compare = openFile("multipleRuns/shorterRun.log");
-    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, false));
+    EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
 }
 
