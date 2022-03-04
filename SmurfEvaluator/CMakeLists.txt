@@ -3,6 +3,10 @@ PROJECT(SmurfEvaluator CXX)
 
 FIND_PACKAGE(CMLIB REQUIRED)
 
+IF(NOT BRINGAUTO_SYSTEM_DEP)
+	INCLUDE(cmake/Dependencies.cmake)
+ENDIF()
+
 FIND_PACKAGE(Boost 1.71 REQUIRED)
 
 FIND_PACKAGE(cxxopts 2.0.0 REQUIRED)
@@ -12,10 +16,6 @@ OPTION(STATESMURF_TESTS "Enable StateSmurf tests" ON)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
-
-IF(NOT BRINGAUTO_SYSTEM_DEP)
-	INCLUDE(cmake/Dependencies.cmake)
-ENDIF()
 
 SET(CMAKE_CXX_STANDARD 20)
 
