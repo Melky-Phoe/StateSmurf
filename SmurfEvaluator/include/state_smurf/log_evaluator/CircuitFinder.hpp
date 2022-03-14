@@ -3,8 +3,6 @@
 #include <state_smurf/diagram/StateDiagram.hpp>
 #include <state_smurf/diagram/Vertex.hpp>
 
-#include <stack>
-
 namespace state_smurf::log_evaluator {
 
 	/**
