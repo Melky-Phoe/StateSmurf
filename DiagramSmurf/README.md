@@ -32,6 +32,8 @@ Initialization of state diagram:
 3. Add starting vertexes
 4. Add edges between vertexes
 
+State diagram must have at least 1 starting vertex (function `setStartVertex(vertexName)`)  
+DiagramSmurfs reserved names begin and end with double underscore (`__START__`) 
 ## Implementation
 - Vertexes are shared_ptr saved in vector
 - Transitions are defined by State Transition Matrix

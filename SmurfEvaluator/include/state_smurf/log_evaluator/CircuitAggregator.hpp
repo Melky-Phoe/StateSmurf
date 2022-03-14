@@ -37,7 +37,13 @@ namespace state_smurf::log_evaluator {
 		 * @param currentCircuit index of last circuit found
 		 * @return true if states are from same circuit or end was found
 		 */
-		bool handleEnd(long currentCircuit);
+		void handleEnd(long currentCircuit, std::vector<std::string> &targetLogFile);
+		
+		void handleStart(std::vector<std::string> &targetLogFile);
+		
+		void handleNoCircuits(std::vector<std::string> &targetLogFile);
+		
+		void printCircuitLog(std::vector<std::string> &targetLogFile, long circuitIndex);
 		
 		/**
 		 * If multiple possible Circuits are found, the longest is taken
@@ -52,6 +58,13 @@ namespace state_smurf::log_evaluator {
 		/// All TransitionSmurf logs saved in Vector
 		std::vector<std::string> transitionLogVector_;
 		u_long transitionIndex_{0};
+		
+		enum returnCodes {
+			NOT_FOUND = -1,
+			END_FOUND = -2,
+			START_FOUND = -3,
+			NO_CIRCUITS = -4
+		};
 	};
 	
 }

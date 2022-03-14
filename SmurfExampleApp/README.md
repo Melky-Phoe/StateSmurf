@@ -1,6 +1,12 @@
 # Smurf Example App
 C++ application showing possible usage of StateSmurf framework
 
+### Requirements
+- cmake [>= 3.20]
+- C++20
+- [cmlib](https://github.com/cmakelib/cmakelib)
+- TransitionSmurf
+
 ### Build
 ```
 mkdir -p _build && cd _build

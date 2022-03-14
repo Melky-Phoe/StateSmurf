@@ -35,6 +35,6 @@ IF(BRINGAUTO_TESTS AND STATESMURF_TESTS)
 			--executable ${CMAKE_BINARY_DIR}/smurfExampleApp
 			--evaluator ${STATESMURF_DIR}/SmurfEvaluator/_build/smurfEvaluator
 			--output ${CMAKE_SOURCE_DIR}/test/smurf/
-			#-c
+			#--create-etalons
 			)
 ENDIF()

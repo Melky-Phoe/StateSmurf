@@ -5,6 +5,11 @@
 namespace state_smurf::transition {
 	StateTransition::StateTransition(diagram::StateDiagram stateDiagram) {
 		stateDiagram_ = std::move(stateDiagram);
+		if (stateDiagram_.startVertexesEmpty()) {
+			// In later version, this check will be part of creating diagram in compile-time
+			bringauto::logging::Logger::logError("[TransitionSmurf] No starting vertex was set, TransitionSmurf is unable to work!");
+			return;
+		}
 		printAdjacencyList();
 		bringauto::logging::Logger::logDebug("[TransitionSmurf] Start of Run");
 	}
