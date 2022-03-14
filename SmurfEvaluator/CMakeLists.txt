@@ -26,10 +26,10 @@ ADD_SUBDIRECTORY("../DiagramSmurf/" "DiagramSmurf/")
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(SmurfEvaluatorLib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(SmurfEvaluatorLib PUBLIC "include")
-TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib)
+TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib cxxopts::cxxopts Boost::boost)
 
 ADD_EXECUTABLE(smurfEvaluator main.cpp)
-TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib cxxopts::cxxopts)
+TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib)
 
 IF (BRINGAUTO_TESTS AND STATESMURF_TESTS)
 	ENABLE_TESTING()
