@@ -11,8 +11,6 @@
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state drive
 [2022-02-21 14:13:58.806] [sampleApp] [info] Going in speed 15
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state inStop
-[2022-02-21 14:13:58.806] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":disconnected "from": inStop }
-[2022-02-21 14:13:58.806] [sampleApp] [warning] Unsuccessful transition
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state inStop
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state inStop
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [DiagramSmurf] __START__ :	disconnected
@@ -45,6 +43,5 @@
 [2022-02-21 14:13:58.806] [sampleApp] [info] Going in speed 10
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state drive
 [2022-02-21 14:13:58.806] [sampleApp] [info] Going in speed 15
-[2022-02-21 14:13:58.806] [sampleApp] [warning] [TransitionSmurf] Couldn't change state { "to":disconnected "from": inStop }
-[2022-02-21 14:13:58.806] [sampleApp] [warning] Unsuccessful transition
 [2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state inStop
+[2022-02-21 14:13:58.806] [sampleApp] [debug] [TransitionSmurf] Going to state idle

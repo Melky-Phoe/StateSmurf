@@ -7,11 +7,6 @@
 
 namespace state_smurf::log_evaluator {
 	
-	constexpr long NOT_FOUND = -1;
-	constexpr long END_FOUND = -2;
-	constexpr long START_FOUND = -3;
-	constexpr long NO_CIRCUITS = -4;
-	
 	CircuitAggregator::CircuitAggregator(std::istream &sourceLogFile) {
 		state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
 		circuitList_ = CF.find();
@@ -29,20 +24,10 @@ namespace state_smurf::log_evaluator {
 			long nextCircuit = getCircuit(currentCircuit);
 			if (nextCircuit == END_FOUND) {
 				if (LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
-					std::string newLine = transitionLogVector_[transitionIndex_];
-					newLine.append(" -- Aggregated");
-					aggregatedLogVector.push_back(newLine);
-					
+					handleStart(aggregatedLogVector);
 					currentCircuit = START_FOUND;
-					transitionIndex_++;
 				} else {
-					if (!handleEnd(currentCircuit)) {
-						while (transitionIndex_ < transitionLogVector_.size() &&
-						       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
-							aggregatedLogVector.push_back(transitionLogVector_[transitionIndex_]);
-							transitionIndex_++;
-						}
-					}
+					handleEnd(currentCircuit, aggregatedLogVector);
 					currentCircuit = END_FOUND;
 				}
 			} else if (nextCircuit == NOT_FOUND) {
@@ -50,28 +35,10 @@ namespace state_smurf::log_evaluator {
 				transitionIndex_++;
 				currentCircuit = NOT_FOUND;
 			} else if (nextCircuit == NO_CIRCUITS) {
-				while (transitionIndex_ < transitionLogVector_.size()) {
-					if (LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
-						std::string newLine = transitionLogVector_[transitionIndex_];
-						newLine.append(" -- Aggregated");
-						aggregatedLogVector.push_back(newLine);
-					} else {
-						aggregatedLogVector.push_back(transitionLogVector_[transitionIndex_]);
-					}
-					transitionIndex_++;
-				}
+				handleNoCircuits(aggregatedLogVector);
 			} else {
 				if (nextCircuit != currentCircuit) {
-					std::string newLine = LineParser::getTime(transitionLogVector_[transitionIndex_]);
-					newLine.append(" In circuit ");
-					newLine.append(std::to_string(nextCircuit));
-					newLine.append(": [");
-					for (const auto &state: circuitList_[nextCircuit]) {
-						newLine.append(state);
-						newLine.append(", ");
-					}
-					newLine.append("]");
-					aggregatedLogVector.push_back(newLine);
+					printCircuitLog(aggregatedLogVector, nextCircuit);
 				}
 				transitionIndex_ += circuitList_[nextCircuit].size();
 				currentCircuit = nextCircuit;
@@ -126,9 +93,9 @@ namespace state_smurf::log_evaluator {
 		}
 	}
 	
-	bool CircuitAggregator::handleEnd(long currentCircuit) {
+	void CircuitAggregator::handleEnd(long currentCircuit, std::vector<std::string> &targetLogFile) {
 		if (currentCircuit == NOT_FOUND || currentCircuit == START_FOUND) {
-			return false;
+			return;
 		} else {
 			bool stayInCircuit = true;
 			while (transitionIndex_ < transitionLogVector_.size() && !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
@@ -137,7 +104,7 @@ namespace state_smurf::log_evaluator {
 					auto state = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
 					if (state.empty()) {
 						transitionIndex_ += j;
-						return true;
+						return;
 					}
 					if (state != circuitList_[currentCircuit][j]) {
 						stayInCircuit = false;
@@ -145,16 +112,49 @@ namespace state_smurf::log_evaluator {
 					}
 				}
 				if (!stayInCircuit) {
-					// States before end doesn't follow last circuit's states
-					return false;
-					
+					// States before end doesn't follow last circuit's states. Prints all states
+					while (transitionIndex_ < transitionLogVector_.size() &&
+					       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+						targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
+						transitionIndex_++;
+					}
+					return;
 				} else {
 					transitionIndex_ += circuitList_[currentCircuit].size();
 				}
 			}
-			
 		}
-		return true;
+	}
+	
+	void CircuitAggregator::handleStart(std::vector<std::string> &targetLogFile) {
+		std::string newLine = transitionLogVector_[transitionIndex_];
+		newLine.append(" -- Aggregated");
+		targetLogFile.push_back(newLine);
+		transitionIndex_++;
+	}
+	
+	void CircuitAggregator::handleNoCircuits(std::vector<std::string> &targetLogFile) {
+		while (transitionIndex_ < transitionLogVector_.size()) {
+			if (LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+				handleStart(targetLogFile);
+			} else {
+				targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
+				transitionIndex_++;
+			}
+		}
+	}
+	
+	void CircuitAggregator::printCircuitLog(std::vector<std::string> &targetLogFile, long circuitIndex) {
+		std::string newLine = LineParser::getTime(transitionLogVector_[transitionIndex_]);
+		newLine.append(" In circuit ");
+		newLine.append(std::to_string(circuitIndex));
+		newLine.append(": [");
+		for (const auto &state: circuitList_[circuitIndex]) {
+			newLine.append(state);
+			newLine.append(", ");
+		}
+		newLine.append("]");
+		targetLogFile.push_back(newLine);
 	}
 	
 	
