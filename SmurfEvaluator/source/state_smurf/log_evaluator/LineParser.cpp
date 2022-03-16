@@ -19,7 +19,10 @@ namespace state_smurf::log_evaluator {
 		std::vector<std::string> comparedTokens = parseLine(compared);
 		
 		bool logsAreSame = true;
-		if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE &&
+		
+		if (etalonTokens.size() != comparedTokens.size()) {
+			logsAreSame = false;
+		} else if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE &&
 		    etalonTokens[CIRCUIT_WORD_INDEX] == "circuit") { // circuit log
 			for (int i = MINIMAL_CIRCUIT_LOG_SIZE; i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
 				/// Circuits can have different numbers for same application, because of transition table is implemented
@@ -68,7 +71,7 @@ namespace state_smurf::log_evaluator {
 		std::stringstream mySstream( line );
 
 		for (std::string tmp; mySstream >> tmp; ) {
-			tokens.push_back(tmp );
+			tokens.push_back(tmp);
 		}
 	}
 }
