@@ -68,9 +68,9 @@ namespace state_smurf::log_evaluator {
 	}
 	
 	void LineParser::splitString(std::vector<std::string> &tokens, const std::string &line) {
-		std::stringstream mySstream( line );
+		std::stringstream tmpStream( line );
 
-		for (std::string tmp; mySstream >> tmp; ) {
+		for (std::string tmp; tmpStream >> tmp; ) {
 			tokens.push_back(tmp);
 		}
 	}
