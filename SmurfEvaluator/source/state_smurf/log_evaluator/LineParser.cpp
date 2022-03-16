@@ -1,8 +1,7 @@
 #include <state_smurf/log_evaluator/LineParser.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <iostream>
+#include <sstream>
 
 namespace state_smurf::log_evaluator {
 	
@@ -11,8 +10,7 @@ namespace state_smurf::log_evaluator {
 	
 	std::vector<std::string> LineParser::parseLine(std::string line) {
 		std::vector<std::string> tokens;
-		boost::trim(line);
-		boost::split(tokens, line, boost::is_any_of(" \t\n"));
+		splitString(tokens, line);
 		return tokens;
 	}
 	
@@ -64,5 +62,13 @@ namespace state_smurf::log_evaluator {
 		timeString.append(" ");
 		timeString.append(tokens[static_cast<unsigned long>(LogTokensIndexes::TIME)]);
 		return timeString;
+	}
+	
+	void LineParser::splitString(std::vector<std::string> &tokens, const std::string &line) {
+		std::stringstream mySstream( line );
+
+		for (std::string tmp; mySstream >> tmp; ) {
+			tokens.push_back(tmp );
+		}
 	}
 }

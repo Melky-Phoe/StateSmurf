@@ -7,8 +7,6 @@ IF(NOT BRINGAUTO_SYSTEM_DEP)
 	INCLUDE(cmake/Dependencies.cmake)
 ENDIF()
 
-FIND_PACKAGE(Boost 1.71 REQUIRED)
-
 FIND_PACKAGE(cxxopts 2.0.0 REQUIRED)
 
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
@@ -26,7 +24,7 @@ ADD_SUBDIRECTORY("../DiagramSmurf/" "DiagramSmurf/")
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(SmurfEvaluatorLib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(SmurfEvaluatorLib PUBLIC "include")
-TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib cxxopts::cxxopts Boost::boost)
+TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib cxxopts::cxxopts)
 
 ADD_EXECUTABLE(smurfEvaluator main.cpp)
 TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib)

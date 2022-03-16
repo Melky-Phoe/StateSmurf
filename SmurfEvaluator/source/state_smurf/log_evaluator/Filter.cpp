@@ -1,7 +1,5 @@
 #include <state_smurf/log_evaluator/Filter.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <string>
 
 namespace state_smurf::log_evaluator {
@@ -9,7 +7,8 @@ namespace state_smurf::log_evaluator {
 	std::string Filter::findNextTransitionLog(std::istream &srcFile) {
 		std::string line;
 		for (int i = 0; std::getline(srcFile, line); i++) {
-			if (boost::find_first(line, "[TransitionSmurf]")) {
+			std::size_t found = line.find("[TransitionSmurf]");
+			if (found != std::string::npos) {
 				return line;
 			}
 		}
@@ -29,9 +28,10 @@ namespace state_smurf::log_evaluator {
 	std::string Filter::findDiagramSmurfLog(std::istream &srcFile) {
 		std::string line;
 		for (int i = 0; std::getline(srcFile, line); i++) {
-			if (boost::find_first(line, "[DiagramSmurf]")) {
+			std::size_t found = line.find("[DiagramSmurf]");
+			if (found != std::string::npos) {
 				return line;
-			} else if (boost::find_first(line, "[TransitionSmurf]")) {
+			} else if (line.find("[TransitionSmurf]") != std::string::npos) {
 				return "";
 			}
 		}
