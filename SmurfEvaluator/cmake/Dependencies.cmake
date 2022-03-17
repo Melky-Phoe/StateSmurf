@@ -13,11 +13,3 @@ CMLIB_DEPENDENCY(
 		TYPE MODULE
 )
 FIND_PACKAGE(cxxopts_package REQUIRED)
-
-CMLIB_DEPENDENCY(
-		URI "https://github.com/bringauto/boost-package.git"
-		URI_TYPE GIT
-		GIT_TAG v1.76.0
-		TYPE MODULE
-)
-FIND_PACKAGE(boost_package REQUIRED)
