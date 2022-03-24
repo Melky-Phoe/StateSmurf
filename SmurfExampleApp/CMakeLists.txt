@@ -21,7 +21,7 @@ ADD_SUBDIRECTORY(../TransitionSmurf TransitionSmurf)
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(smurf_example_app_lib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(smurf_example_app_lib PUBLIC "include")
-TARGET_LINK_LIBRARIES(smurf_example_app_lib PUBLIC bringauto_logger::bringauto_logger TransitionSmurfLib diagram_smurf_lib)
+TARGET_LINK_LIBRARIES(smurf_example_app_lib PUBLIC bringauto_logger::bringauto_logger transition_smurf_lib diagram_smurf_lib)
 
 ADD_EXECUTABLE(smurf_example_app main.cpp)
 TARGET_LINK_LIBRARIES(smurf_example_app PUBLIC smurf_example_app_lib)
