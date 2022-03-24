@@ -58,5 +58,6 @@ IF (BRINGAUTO_INSTALL)
 			DESTINATION
 			${CMAKE_INSTALL_INCLUDEDIR}/state_smurf
 	)
-
+	INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog
+			DESTINATION lib)
 ENDIF()
