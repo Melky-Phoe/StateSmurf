@@ -40,8 +40,6 @@ IF (BRINGAUTO_INSTALL)
     INSTALL(EXPORT StateSmurfTargets
             FILE
             state_smurfTargets.cmake
-            NAMESPACE
-            state_smurf::
             DESTINATION
             ${ConfigPackageLocation}
             )
