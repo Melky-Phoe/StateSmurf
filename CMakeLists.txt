@@ -23,7 +23,7 @@ IF (BRINGAUTO_INSTALL)
 
     CONFIGURE_PACKAGE_CONFIG_FILE(
             ${CMAKE_CURRENT_SOURCE_DIR}/cmake/state_smurfConfig.cmake.in
-            "${CMAKE_CURRENT_BINARY_DIR}/state_smurfConfig.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/state_smurf/state_smurfConfig.cmake"
             INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/state_smurf
     )
     WRITE_BASIC_PACKAGE_VERSION_FILE(
@@ -47,8 +47,8 @@ IF (BRINGAUTO_INSTALL)
             )
 
     INSTALL(FILES
-            "${CMAKE_CURRENT_BINARY_DIR}/state_smurfConfig.cmake"
-            "${CMAKE_CURRENT_BINARY_DIR}/state_smurfConfigVersion.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/state_smurf/state_smurfConfig.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/state_smurf/state_smurfConfigVersion.cmake"
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/state_smurf
             )
 
