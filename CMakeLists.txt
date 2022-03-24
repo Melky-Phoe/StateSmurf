@@ -6,6 +6,19 @@ SET(CMAKE_CXX_STANDARD 20)
 SET(state_smurf_VERSION 0.2.0)
 INCLUDE(GNUInstallDirs)
 
+OPTION(BRINGAUTO_SAMPLES OFF)
+OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
+OPTION(BRINGAUTO_INSTALL "Enable install" OFF)
+OPTION(BRINGAUTO_PACKAGE "Enable package generation" OFF)
+OPTION(BRINGAUTO_SYSTEM_DEP "Enable system dependencies" OFF)
+
+IF (BRINGAUTO_PACKAGE)
+    IF(NOT BRINGAUTO_INSTALL)
+        SET(BRINGAUTO_INSTALL ON CACHE BOOL "Forced install due to BRINGAUTO_PACKAGE=ON" FORCE)
+        MESSAGE(WARNING "BRINGAUTO_INSTALL is switched to on because of BRINGAUTO_PACKAGE=ON")
+    ENDIF()
+ENDIF()
+
 ADD_SUBDIRECTORY(DiagramSmurf)
 ADD_SUBDIRECTORY(TransitionSmurf)
 ADD_SUBDIRECTORY(SmurfEvaluator)
@@ -14,9 +27,9 @@ IF(BRINGAUTO_SAMPLES)
 ENDIF()
 
 IF (BRINGAUTO_INSTALL)
+
     INSTALL(EXPORT StateSmurfTargets
             FILE state_smurfTargets.cmake
-            NAMESPACE state_smurf::
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/state_smurf
             )
     INCLUDE(CMakePackageConfigHelpers)
@@ -49,5 +62,12 @@ IF (BRINGAUTO_INSTALL)
             "${CMAKE_CURRENT_BINARY_DIR}/state_smurf/state_smurfConfigVersion.cmake"
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/state_smurf
             )
+ENDIF()
 
+IF (BRINGAUTO_PACKAGE)
+    SET(CPACK_GENERATOR ZIP)
+    SET(CPACK_PACKAGE_CONTACT "Josef Melkus <josef.melkus@bringauto.com>")
+    SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Josef Melkus <josef.melkus@bringauto.com>")
+    SET(CPACK_PACKAGE_VERSION ${state_smurf_VERSION})
+    INCLUDE(CPack)
 ENDIF()

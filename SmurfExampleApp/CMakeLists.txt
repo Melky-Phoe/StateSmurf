@@ -19,12 +19,12 @@ FIND_PACKAGE(libbringauto_logger)
 
 ADD_SUBDIRECTORY(../TransitionSmurf TransitionSmurf)
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(SmurfExampleAppLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(SmurfExampleAppLib PUBLIC "include")
-TARGET_LINK_LIBRARIES(SmurfExampleAppLib PUBLIC bringauto_logger::bringauto_logger TransitionSmurfLib DiagramSmurfLib)
+ADD_LIBRARY(smurf_example_app_lib SHARED ${source_files})
+TARGET_INCLUDE_DIRECTORIES(smurf_example_app_lib PUBLIC "include")
+TARGET_LINK_LIBRARIES(smurf_example_app_lib PUBLIC bringauto_logger::bringauto_logger TransitionSmurfLib diagram_smurf_lib)
 
-ADD_EXECUTABLE(smurfExampleApp main.cpp)
-TARGET_LINK_LIBRARIES(smurfExampleApp PUBLIC SmurfExampleAppLib)
+ADD_EXECUTABLE(smurf_example_app main.cpp)
+TARGET_LINK_LIBRARIES(smurf_example_app PUBLIC smurf_example_app_lib)
 
 IF(BRINGAUTO_TESTS AND STATESMURF_TESTS)
 	ENABLE_TESTING()
@@ -32,8 +32,8 @@ IF(BRINGAUTO_TESTS AND STATESMURF_TESTS)
 	SET(STATESMURF_DIR ${CMAKE_SOURCE_DIR}/..)
 	ADD_TEST(NAME automatedEvaluatorTests COMMAND ${Python3_EXECUTABLE} ${STATESMURF_DIR}/SmurfTestingScripts/CompareScenarios.py
 			--scenario ${CMAKE_SOURCE_DIR}/test/smurf/scenarios.json
-			--executable ${CMAKE_BINARY_DIR}/smurfExampleApp
-			--evaluator ${STATESMURF_DIR}/SmurfEvaluator/_build/smurfEvaluator
+			--executable ${CMAKE_BINARY_DIR}/smurf_example_app
+			--evaluator ${STATESMURF_DIR}/SmurfEvaluator/_build/smurf_evaluator
 			--output ${CMAKE_SOURCE_DIR}/test/smurf/
 			#--create-etalons
 			)
