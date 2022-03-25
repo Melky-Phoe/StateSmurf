@@ -18,9 +18,8 @@ cmake .. -DCMLIB_DIR=<path_to_cmlib_dir> -DCMAKE_BUILD_TYPE=Release
 make -j 8
 ```
 ## Tests
-- For building tests use -DBRINGAUTO_TESTS=ON
-- For api and chosen implementation tests or -DBRINGAUTO_ALL_TESTS=ON
-- For api and all implementation tests, run test with command ctest
+- For building tests use `-DBRINGAUTO_TESTS=ON`
+- Run test with command `$ ctest`
 ## Install
 To install, use CMake option `-DBRINGAUTO_INSTALL=ON`  
 and set install prefix `-DCMAKE_INSTALL_PREFIX=<install_path>`
@@ -29,6 +28,7 @@ mkdir -p _build && cd _build
 cmake .. -DBRINGAUTO_INSTALL=ON -DCMAKE_INSTALL_PREFIX=<install_path> -DCMLIB_DIR=<path_to_cmlib_dir> -DCMAKE_BUILD_TYPE=Release
 make install
 ```
+To generate package, use CMake option `-DBRINGAUTO_PACKAGE=ON` and run command `$ cpack`
 
 ## Usage
 Generate package with cpack command, install the package and include:
@@ -43,7 +43,7 @@ Example usage of StateSmurf framework is described in [SmurfExampleApp](https://
 Code:
 1. Initialize state diagram using DiagramSmurf.
     1. Create vertexes.
-    2. Add starting vertexes
+    2. Set starting vertexes
     3. Add edges between vertexes
 2. Pass this diagram to StateTransition class
 3. Use StateTransition::goToState to change states according to system behavior
