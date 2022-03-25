@@ -6,7 +6,6 @@ SET(CMAKE_CXX_STANDARD 20)
 FIND_PACKAGE(CMLIB REQUIRED)
 
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
-OPTION(STATESMURF_TESTS "Enable StateSmurf tests" ON)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
@@ -26,15 +25,16 @@ TARGET_LINK_LIBRARIES(smurf_example_app_lib PUBLIC bringauto_logger::bringauto_l
 ADD_EXECUTABLE(smurf_example_app main.cpp)
 TARGET_LINK_LIBRARIES(smurf_example_app PUBLIC smurf_example_app_lib)
 
-IF(BRINGAUTO_TESTS AND STATESMURF_TESTS)
-	ENABLE_TESTING()
+IF(BRINGAUTO_TESTS)
+	#[[ENABLE_TESTING()
 	FIND_PACKAGE(Python3 COMPONENTS Interpreter Development)
-	SET(STATESMURF_DIR ${CMAKE_SOURCE_DIR}/..)
+	SET(STATESMURF_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 	ADD_TEST(NAME automatedEvaluatorTests COMMAND ${Python3_EXECUTABLE} ${STATESMURF_DIR}/SmurfTestingScripts/CompareScenarios.py
 			--scenario ${CMAKE_SOURCE_DIR}/test/smurf/scenarios.json
 			--executable ${CMAKE_BINARY_DIR}/smurf_example_app
 			--evaluator ${STATESMURF_DIR}/SmurfEvaluator/_build/smurf_evaluator
 			--output ${CMAKE_SOURCE_DIR}/test/smurf/
 			#--create-etalons
-			)
+			)]]
+	# TODO put this in a script and remove from here
 ENDIF()

@@ -13,7 +13,6 @@ SET(CMAKE_SKIP_BUILD_RPATH ON)
 SET(CMAKE_INSTALL_RPATH $ORIGIN/../lib/)
 
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
-OPTION(STATESMURF_TESTS "Enable StateSmurf tests" ON)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
@@ -30,7 +29,7 @@ TARGET_LINK_LIBRARIES(smurf_evaluator_lib PUBLIC diagram_smurf_lib cxxopts::cxxo
 ADD_EXECUTABLE(smurf_evaluator main.cpp)
 TARGET_LINK_LIBRARIES(smurf_evaluator PUBLIC smurf_evaluator_lib)
 
-IF (BRINGAUTO_TESTS AND STATESMURF_TESTS)
+IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
 	ADD_SUBDIRECTORY("test")
 ENDIF()

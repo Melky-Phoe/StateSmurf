@@ -11,14 +11,31 @@ DiagramSmurf is a framework for Integration testing of systems based on Finite S
 #### SmurfTestingScript
 - Python scripts for automated testing and comparing
 
-## Install
-Clone repository to your project and add following to CMakeLists.txt:
+## Build
 ```
-ADD_SUBDIRECTORY(StateSmurf)
-TARGET_LINK_LIBRARIES(<target> PUBLIC DiagramSmurfLib TransitionSmurfLib)
+mkdir -p _build && cd _build
+cmake .. -DCMLIB_DIR=<path_to_cmlib_dir> -DCMAKE_BUILD_TYPE=Release
+make -j 8
+```
+## Tests
+- For building tests use -DBRINGAUTO_TESTS=ON
+- For api and chosen implementation tests or -DBRINGAUTO_ALL_TESTS=ON
+- For api and all implementation tests, run test with command ctest
+## Install
+To install, use CMake option `-DBRINGAUTO_INSTALL=ON`  
+and set install prefix `-DCMAKE_INSTALL_PREFIX=<install_path>`
+```
+mkdir -p _build && cd _build
+cmake .. -DBRINGAUTO_INSTALL=ON -DCMAKE_INSTALL_PREFIX=<install_path> -DCMLIB_DIR=<path_to_cmlib_dir> -DCMAKE_BUILD_TYPE=Release
+make install
 ```
 
 ## Usage
+Generate package with cpack command, install the package and include:
+```CMake
+FIND_PACKAGE(state_smurf)
+TARGET_LINK_LIBRARIES(<target> PUBLIC diagram_smurf_lib transition_smurf_lib)
+```
 Example usage of StateSmurf framework is described in [SmurfExampleApp](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfExampleApp)
 
 
