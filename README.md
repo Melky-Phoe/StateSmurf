@@ -30,6 +30,9 @@ make install
 ```
 To generate package, use CMake option `-DBRINGAUTO_PACKAGE=ON` and run command `$ cpack`
 
+
+After Install, smurf_evaluator binary will be generated in <install_prefix>/bin/,
+interfaces of DiagramSmurf and TransitionSmurf in <install_prefix>/include/state_smurf/ and .so files in <install_prefix>/lib/
 ## Usage
 Generate package with cpack command, install the package and include:
 ```CMake
