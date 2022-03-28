@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 PROJECT(TransitionSmurf CXX)
 
 IF(TARGET transition_smurf_lib)
@@ -19,12 +19,12 @@ IF(NOT BRINGAUTO_SYSTEM_DEP)
 	INCLUDE(cmake/Dependencies.cmake)
 ENDIF()
 
-FIND_PACKAGE(libbringauto_logger)
+FIND_PACKAGE(libbringauto_logger REQUIRED COMPONENTS bringauto_logger_spdlog)
 
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(transition_smurf_lib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(transition_smurf_lib PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>" )
-TARGET_LINK_LIBRARIES(transition_smurf_lib PUBLIC bringauto_logger::bringauto_logger diagram_smurf_lib)
+TARGET_LINK_LIBRARIES(transition_smurf_lib PUBLIC bringauto_logger::bringauto_logger_spdlog diagram_smurf_lib)
 
 IF (BRINGAUTO_SAMPLES)
 	ADD_EXECUTABLE(transition_smurf example/main.cpp)
@@ -57,6 +57,5 @@ IF (BRINGAUTO_INSTALL)
 			DESTINATION
 			${CMAKE_INSTALL_INCLUDEDIR}/state_smurf
 	)
-	INSTALL(IMPORTED_RUNTIME_ARTIFACTS bringauto_logger::bringauto_logger_spdlog
-			DESTINATION lib)
+
 ENDIF()

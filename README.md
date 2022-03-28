@@ -11,6 +11,14 @@ DiagramSmurf is a framework for Integration testing of systems based on Finite S
 #### SmurfTestingScript
 - Python scripts for automated testing and comparing
 
+## Requirements
+- cmake [>= 3.21]
+- C++20
+- [cmlib](https://github.com/cmakelib/cmakelib)
+
+CMLIB is tool that can install bringauto_logger. In case CMLIB is not usable, 
+install bringauto_logger instead and use CMake option -DBRINGAUTO_SYSTEM_DEP=ON
+
 ## Build
 ```
 mkdir -p _build && cd _build
@@ -36,6 +44,15 @@ interfaces of DiagramSmurf and TransitionSmurf in <install_prefix>/include/state
 ## Usage
 Generate package with cpack command, install the package and include:
 ```CMake
+FIND_PACKAGE(CMLIB)
+
+CMLIB_DEPENDENCY(
+        URI "https://github.com/bringauto/balogger-package.git"
+        URI_TYPE GIT
+        GIT_TAG v1.1.0
+        TYPE MODULE
+)
+FIND_PACKAGE(balogger_package REQUIRED)
 FIND_PACKAGE(state_smurf)
 TARGET_LINK_LIBRARIES(<target> PUBLIC diagram_smurf_lib transition_smurf_lib)
 ```

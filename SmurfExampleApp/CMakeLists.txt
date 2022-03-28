@@ -1,6 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 PROJECT(SmurfExampleApp CXX)
-
 SET(CMAKE_CXX_STANDARD 20)
 
 FIND_PACKAGE(CMLIB REQUIRED)
@@ -14,9 +13,10 @@ IF(NOT BRINGAUTO_SYSTEM_DEP)
 	INCLUDE(cmake/Dependencies.cmake)
 ENDIF()
 
-FIND_PACKAGE(libbringauto_logger)
+FIND_PACKAGE(libbringauto_logger REQUIRED)
 
-ADD_SUBDIRECTORY(../TransitionSmurf TransitionSmurf)
+FIND_PACKAGE(state_smurf REQUIRED)
+
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(smurf_example_app_lib SHARED ${source_files})
 TARGET_INCLUDE_DIRECTORIES(smurf_example_app_lib PUBLIC "include")
@@ -24,17 +24,3 @@ TARGET_LINK_LIBRARIES(smurf_example_app_lib PUBLIC bringauto_logger::bringauto_l
 
 ADD_EXECUTABLE(smurf_example_app main.cpp)
 TARGET_LINK_LIBRARIES(smurf_example_app PUBLIC smurf_example_app_lib)
-
-IF(BRINGAUTO_TESTS)
-	#[[ENABLE_TESTING()
-	FIND_PACKAGE(Python3 COMPONENTS Interpreter Development)
-	SET(STATESMURF_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
-	ADD_TEST(NAME automatedEvaluatorTests COMMAND ${Python3_EXECUTABLE} ${STATESMURF_DIR}/SmurfTestingScripts/CompareScenarios.py
-			--scenario ${CMAKE_SOURCE_DIR}/test/smurf/scenarios.json
-			--executable ${CMAKE_BINARY_DIR}/smurf_example_app
-			--evaluator ${STATESMURF_DIR}/SmurfEvaluator/_build/smurf_evaluator
-			--output ${CMAKE_SOURCE_DIR}/test/smurf/
-			#--create-etalons
-			)]]
-	# TODO put this in a script and remove from here
-ENDIF()
