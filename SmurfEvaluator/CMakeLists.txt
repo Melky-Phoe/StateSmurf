@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 PROJECT(SmurfEvaluator CXX)
 
 FIND_PACKAGE(CMLIB REQUIRED)
@@ -7,12 +7,9 @@ IF(NOT BRINGAUTO_SYSTEM_DEP)
 	INCLUDE(cmake/Dependencies.cmake)
 ENDIF()
 
-FIND_PACKAGE(Boost 1.71 REQUIRED)
-
 FIND_PACKAGE(cxxopts 2.0.0 REQUIRED)
 
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
-OPTION(STATESMURF_TESTS "Enable StateSmurf tests" ON)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
@@ -21,18 +18,22 @@ SET(CMAKE_CXX_STANDARD 20)
 
 FIND_PACKAGE(libbringauto_logger)
 
-ADD_SUBDIRECTORY("../DiagramSmurf/" "DiagramSmurf/")
-
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(SmurfEvaluatorLib SHARED ${source_files})
-TARGET_INCLUDE_DIRECTORIES(SmurfEvaluatorLib PUBLIC "include")
-TARGET_LINK_LIBRARIES(SmurfEvaluatorLib PUBLIC DiagramSmurfLib cxxopts::cxxopts Boost::boost)
+ADD_LIBRARY(smurf_evaluator_lib STATIC ${source_files})
+TARGET_INCLUDE_DIRECTORIES(smurf_evaluator_lib PUBLIC "include")
+TARGET_LINK_LIBRARIES(smurf_evaluator_lib PUBLIC diagram_smurf_lib cxxopts::cxxopts)
 
-ADD_EXECUTABLE(smurfEvaluator main.cpp)
-TARGET_LINK_LIBRARIES(smurfEvaluator PUBLIC SmurfEvaluatorLib)
+ADD_EXECUTABLE(smurf_evaluator main.cpp)
+TARGET_LINK_LIBRARIES(smurf_evaluator PUBLIC smurf_evaluator_lib)
 
-IF (BRINGAUTO_TESTS AND STATESMURF_TESTS)
+IF (BRINGAUTO_TESTS)
 	ENABLE_TESTING()
 	ADD_SUBDIRECTORY("test")
 ENDIF()
 
+IF (BRINGAUTO_INSTALL)
+	INSTALL(TARGETS smurf_evaluator
+			DESTINATION ${CMAKE_INSTALL_BINDIR}
+			EXPORT StateSmurfTargets
+			)
+ENDIF()

@@ -97,30 +97,43 @@ namespace state_smurf::log_evaluator {
 		if (currentCircuit == NOT_FOUND || currentCircuit == START_FOUND) {
 			return;
 		} else {
-			bool stayInCircuit = true;
-			while (transitionIndex_ < transitionLogVector_.size() && !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
-				for (int j = 0; j < circuitList_[currentCircuit].size() &&
-				                (transitionIndex_ + j) < transitionLogVector_.size(); ++j) {
-					auto state = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
-					if (state.empty()) {
-						transitionIndex_ += j;
-						return;
-					}
-					if (state != circuitList_[currentCircuit][j]) {
-						stayInCircuit = false;
-						break;
-					}
+			if (currentCircuit < 0) {
+				while (transitionIndex_ < transitionLogVector_.size() &&
+				       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+					targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
+					transitionIndex_++;
 				}
-				if (!stayInCircuit) {
-					// States before end doesn't follow last circuit's states. Prints all states
-					while (transitionIndex_ < transitionLogVector_.size() &&
-					       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
-						targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
-						transitionIndex_++;
+			} else {
+				bool stayInCircuit = true;
+				while (transitionIndex_ < transitionLogVector_.size() &&
+				       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+					for (int j = 0; j < circuitList_[currentCircuit].size() &&
+					                (transitionIndex_ + j) < transitionLogVector_.size(); ++j) {
+						auto state = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
+						if (state.empty()) {
+							transitionIndex_ += j;
+							return;
+						}
+						if (state != circuitList_[currentCircuit][j]) {
+							stayInCircuit = false;
+							break;
+						}
 					}
-					return;
-				} else {
-					transitionIndex_ += circuitList_[currentCircuit].size();
+					if (!stayInCircuit) {
+						// States before end doesn't follow last circuit's states. Prints all states
+						while (transitionIndex_ < transitionLogVector_.size() &&
+						       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+							targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
+							transitionIndex_++;
+						}
+						return;
+					} else {
+						if (currentCircuit < 0) { // endless loop
+							transitionIndex_++;
+						} else {
+							transitionIndex_ += circuitList_[currentCircuit].size();
+						}
+					}
 				}
 			}
 		}

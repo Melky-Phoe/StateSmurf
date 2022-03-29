@@ -6,7 +6,7 @@ Diagrams are defined by set of vertexes, starting vertexes and transitions.
 
 Following dependencies must be installed on the host system
 
-- cmake [>= 3.20]
+- cmake [>= 3.21]
 - C++20
 
 ## Build

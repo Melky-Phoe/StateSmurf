@@ -1,8 +1,7 @@
 #include <state_smurf/log_evaluator/LineParser.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <iostream>
+#include <sstream>
 
 namespace state_smurf::log_evaluator {
 	
@@ -11,8 +10,7 @@ namespace state_smurf::log_evaluator {
 	
 	std::vector<std::string> LineParser::parseLine(std::string line) {
 		std::vector<std::string> tokens;
-		boost::trim(line);
-		boost::split(tokens, line, boost::is_any_of(" \t\n"));
+		splitString(tokens, line);
 		return tokens;
 	}
 	
@@ -21,7 +19,10 @@ namespace state_smurf::log_evaluator {
 		std::vector<std::string> comparedTokens = parseLine(compared);
 		
 		bool logsAreSame = true;
-		if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE &&
+		
+		if (etalonTokens.size() != comparedTokens.size()) {
+			logsAreSame = false;
+		} else if (etalonTokens.size() > MINIMAL_CIRCUIT_LOG_SIZE &&
 		    etalonTokens[CIRCUIT_WORD_INDEX] == "circuit") { // circuit log
 			for (int i = MINIMAL_CIRCUIT_LOG_SIZE; i < std::max(etalonTokens.size(), comparedTokens.size()); ++i) {
 				/// Circuits can have different numbers for same application, because of transition table is implemented
@@ -64,5 +65,13 @@ namespace state_smurf::log_evaluator {
 		timeString.append(" ");
 		timeString.append(tokens[static_cast<unsigned long>(LogTokensIndexes::TIME)]);
 		return timeString;
+	}
+	
+	void LineParser::splitString(std::vector<std::string> &tokens, const std::string &line) {
+		std::stringstream tmpStream( line );
+
+		for (std::string tmp; tmpStream >> tmp; ) {
+			tokens.push_back(tmp);
+		}
 	}
 }
