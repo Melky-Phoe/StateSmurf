@@ -7,8 +7,6 @@ ENDIF()
 
 SET(CMAKE_CXX_STANDARD 20)
 
-FIND_PACKAGE(CMLIB REQUIRED)
-
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
 OPTION(BRINGAUTO_SAMPLES "Enable build of sample applications" OFF)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
@@ -16,6 +14,7 @@ OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
 
 IF(NOT BRINGAUTO_SYSTEM_DEP)
+	FIND_PACKAGE(CMLIB REQUIRED)
 	INCLUDE(cmake/Dependencies.cmake)
 ENDIF()
 
