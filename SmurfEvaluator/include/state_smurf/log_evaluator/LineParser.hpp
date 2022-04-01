@@ -38,7 +38,13 @@ namespace state_smurf::log_evaluator {
 		 */
 		static std::string getTime(const std::string &line);
 		
+		/**
+		 * Split line by whitespaces
+		 * @param tokens pointer to vector where words will be saved
+		 * @param line string that will be split
+		 */
 		static void splitString(std::vector<std::string> &tokens, const std::string &line);
+		
 		/**
 		 * Enum for addressing tokens created by parseLine
 		 */
