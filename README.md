@@ -16,8 +16,8 @@ DiagramSmurf is a framework for Integration testing of systems based on Finite S
 - C++20
 - [cmlib](https://github.com/cmakelib/cmakelib)
 
-CMLIB is tool that can install bringauto_logger. In case CMLIB is not usable, 
-install bringauto_logger instead and use CMake option -DBRINGAUTO_SYSTEM_DEP=ON
+CMLIB is tool that can install bringauto_logger. In case CMLIB cannot be used, 
+install [bringauto_logger](https://github.com/bringauto/ba-logger) and [cxxopts](https://github.com/jarro2783/cxxopts) instead and use CMake option -DBRINGAUTO_SYSTEM_DEP=ON
 
 ## Build
 ```
