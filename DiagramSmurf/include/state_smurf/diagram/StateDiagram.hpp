@@ -52,7 +52,7 @@ namespace state_smurf::diagram {
 		 * @param vertexName
 		 * @return true if change is possible
 		 */
-		bool changeStateByName(const std::string &vertexName);
+		bool changeState(const std::string &vertexName);
 		
 		/**
 		 * Check if Vertex is defined in StateDiagram

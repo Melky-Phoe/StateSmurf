@@ -1,7 +1,7 @@
 #pragma once
 
-#include <state_smurf/diagram/StateDiagram.hpp>
-#include <state_smurf/diagram/Vertex.hpp>
+#include <fstream>
+#include <vector>
 
 namespace state_smurf::log_evaluator {
 
