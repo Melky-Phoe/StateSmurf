@@ -15,7 +15,7 @@ namespace state_smurf::transition {
 	}
 	
 	bool StateTransition::goToState(const std::string &stateName) {
-		if (stateDiagram_.changeStateByName(stateName)) {
+		if (stateDiagram_.changeState(stateName)) {
 			bringauto::logging::Logger::logDebug("[TransitionSmurf] Going to state {}", stateName);
 			return inState(stateName);
 		} else {

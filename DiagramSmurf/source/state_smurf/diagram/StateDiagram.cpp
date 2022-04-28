@@ -41,7 +41,7 @@ namespace state_smurf::diagram {
 		}
 	}
 	
-	bool StateDiagram::changeStateByName(const std::string &vertexName) {
+	bool StateDiagram::changeState(const std::string &vertexName) {
 		for (const auto &vertex: adjacencyList_[currentState_]) {
 			if (vertex->getName() == vertexName) {
 				currentState_ = vertex;

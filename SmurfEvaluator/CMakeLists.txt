@@ -20,7 +20,7 @@ FIND_PACKAGE(libbringauto_logger)
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(smurf_evaluator_lib STATIC ${source_files})
 TARGET_INCLUDE_DIRECTORIES(smurf_evaluator_lib PUBLIC "include")
-TARGET_LINK_LIBRARIES(smurf_evaluator_lib PUBLIC diagram_smurf_lib cxxopts::cxxopts)
+TARGET_LINK_LIBRARIES(smurf_evaluator_lib PUBLIC cxxopts::cxxopts)
 
 ADD_EXECUTABLE(smurf_evaluator main.cpp)
 TARGET_LINK_LIBRARIES(smurf_evaluator PUBLIC smurf_evaluator_lib)

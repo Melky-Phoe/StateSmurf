@@ -15,7 +15,6 @@ Following dependencies must be installed on the host system
 - cmake [>= 3.21]
 - C++20
 - [cmlib](https://github.com/cmakelib/cmakelib)
-- DiagramSmurf
 
 
 ## Build
