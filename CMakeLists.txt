@@ -3,10 +3,10 @@ PROJECT(StateSmurf CXX)
 
 SET(CMAKE_CXX_STANDARD 20)
 
-SET(state_smurf_VERSION 0.2.0)
+SET(state_smurf_VERSION 1.0.1)
 INCLUDE(GNUInstallDirs)
 
-OPTION(BRINGAUTO_SAMPLES OFF)
+OPTION(BRINGAUTO_SAMPLES "Enable build of sample application" OFF)
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
 OPTION(BRINGAUTO_INSTALL "Enable install" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package generation" OFF)
@@ -24,6 +24,8 @@ SET(CMAKE_INSTALL_RPATH $ORIGIN/../lib/)
 ADD_SUBDIRECTORY(DiagramSmurf)
 ADD_SUBDIRECTORY(TransitionSmurf)
 ADD_SUBDIRECTORY(SmurfEvaluator)
+# ExampleApp cannot be added to build by BRINGAUTO_SAMPLES, because it uses FIND_PACKAGE to find StateSmurf,
+# which serves its main purpose to show how StateSmurf can be used
 
 IF (BRINGAUTO_TESTS)
     ENABLE_TESTING()
