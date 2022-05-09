@@ -21,11 +21,11 @@ make -j 8
 - **--speed**: target speed. Each increment take 1 second => is duration of run.
 
 ### Test
-Before testing, path to SmurfEvaluator must be set, is set to `StateSmurf/_build/SmurfEvaluator/smurf_evaluator` by default
+Before testing, path to SmurfEvaluator must be set. This path is relative to this script. It is set to `StateSmurf/_build/SmurfEvaluator/smurf_evaluator` by default
 ```
 bash test/SmurfTests.sh
 ```
-This script is example of what can be put to CI
+This script is example of what can be put into CI tool
 
 ### State Diagram
 State diagram on which SmurfExampleApp is working
