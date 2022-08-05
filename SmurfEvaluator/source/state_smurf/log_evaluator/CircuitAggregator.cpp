@@ -48,13 +48,15 @@ namespace state_smurf::log_evaluator {
 	}
 	
 	long CircuitAggregator::getLongestCircuitIndex(const std::vector<int> &circuitFoundIndexes) {
-		long max = 0;
+		long longestCircuitIndex = 0;
+		u_long longestCircuitSize = 0;
 		for (auto index: circuitFoundIndexes) {
-			if (circuitList_[index].size() > max) {
-				max = index;
+			if (circuitList_[index].size() > longestCircuitSize) {
+				longestCircuitIndex = index;
+				longestCircuitSize = circuitList_[index].size();
 			}
 		}
-		return max;
+		return longestCircuitIndex;
 	}
 	
 	long CircuitAggregator::getCircuit(long lastCircuit) {
