@@ -3,7 +3,7 @@ PROJECT(StateSmurf CXX)
 
 SET(CMAKE_CXX_STANDARD 20)
 
-SET(state_smurf_VERSION 1.0.2)
+SET(state_smurf_VERSION 1.1.0)
 INCLUDE(GNUInstallDirs)
 
 OPTION(BRINGAUTO_SAMPLES "Enable build of sample application" OFF)
@@ -68,6 +68,9 @@ IF (BRINGAUTO_INSTALL)
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/state_smurf
             )
 
+    INSTALL(FILES
+            "${CMAKE_SOURCE_DIR}/SmurfTestingScripts/CompareScenarios.py"
+            DESTINATION bin)
 
 ENDIF()
 
