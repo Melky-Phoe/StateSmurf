@@ -70,7 +70,7 @@ Code:
 
 Automated evaluating:
 1. Create scenarios.json file containing environment setup and arguments for each tested scenario 
-2. Use SmurfTestingScripts compare_scenarios.py with --create-etalons option to create etalons
+2. Use SmurfTestingScripts smurf_compare_scenarios.py with --create-etalons option to create etalons
 3. Verify etalons. Check if all transitions were successful, runs were ended as expected etc.
    - Etalons should remain same for a working system
-4. Add compare_scenarios.py to test set.
+4. Add smurf_compare_scenarios.py to test set.

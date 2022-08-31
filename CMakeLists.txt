@@ -69,7 +69,7 @@ IF (BRINGAUTO_INSTALL)
             )
 
     INSTALL(FILES
-            "${CMAKE_SOURCE_DIR}/SmurfTestingScripts/compare_scenarios.py"
+            "${CMAKE_SOURCE_DIR}/SmurfTestingScripts/smurf_compare_scenarios.py"
             DESTINATION bin)
 
 ENDIF()
