@@ -3,7 +3,7 @@ PROJECT(StateSmurf CXX)
 
 SET(CMAKE_CXX_STANDARD 20)
 
-SET(state_smurf_VERSION 1.1.0)
+SET(state_smurf_VERSION 2.0.0)
 INCLUDE(GNUInstallDirs)
 
 OPTION(BRINGAUTO_SAMPLES "Enable build of sample application" OFF)
