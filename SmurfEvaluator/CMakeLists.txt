@@ -16,7 +16,7 @@ IF (NOT BRINGAUTO_SYSTEM_DEP)
 	INCLUDE(cmake/Dependencies.cmake)
 ENDIF ()
 
-FIND_PACKAGE(cxxopts 2.0.0 REQUIRED)
+FIND_PACKAGE(cxxopts 3.0.0 REQUIRED)
 
 FIND_PACKAGE(libbringauto_logger)
 
