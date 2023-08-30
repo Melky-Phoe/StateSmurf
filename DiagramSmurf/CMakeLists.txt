@@ -13,8 +13,10 @@ OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
 OPTION(BRINGAUTO_PACKAGE "Enable package creation" OFF)
 OPTION(BRINGAUTO_SYSTEM_DEP "Use system dependencies" OFF)
 
+SET(CMAKE_POSITION_INDEPENDENT_CODE  ON)
+
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(diagram_smurf_lib SHARED ${source_files})
+ADD_LIBRARY(diagram_smurf_lib STATIC ${source_files})
 TARGET_INCLUDE_DIRECTORIES(diagram_smurf_lib PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 
 IF (BRINGAUTO_TESTS)
