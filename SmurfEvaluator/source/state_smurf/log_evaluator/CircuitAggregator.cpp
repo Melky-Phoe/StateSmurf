@@ -143,7 +143,9 @@ namespace state_smurf::log_evaluator {
 	
 	void CircuitAggregator::handleStart(std::vector<std::string> &targetLogFile) {
 		std::string newLine = transitionLogVector_[transitionIndex_];
-		newLine.append(" -- Aggregated");
+		if(!newLine.ends_with(" -- Aggregated")) {
+			newLine.append(" -- Aggregated");
+		}
 		targetLogFile.push_back(newLine);
 		transitionIndex_++;
 	}
