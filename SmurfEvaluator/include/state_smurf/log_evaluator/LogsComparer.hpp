@@ -38,7 +38,9 @@ namespace state_smurf::log_evaluator {
 		 * @param path directory, where files `etalon` and `compared` will be created
 		 * @return true if successful
 		 */
-		static bool saveAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path);
-		
+		static bool createAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path);
+
+
+		static bool writeAggregatedFile(const std::vector<std::string>& sourceLogs, std::ofstream* outputStream);
 	};
 }

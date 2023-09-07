@@ -11,10 +11,19 @@ namespace state_smurf::log_evaluator {
 									std::string saveAggregatedPath) {
 		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile);
 		std::vector<std::string> etalonLogs = circuitAggregator.createAggregatedVector(etalonFile);
-		std::vector<std::string> comparedLogs = circuitAggregator.createAggregatedVector(comparedFile);
-		
+		std::vector<std::string> comparedLogs;
+		if (comparedFile.good()) {
+			comparedLogs = circuitAggregator.createAggregatedVector(comparedFile);
+		} else if (saveAggregatedPath.empty()) {
+			std::cerr << "ERROR: No compare file was provided" << std::endl;
+			return false;
+		}
+
 		if (!saveAggregatedPath.empty()) {
-			if (!saveAggregatedFiles(etalonLogs, comparedLogs, saveAggregatedPath)) {
+			if (comparedLogs.empty()) {
+				// TODO save etalon and exit
+				return true;
+			} else if (!createAggregatedFiles(etalonLogs, comparedLogs, saveAggregatedPath)) {
 				return false;
 			}
 		}
@@ -124,7 +133,8 @@ namespace state_smurf::log_evaluator {
 		}
 	}
 	
-	bool LogsComparer::saveAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path) {
+	bool LogsComparer::createAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path) {
+		// TODO add name argument, will be more flexible after.
 		std::filesystem::path dir(path);
 		std::filesystem::create_directories(path);
 		std::filesystem::path etalonPath = dir / "etalon";
@@ -135,14 +145,18 @@ namespace state_smurf::log_evaluator {
 			std::cerr << "ERROR: unable to create files in directory " << path << std::endl;
 			return false;
 		}
-		for (const auto& line : etalonLogs) {
-			newEtalonFile << line << std::endl;
-		}
-		for (const auto& line : comparedLogs) {
-			newComparedFile << line << std::endl;
-		}
+		writeAggregatedFile(etalonLogs, &newEtalonFile);
+		writeAggregatedFile(comparedLogs, &newComparedFile);
+
 		std::cout << "Aggregated files are saved in directory " << absolute(dir) << std::endl;
 		return true;
 	}
-	
+
+bool LogsComparer::writeAggregatedFile(const std::vector<std::string> &sourceLogs, std::ofstream* outputStream) {
+	for (const auto& line : sourceLogs) {
+		*outputStream << line << std::endl;
+	}
+}
+
+
 }
