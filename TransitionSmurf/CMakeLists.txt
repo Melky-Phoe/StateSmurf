@@ -7,6 +7,8 @@ ENDIF ()
 
 SET(CMAKE_CXX_STANDARD 20)
 
+SET(CMAKE_POSITION_INDEPENDENT_CODE  ON)
+
 OPTION(BRINGAUTO_TESTS "Enable tests" OFF)
 OPTION(BRINGAUTO_SAMPLES "Enable build of sample applications" OFF)
 OPTION(BRINGAUTO_INSTALL "Enable install feature" OFF)
@@ -24,7 +26,7 @@ ENDIF ()
 FIND_PACKAGE(libbringauto_logger REQUIRED COMPONENTS bringauto_logger_spdlog)
 
 FILE(GLOB_RECURSE source_files "source/*")
-ADD_LIBRARY(transition_smurf_lib SHARED ${source_files})
+ADD_LIBRARY(transition_smurf_lib STATIC ${source_files})
 TARGET_INCLUDE_DIRECTORIES(transition_smurf_lib PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 TARGET_LINK_LIBRARIES(transition_smurf_lib PUBLIC bringauto_logger::bringauto_logger_spdlog diagram_smurf_lib)
 

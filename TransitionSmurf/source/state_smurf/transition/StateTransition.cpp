@@ -37,13 +37,18 @@ namespace state_smurf::transition {
 	}
 	
 	bool StateTransition::inState(const std::string &stateName) {
-		if (stateDiagram_.getCurrentStateName() == stateName) {
+		if (isInState(stateName)) {
 			return true;
 		} else {
-			bringauto::logging::Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",
-			                                     stateName, stateDiagram_.getCurrentStateName());
+				bringauto::logging::Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",
+													 stateName, stateDiagram_.getCurrentStateName());
+
 			return false;
 		}
+	}
+
+	bool StateTransition::isInState(const std::string &stateName) {
+		return (stateDiagram_.getCurrentStateName() == stateName);
 	}
 	
 	void StateTransition::printAdjacencyList() {

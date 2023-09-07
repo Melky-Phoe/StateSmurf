@@ -11,7 +11,8 @@ namespace state_smurf::transition {
 	 */
 	class StateTransition {
 	public:
-		
+		StateTransition() = default;
+
 		explicit StateTransition(diagram::StateDiagram stateDiagram);
 		
 		/**
@@ -21,8 +22,16 @@ namespace state_smurf::transition {
 		 * @return true if transition is possible
 		 */
 		bool goToState(const std::string &stateName);
+
+		/**
+		 *
+		 * @param stateName
+		 * @return
+		 */
+		bool isInState(const std::string &stateName);
 	
 	private:
+
 		/**
 		 * Compares if current state is same as in param stateName, is called by goToState after change
 		 * Serves as guard for multithreading applications
@@ -30,7 +39,7 @@ namespace state_smurf::transition {
 		 * @return true is same, meaning transition was successful
 		 */
 		bool inState(const std::string &stateName);
-		
+
 		/**
 		 * Logs all transitions in specific parsable format
 		 */
