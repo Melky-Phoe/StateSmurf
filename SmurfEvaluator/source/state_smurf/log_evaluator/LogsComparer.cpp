@@ -11,7 +11,7 @@ namespace state_smurf::log_evaluator {
 
 bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile,
 								const std::string& saveAggregatedPath) {
-	state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile);
+	state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile); // TODO Needs to find the circuits in not aggregated
 	std::vector<std::string> etalonLogs = circuitAggregator.createAggregatedVector(etalonFile);
 	std::vector<std::string> comparedLogs;
 	if (comparedFile.good()) {

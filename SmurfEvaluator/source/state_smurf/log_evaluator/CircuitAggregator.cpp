@@ -16,6 +16,10 @@ namespace state_smurf::log_evaluator {
 	
 	std::vector<std::string> CircuitAggregator::createAggregatedVector(std::istream &sourceLogFile) {
 		transitionLogVector_ = Filter::createTransitionLogVector(sourceLogFile);
+		if (transitionLogVector_[0].ends_with("Start of Run -- Aggregated")) {
+			std::cout << "The input file is already aggregated. Skipping aggregation" << std::endl;
+			return transitionLogVector_;
+		}
 		std::vector<std::string> aggregatedLogVector;
 		
 		std::vector<int> circuitFoundIndexes;
