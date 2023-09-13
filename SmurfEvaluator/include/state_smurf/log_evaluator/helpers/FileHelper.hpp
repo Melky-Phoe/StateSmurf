@@ -5,6 +5,9 @@
 
 namespace state_smurf::log_evaluator::helpers {
 
+	/**
+	 * @brief Class for working with files
+	 */
 	class FileHelper {
 	public:
 		/**
