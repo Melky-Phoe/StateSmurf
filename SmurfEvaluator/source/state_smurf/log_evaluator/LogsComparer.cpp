@@ -1,35 +1,46 @@
 #include <state_smurf/log_evaluator/LogsComparer.hpp>
-#include <state_smurf/log_evaluator/LineParser.hpp>
+#include <state_smurf/log_evaluator/helpers/LineParser.hpp>
 #include <state_smurf/log_evaluator/CircuitAggregator.hpp>
+#include <state_smurf/log_evaluator/helpers/FileHelper.hpp>
 
 #include <iostream>
 #include <filesystem>
 
 
-
 namespace state_smurf::log_evaluator {
 
-bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &comparedFile,
+bool LogsComparer::compareFiles(std::ifstream &etalonFile, std::ifstream &comparedFile,
 								const std::string& saveAggregatedPath) {
-	state_smurf::log_evaluator::CircuitAggregator circuitAggregator(etalonFile); // TODO Needs to find the circuits in not aggregated
-	std::vector<std::string> etalonLogs = circuitAggregator.createAggregatedVector(etalonFile);
+	state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+	std::vector<std::string> etalonLogs;
+	if (helpers::FileHelper::isFileAggregated(etalonFile)) {
+		etalonLogs = helpers::FileHelper::createVectorFromFile(etalonFile);
+	} else {
+		circuitAggregator.ensureCircuitsInitialized(etalonFile);
+		etalonLogs = circuitAggregator.createAggregatedVector(etalonFile);
+	}
 	std::vector<std::string> comparedLogs;
-	if (comparedFile.good()) {
-		comparedLogs = circuitAggregator.createAggregatedVector(comparedFile);
+	if (comparedFile.is_open()) {
+		if (helpers::FileHelper::isFileAggregated(comparedFile)) {
+			comparedLogs = helpers::FileHelper::createVectorFromFile(comparedFile);
+		} else {
+			circuitAggregator.ensureCircuitsInitialized(comparedFile);
+			comparedLogs = circuitAggregator.createAggregatedVector(comparedFile);
+		}
 	} else if (saveAggregatedPath.empty()) {
-		std::cerr << "ERROR: No compare file was provided" << std::endl;
+		std::cerr << "ERROR: No compare file was provided. Enter compared file or use option --save-aggregated to save aggregated etalon" << std::endl;
 		return false;
 	}
 
 	if (!saveAggregatedPath.empty()) {
 		if (comparedLogs.empty()) { 	// Creating aggregated etalon only
-			if (!createAggregatedFiles(etalonLogs, "etalon", saveAggregatedPath)) {
+			if (!helpers::FileHelper::createAggregatedFiles(etalonLogs, "etalon", saveAggregatedPath)) {
 				return false;
 			} else {
 				return true;
 			}
-		} else if (!createAggregatedFiles(etalonLogs, "etalon", saveAggregatedPath) ||
-				   !createAggregatedFiles(comparedLogs, "compared", saveAggregatedPath)) {
+		} else if (!helpers::FileHelper::createAggregatedFiles(etalonLogs, "etalon", saveAggregatedPath) ||
+				   !helpers::FileHelper::createAggregatedFiles(comparedLogs, "compared", saveAggregatedPath)) {
 			return false;
 		}
 	}
@@ -54,7 +65,7 @@ bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &compared
 		std::cout << "Run number " << runCount << ":" << std::endl;
 
 		for (int j = 0; j < etalonLogs.size() && i < comparedLogs.size(); ++j) {
-			if (!LineParser::compareLines(etalonLogs[j], comparedLogs[i])) {
+			if (!helpers::LineParser::compareLines(etalonLogs[j], comparedLogs[i])) {
 				runsAreSame = false;
 
 				// Compared file is shorter than Etalon, we need to finish comparing Etalon file
@@ -65,7 +76,7 @@ bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &compared
 						return false;
 					}
 					for (j += 1; j < etalonLogs.size(); ++j) {
-						LineParser::compareLines(etalonLogs[j], "");
+						helpers::LineParser::compareLines(etalonLogs[j], "");
 					}
 					break;
 				}
@@ -76,13 +87,13 @@ bool LogsComparer::compareFiles(std::istream &etalonFile, std::istream &compared
 			// Etalon run is shorter than compared, needs catching up
 			while (i < comparedLogs.size() && !isStartOfRunLog(comparedLogs[i])) {
 				runsAreSame = false;
-				LineParser::compareLines("", comparedLogs[i]);
+				helpers::LineParser::compareLines("", comparedLogs[i]);
 				i++;
 			}
 		} else if (comparedLogs.size() < etalonLogs.size()) {
 			for (u_long j = comparedLogs.size(); j < etalonLogs.size(); ++j) {
 				runsAreSame = false;
-				LineParser::compareLines(etalonLogs[j], "");
+				helpers::LineParser::compareLines(etalonLogs[j], "");
 			}
 		}
 
@@ -105,8 +116,7 @@ bool LogsComparer::isStartOfRunLog(const std::string &line) {
 		return true;
 	} else {
 		if (line.ends_with("Start of Run")) {
-			std::cerr << "ERROR: file was not aggregated to circuits, start application with --aggregate option\n"
-						 "Created file then use as etalon. For more info read README" << std::endl;
+			std::cerr << "ERROR: a file was not aggregated to circuits" << std::endl;
 		}
 		return false;
 	}
@@ -125,9 +135,9 @@ bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
 				return false;
 			}
 
-			std::vector<std::string> etalonTokens = LineParser::parseLine(etalonLogs[i]);
+			std::vector<std::string> etalonTokens = helpers::LineParser::parseLine(etalonLogs[i]);
 
-			if (etalonTokens[static_cast<int>(LineParser::LogTokensIndexes::VERBOSITY)] == "[warning]") {
+			if (etalonTokens[static_cast<int>(helpers::LineParser::LogTokensIndexes::VERBOSITY)] == "[warning]") {
 				std::cout << "WARNING: there is unsuccessful transition in etalon." << std::endl;
 			}
 
@@ -138,28 +148,5 @@ bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
 		return false;
 	}
 }
-
-bool LogsComparer::createAggregatedFiles(const std::vector<std::string> &aggregatedLogs, const std::string &fileName,
-										 const std::string &path) {
-	std::filesystem::path dir(path);
-	std::filesystem::create_directories(path);
-	std::filesystem::path filePath = dir/fileName;
-	std::ofstream newFileStream(filePath.string());
-	if (!newFileStream.is_open()) {
-		std::cerr << "ERROR: unable to create file: `" << fileName << "` in directory: `" << path << "`" << std::endl;
-		return false;
-	}
-	writeVectorToFile(aggregatedLogs, &newFileStream);
-
-	std::cout << "Aggregated file is saved in " << absolute(filePath) << std::endl;
-	return true;
-}
-
-bool LogsComparer::writeVectorToFile(const std::vector<std::string> &sourceLogs, std::ofstream *outputStream) {
-	for (const auto &line: sourceLogs) {
-		*outputStream << line << std::endl;
-	}
-}
-
 
 }

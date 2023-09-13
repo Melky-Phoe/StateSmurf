@@ -14,7 +14,9 @@ namespace state_smurf::log_evaluator {
 		 * Constructor, filters non-TransitionSmurf logs out of sourceLogFile and finds circuits_ of state diagram
 		 * @param sourceLogFile
 		 */
-		explicit CircuitAggregator(std::istream &sourceLogFile);
+		CircuitAggregator() = default;
+
+		void ensureCircuitsInitialized(std::istream &sourceLogFile);
 		
 		/**
 		 * Aggregates logs into circuits that are saved to file given by param

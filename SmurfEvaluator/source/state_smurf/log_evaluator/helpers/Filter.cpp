@@ -1,8 +1,8 @@
-#include <state_smurf/log_evaluator/Filter.hpp>
+#include "state_smurf/log_evaluator/helpers/Filter.hpp"
 
 #include <string>
 
-namespace state_smurf::log_evaluator {
+namespace state_smurf::log_evaluator::helpers {
 	
 	std::string Filter::findNextTransitionLog(std::istream &srcFile) {
 		std::string line;

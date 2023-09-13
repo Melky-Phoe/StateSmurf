@@ -1,6 +1,6 @@
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
-#include <state_smurf/log_evaluator/Filter.hpp>
-#include <state_smurf/log_evaluator/LineParser.hpp>
+#include "state_smurf/log_evaluator/helpers/Filter.hpp"
+#include "state_smurf/log_evaluator/helpers/LineParser.hpp"
 
 #include <iostream>
 #include <map>
@@ -102,13 +102,13 @@ namespace state_smurf::log_evaluator {
 	}
 	
 	bool CircuitFinder::createAdjacencyMatrix(std::istream &srcFile) {
-		std::string line = Filter::findDiagramSmurfLog(srcFile);
+		std::string line = helpers::Filter::findDiagramSmurfLog(srcFile);
 		std::map<std::string, int> namesMap;
 		
 		std::vector<std::vector<std::string>> adjacencyTokens;
 		while (!line.empty()) {
-			adjacencyTokens.push_back(LineParser::parseLine(line));
-			line = Filter::findDiagramSmurfLog(srcFile);
+			adjacencyTokens.push_back(helpers::LineParser::parseLine(line));
+			line = helpers::Filter::findDiagramSmurfLog(srcFile);
 		}
 		
 		numberOfVertexes_ = adjacencyTokens.size();

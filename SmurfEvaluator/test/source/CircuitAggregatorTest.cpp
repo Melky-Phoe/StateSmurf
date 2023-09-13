@@ -18,7 +18,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, linear) {
 		std::ifstream file = openFile("linear");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -30,7 +31,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, singleCircuit) {
 		std::ifstream file = openFile("singleCircuit");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -40,7 +42,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, onlyCircuit) {
 		std::ifstream file = openFile("singleCircuit");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -50,7 +53,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, endInCircuit) {
 		std::ifstream file = openFile("endInCircuit");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -60,7 +64,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, endOutCircuit) {
 		std::ifstream file = openFile("endOutCircuit");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -73,7 +78,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, unstarted) {
 		std::ifstream file = openFile("unstartedCircuit");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -84,7 +90,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, shortLongCircuit) {
 		std::ifstream file = openFile("shortLongCircuit");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -96,7 +103,8 @@ namespace circuit_aggregator {
 	
 	TEST(CircuitAggregator, shortLongEnd) {
 		std::ifstream file = openFile("shortLongEnd");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -107,7 +115,8 @@ namespace circuit_aggregator {
 	TEST(CircuitAggregator, shortEnd) {
 	    // Shorter of two circuits, containing same 1st and 2nd vertexes
 		std::ifstream file = openFile("shortEnd");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -118,7 +127,8 @@ namespace circuit_aggregator {
 	TEST(CircuitAggregator, doubleShortEnd) {
 		// Shorter of circuits happening twice
 		std::ifstream file = openFile("doubleShortEnd");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -129,7 +139,8 @@ namespace circuit_aggregator {
 	TEST(CircuitAggregator, shortEnd2) {
 		// End in shorter circuit, but circuits have different 2nd vertex
 		std::ifstream file = openFile("shortEnd2");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
@@ -140,7 +151,8 @@ namespace circuit_aggregator {
 	TEST(CircuitAggregator, multiRun) {
 		// End in shorter circuit, but circuits have different 2nd vertex
 		std::ifstream file = openFile("multiRun");
-		state_smurf::log_evaluator::CircuitAggregator circuitAggregator(file);
+		state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
+		circuitAggregator.ensureCircuitsInitialized(file);
 		std::vector<std::string> logs = circuitAggregator.createAggregatedVector(file);
 		std::vector<std::string> constAggregated;
 		constAggregated.emplace_back("[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run -- Aggregated");
