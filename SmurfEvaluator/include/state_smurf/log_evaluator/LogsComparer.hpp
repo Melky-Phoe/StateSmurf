@@ -2,6 +2,9 @@
 
 #include <fstream>
 #include <vector>
+#include "CircuitAggregator.hpp"
+
+
 
 namespace state_smurf::log_evaluator {
 	class LogsComparer {
@@ -29,6 +32,9 @@ namespace state_smurf::log_evaluator {
 		 * @return
 		 */
 		static bool validateEtalon(std::vector<std::string> etalonLogs);
+
+		static std::vector<std::string>
+		loadLogs(std::ifstream &file, CircuitAggregator &circuitAggregator);
 
 	};
 }

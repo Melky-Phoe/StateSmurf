@@ -11,22 +11,11 @@ namespace state_smurf::log_evaluator {
 
 bool LogsComparer::compareFiles(std::ifstream &etalonFile, std::ifstream &comparedFile,
 								const std::string& saveAggregatedPath) {
-	state_smurf::log_evaluator::CircuitAggregator circuitAggregator;
-	std::vector<std::string> etalonLogs;
-	if (helpers::FileHelper::isFileAggregated(etalonFile)) {
-		etalonLogs = helpers::FileHelper::createVectorFromFile(etalonFile);
-	} else {
-		circuitAggregator.ensureCircuitsInitialized(etalonFile);
-		etalonLogs = circuitAggregator.createAggregatedVector(etalonFile);
-	}
+	CircuitAggregator circuitAggregator;
+	std::vector<std::string> etalonLogs = loadLogs(etalonFile, circuitAggregator);
 	std::vector<std::string> comparedLogs;
 	if (comparedFile.is_open()) {
-		if (helpers::FileHelper::isFileAggregated(comparedFile)) {
-			comparedLogs = helpers::FileHelper::createVectorFromFile(comparedFile);
-		} else {
-			circuitAggregator.ensureCircuitsInitialized(comparedFile);
-			comparedLogs = circuitAggregator.createAggregatedVector(comparedFile);
-		}
+		comparedLogs = loadLogs(comparedFile, circuitAggregator);
 	} else if (saveAggregatedPath.empty()) {
 		std::cerr << "ERROR: No compare file was provided. Enter compared file or use option --save-aggregated to save aggregated etalon" << std::endl;
 		return false;
@@ -148,5 +137,17 @@ bool LogsComparer::validateEtalon(std::vector<std::string> etalonLogs) {
 		return false;
 	}
 }
+
+std::vector<std::string> LogsComparer::loadLogs(std::ifstream &file, CircuitAggregator &circuitAggregator) {
+	std::vector<std::string> aggregatedLogs;
+	if (helpers::FileHelper::isFileAggregated(file)) {
+		aggregatedLogs = helpers::FileHelper::createVectorFromFile(file);
+	} else {
+		circuitAggregator.ensureCircuitsInitialized(file);
+		aggregatedLogs = circuitAggregator.createAggregatedVector(file);
+	}
+	return aggregatedLogs;
+}
+
 
 }
