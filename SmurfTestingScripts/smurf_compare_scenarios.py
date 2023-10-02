@@ -79,10 +79,10 @@ def create_command_string(scenario: dict) -> str:
 
     if args.create_etalons:
         target = os.path.join(etalons_dir, scenario["name"] + ".log")
-        command += "> " + str(target)
+        command += "2>&1 > " + str(target)
     else:
         target = os.path.join(output_dir, scenario["name"] + ".log")
-        command += "> " + str(target)
+        command += "2>&1 > " + str(target)
     return command
 
 
@@ -136,8 +136,7 @@ if __name__ == "__main__":
         print(e)
         exit(1)
 
-    workDir = args.scenario.rsplit('/', 1)[0]
-    workDir = os.path.realpath(workDir)
+    workDir = os.path.realpath(os.path.dirname(args.scenario))
     if args.output_dir == "":
         out_dir = workDir
     else:
@@ -148,10 +147,12 @@ if __name__ == "__main__":
     aggregated_output_dir = os.path.join(out_dir, "aggregated_output")
     evaluator_output_dir = os.path.join(out_dir, "evaluator_output")
 
-    Path(etalons_dir).mkdir(parents=True, exist_ok=True)
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
-    Path(aggregated_output_dir).mkdir(parents=True, exist_ok=True)
-    Path(evaluator_output_dir).mkdir(parents=True, exist_ok=True)
+    if args.create_etalons:
+        Path(etalons_dir).mkdir(parents=True, exist_ok=True)
+    else:
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        Path(aggregated_output_dir).mkdir(parents=True, exist_ok=True)
+        Path(evaluator_output_dir).mkdir(parents=True, exist_ok=True)
 
     os.chdir(workDir)
 

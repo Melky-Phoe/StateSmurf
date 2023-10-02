@@ -24,9 +24,9 @@ namespace state_smurf::transition {
 		bool goToState(const std::string &stateName);
 
 		/**
-		 *
+		 * Method used to check if the StateTransition is in the needed state.
 		 * @param stateName
-		 * @return
+		 * @return true - StateTransition is in the needed state, false - not in the needed state.
 		 */
 		bool isInState(const std::string &stateName);
 	
