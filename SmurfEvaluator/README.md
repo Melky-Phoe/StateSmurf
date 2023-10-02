@@ -61,7 +61,7 @@ This file can contain multiple runs of tested application.
 ./smurfEvaluator --etalon <path_to_etalon> --compare <path_to_compared> [--save-aggregated <directory>]
 ```
 ### arguments
-- **-e | --etalon**: Path to etalon .log file. Can be the original or aggregated.
+- **-e | --etalon**: Path to etalon .log file. Can be the original log file or aggregated one.
 - **-c | --compare**: Path to .log file which we want to compare with etalon.
 - **-s | --save-aggregated**: If set, aggregated files will be saved to directory given.
 

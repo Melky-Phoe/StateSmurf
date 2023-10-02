@@ -1,6 +1,6 @@
 #include <FilterTests.hpp>
 
-#include "state_smurf/log_evaluator/helpers/Filter.hpp"
+#include <state_smurf/log_evaluator/helpers/Filter.hpp>
 
 using namespace state_smurf::log_evaluator::helpers;
 TEST_F(FilterTests, filterFile) {

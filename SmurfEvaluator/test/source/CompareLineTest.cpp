@@ -1,4 +1,4 @@
-#include "state_smurf/log_evaluator/helpers/LineParser.hpp"
+#include <state_smurf/log_evaluator/helpers/LineParser.hpp>
 #include <gtest/gtest.h>
 
 using namespace state_smurf::log_evaluator::helpers;

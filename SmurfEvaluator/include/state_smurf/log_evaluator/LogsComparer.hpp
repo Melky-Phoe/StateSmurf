@@ -1,8 +1,9 @@
 #pragma once
 
+#include <state_smurf/log_evaluator/CircuitAggregator.hpp>
+
 #include <fstream>
 #include <vector>
-#include "CircuitAggregator.hpp"
 
 
 

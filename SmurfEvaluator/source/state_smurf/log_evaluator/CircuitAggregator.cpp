@@ -1,7 +1,7 @@
 #include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
-#include "state_smurf/log_evaluator/helpers/Filter.hpp"
-#include "state_smurf/log_evaluator/helpers/LineParser.hpp"
+#include <state_smurf/log_evaluator/helpers/Filter.hpp>
+#include <state_smurf/log_evaluator/helpers/LineParser.hpp>
 
 #include <iostream>
 
