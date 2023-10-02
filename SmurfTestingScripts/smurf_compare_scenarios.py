@@ -136,8 +136,7 @@ if __name__ == "__main__":
         print(e)
         exit(1)
 
-    workDir = args.scenario.rsplit('/', 1)[0]
-    workDir = os.path.dirname(os.path.realpath(workDir))
+    workDir = os.path.realpath(os.path.dirname(args.scenario))
     if args.output_dir == "":
         out_dir = workDir
     else:
