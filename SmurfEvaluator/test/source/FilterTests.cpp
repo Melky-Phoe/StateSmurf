@@ -1,8 +1,8 @@
 #include <FilterTests.hpp>
 
-#include <state_smurf/log_evaluator/Filter.hpp>
+#include <state_smurf/log_evaluator/helpers/Filter.hpp>
 
-using namespace state_smurf::log_evaluator;
+using namespace state_smurf::log_evaluator::helpers;
 TEST_F(FilterTests, filterFile) {
     EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Start of Run");
     EXPECT_EQ(Filter::findNextTransitionLog(file), "[2021-12-20 10:05:29.392] [sampleApp] [info] [TransitionSmurf] Any log with [TransitionSmurf] prefix");

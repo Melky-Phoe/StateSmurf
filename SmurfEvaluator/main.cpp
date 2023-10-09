@@ -13,9 +13,10 @@ static cxxopts::Options createArgOpts() {
 	options.add_options()
 				   ("e, etalon", "Path to etalon .log file", cxxopts::value<std::string>())
 				   ("c, compare", "Path to .log file which we want to compare with etalon",
-					cxxopts::value<std::string>())
+					cxxopts::value<std::string>()->default_value(""))
 				   ("s, save-aggregated", "If set, aggregated files will be saved. "
-										  "Value is path to directory where aggregated files will be created.",
+										  "Value is path to directory where aggregated files will be created."
+										  "In given directory files *etalon* and *compared* will be created",
 					cxxopts::value<std::string>())
 				   ("h,help", "Print help message");
 	return options;
@@ -35,10 +36,12 @@ cxxopts::ParseResult parseArgOpts(int argc, char **argv) {
 			std::cout << options.help() << std::endl;
 			exit(EXIT_FAILURE);
 		}
-		if(!parsedOptions.count("compare")) {
+		if(!parsedOptions.count("compare") && !parsedOptions.count("save-aggregated")) {
 			std::cerr << "Error: no compare file provided\n";
 			std::cout << options.help() << std::endl;
 			exit(EXIT_FAILURE);
+		} else if (!parsedOptions.count("compare") && parsedOptions.count("save-aggregated")) {
+			std::cout << "No file to compare was provided. Evaluator will create aggregated file from etalon and exit." << std::endl;
 		}
 
 		return parsedOptions;
@@ -67,10 +70,12 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 	std::ifstream compareFile;
-	compareFile.open(compareFilePath);
-	if(!compareFile.is_open()) {
-		std::cerr << "Unable to open " << compareFilePath << std::endl;
-		return EXIT_FAILURE;
+	if (!compareFilePath.empty()) {
+		compareFile.open(compareFilePath);
+		if (!compareFile.is_open()) {
+			std::cerr << "Unable to open " << compareFilePath << std::endl;
+			return EXIT_FAILURE;
+		}
 	}
 
 	if(!state_smurf::log_evaluator::LogsComparer::compareFiles(etalonFile, compareFile, aggregatedPath)) {

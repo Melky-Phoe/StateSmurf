@@ -1,7 +1,11 @@
 #pragma once
 
+#include <state_smurf/log_evaluator/CircuitAggregator.hpp>
+
 #include <fstream>
 #include <vector>
+
+
 
 namespace state_smurf::log_evaluator {
 	class LogsComparer {
@@ -13,7 +17,7 @@ namespace state_smurf::log_evaluator {
 		 * @param saveAggregatedPath path to directory where aggregated files will be saved, if empty, files are not saved
 		 * @return true if StateTransition logs are valid and same, false otherwise
 		 */
-		static bool compareFiles(std::istream &etalonFile, std::istream &comparedFile, std::string saveAggregatedPath);
+		static bool compareFiles(std::ifstream &etalonFile, std::ifstream &comparedFile, const std::string& saveAggregatedPath);
 	
 	private:
 		/**
@@ -29,16 +33,9 @@ namespace state_smurf::log_evaluator {
 		 * @return
 		 */
 		static bool validateEtalon(std::vector<std::string> etalonLogs);
-		
-		/**
-		 * Creates directories in path, where aggregated files will be created.
-		 * etalonLogs are written to file 'etalon' and comparedLogs to file 'compared'
-		 * @param etalonLogs vector of aggregated etalon logs
-		 * @param comparedLogs vector of aggregated comparedFile logs
-		 * @param path directory, where files `etalon` and `compared` will be created
-		 * @return true if successful
-		 */
-		static bool saveAggregatedFiles(const std::vector<std::string>& etalonLogs, const std::vector<std::string>& comparedLogs, const std::string& path);
-		
+
+		static std::vector<std::string>
+		loadLogs(std::ifstream &file, CircuitAggregator &circuitAggregator);
+
 	};
 }

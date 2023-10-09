@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace state_smurf::log_evaluator {
+namespace state_smurf::log_evaluator::helpers {
 	/**
 	 * Helper functions for parsing lines into tokens. Uses Boost library
 	 */

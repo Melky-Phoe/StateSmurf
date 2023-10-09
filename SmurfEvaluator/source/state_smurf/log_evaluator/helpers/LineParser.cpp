@@ -1,9 +1,9 @@
-#include <state_smurf/log_evaluator/LineParser.hpp>
+#include <state_smurf/log_evaluator/helpers/LineParser.hpp>
 
 #include <iostream>
 #include <sstream>
 
-namespace state_smurf::log_evaluator {
+namespace state_smurf::log_evaluator::helpers {
 	
 	constexpr int MINIMAL_CIRCUIT_LOG_SIZE = 5; // [date time] In circuit N:
 	constexpr int CIRCUIT_WORD_INDEX = 3;

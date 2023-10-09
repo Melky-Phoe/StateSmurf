@@ -11,7 +11,7 @@ std::ifstream openFile(std::string filename) {
     std::ifstream file;
     file.open(LOGS_PATH + filename, std::ios_base::in);
     if (!file.is_open()) {
-        std::cerr << "Unable to open" << LOGS_PATH << filename << std::endl;
+        std::cerr << "Unable to open " << LOGS_PATH << filename << std::endl;
     }
     return file;
 }
@@ -76,6 +76,35 @@ TEST_F(CompareFileTest, shorterRun) {
     std::ifstream compare = openFile("multipleRuns/shorterRun.log");
     EXPECT_FALSE(LogsComparer::compareFiles(etalon, compare, ""));
     compare.close();
+}
+
+TEST_F(CompareFileTest, aggregatedFile) {
+	std::ifstream aggregatedEtalon = openFile("aggregated");
+	std::ifstream original = openFile("sourceOfAggregated.log");
+
+	EXPECT_TRUE(LogsComparer::compareFiles(aggregatedEtalon, original, ""));
+	aggregatedEtalon.clear();
+	aggregatedEtalon.seekg(std::ios::beg);
+	original.clear();
+	original.seekg(std::ios::beg);
+	EXPECT_TRUE(LogsComparer::compareFiles(original, aggregatedEtalon, ""));
+
+	aggregatedEtalon.close();
+}
+
+TEST_F(CompareFileTest, CreateAggregatedFile) {
+	std::ifstream empty;
+	std::ifstream etalonOriginal = openFile("sourceOfAggregated.log");
+
+	EXPECT_TRUE(LogsComparer::compareFiles(etalonOriginal, empty, LOGS_PATH "testGenerated/"));
+
+	etalonOriginal.clear();
+	etalonOriginal.seekg(std::ios::beg);
+	std::ifstream aggregated = openFile("testGenerated/etalon");
+
+	EXPECT_TRUE(LogsComparer::compareFiles(aggregated, etalonOriginal, ""));
+	etalonOriginal.close();
+	aggregated.close();
 }
 
 }

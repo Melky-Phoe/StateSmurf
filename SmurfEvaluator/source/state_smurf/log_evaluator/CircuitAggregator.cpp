@@ -1,21 +1,30 @@
 #include <state_smurf/log_evaluator/CircuitAggregator.hpp>
 #include <state_smurf/log_evaluator/CircuitFinder.hpp>
-#include <state_smurf/log_evaluator/Filter.hpp>
-#include <state_smurf/log_evaluator/LineParser.hpp>
+#include <state_smurf/log_evaluator/helpers/Filter.hpp>
+#include <state_smurf/log_evaluator/helpers/LineParser.hpp>
 
 #include <iostream>
 
 namespace state_smurf::log_evaluator {
-	
-	CircuitAggregator::CircuitAggregator(std::istream &sourceLogFile) {
-		state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
-		circuitList_ = CF.find();
-		sourceLogFile.clear();
-		sourceLogFile.seekg(std::ios::beg);
+
+	void CircuitAggregator::ensureCircuitsInitialized(std::istream &sourceLogFile) {
+		if (circuitList_.empty()) {
+			state_smurf::log_evaluator::CircuitFinder CF(sourceLogFile);
+			circuitList_ = CF.find();
+			sourceLogFile.clear();
+			sourceLogFile.seekg(std::ios::beg);
+		}
 	}
 	
 	std::vector<std::string> CircuitAggregator::createAggregatedVector(std::istream &sourceLogFile) {
-		transitionLogVector_ = Filter::createTransitionLogVector(sourceLogFile);
+		transitionLogVector_ = helpers::Filter::createTransitionLogVector(sourceLogFile);
+		if (transitionLogVector_.empty()) {
+			std::cerr << "There is no state transition log in provided file" << std::endl;
+			return transitionLogVector_;
+		} else if (transitionLogVector_.front().ends_with("Start of Run -- Aggregated")) {
+			std::cout << "The input file is already aggregated. Skipping aggregation" << std::endl;
+			return transitionLogVector_;
+		}
 		std::vector<std::string> aggregatedLogVector;
 		
 		std::vector<int> circuitFoundIndexes;
@@ -23,7 +32,7 @@ namespace state_smurf::log_evaluator {
 		for (transitionIndex_ = 0; transitionIndex_ < transitionLogVector_.size();) {
 			long nextCircuit = getCircuit(currentCircuit);
 			if (nextCircuit == END_FOUND) {
-				if (LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+				if (helpers::LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 					handleStart(aggregatedLogVector);
 					currentCircuit = START_FOUND;
 				} else {
@@ -66,7 +75,7 @@ namespace state_smurf::log_evaluator {
 		std::vector<int> circuitFoundIndexes;
 		for (int i = 0; i < circuitList_.size(); ++i) {
 			for (int j = 0; j < circuitList_[i].size(); ++j) {
-				auto nextState = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
+				auto nextState = helpers::LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
 				if (nextState.empty() ) { // Start of Run is found
 					if (lastCircuit == START_FOUND) {
 						break;
@@ -101,17 +110,17 @@ namespace state_smurf::log_evaluator {
 		} else {
 			if (currentCircuit < 0) {
 				while (transitionIndex_ < transitionLogVector_.size() &&
-				       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+				       !helpers::LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 					targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
 					transitionIndex_++;
 				}
 			} else {
 				bool stayInCircuit = true;
 				while (transitionIndex_ < transitionLogVector_.size() &&
-				       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+				       !helpers::LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 					for (int j = 0; j < circuitList_[currentCircuit].size() &&
 					                (transitionIndex_ + j) < transitionLogVector_.size(); ++j) {
-						auto state = LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
+						auto state = helpers::LineParser::getState(transitionLogVector_[transitionIndex_ + j]);
 						if (state.empty()) {
 							transitionIndex_ += j;
 							return;
@@ -124,7 +133,7 @@ namespace state_smurf::log_evaluator {
 					if (!stayInCircuit) {
 						// States before end doesn't follow last circuit's states. Prints all states
 						while (transitionIndex_ < transitionLogVector_.size() &&
-						       !LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+						       !helpers::LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 							targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
 							transitionIndex_++;
 						}
@@ -150,7 +159,7 @@ namespace state_smurf::log_evaluator {
 	
 	void CircuitAggregator::handleNoCircuits(std::vector<std::string> &targetLogFile) {
 		while (transitionIndex_ < transitionLogVector_.size()) {
-			if (LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
+			if (helpers::LineParser::getState(transitionLogVector_[transitionIndex_]).empty()) {
 				handleStart(targetLogFile);
 			} else {
 				targetLogFile.push_back(transitionLogVector_[transitionIndex_]);
@@ -160,7 +169,7 @@ namespace state_smurf::log_evaluator {
 	}
 	
 	void CircuitAggregator::printCircuitLog(std::vector<std::string> &targetLogFile, long circuitIndex) {
-		std::string newLine = LineParser::getTime(transitionLogVector_[transitionIndex_]);
+		std::string newLine = helpers::LineParser::getTime(transitionLogVector_[transitionIndex_]);
 		newLine.append(" In circuit ");
 		newLine.append(std::to_string(circuitIndex));
 		newLine.append(": [");
@@ -171,6 +180,7 @@ namespace state_smurf::log_evaluator {
 		newLine.append("]");
 		targetLogFile.push_back(newLine);
 	}
-	
-	
+
+
+
 }

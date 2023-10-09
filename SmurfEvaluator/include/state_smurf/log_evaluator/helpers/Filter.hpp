@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 
-namespace state_smurf::log_evaluator {
+namespace state_smurf::log_evaluator::helpers {
 	/**
 	 * Class implementing filtering of .log files
 	 */
