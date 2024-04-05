@@ -52,6 +52,10 @@ def run_scenarios():
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
             time.sleep(kill_timeout)
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+        except KeyboardInterrupt:
+            print("Terminating process")
+            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+            raise KeyboardInterrupt
         print("..... Done")
 
         if not args.create_etalons:
@@ -158,11 +162,12 @@ if __name__ == "__main__":
 
     exit_code = 0
     setup()
-    if not run_scenarios():
-        exit_code = 2
-        print("WARNING: Some test have different transition logs, check \'" + evaluator_output_dir + "\' for output")
-    if args.create_etalons:
-        print("Etalons were created in:", etalons_dir)
-    cleanup()
-
-    exit(exit_code)
+    try:
+        if not run_scenarios():
+            exit_code = 2
+            print("WARNING: Some test have different transition logs, check \'" + evaluator_output_dir + "\' for output")
+        if args.create_etalons:
+            print("Etalons were created in:", etalons_dir)
+    finally:
+        cleanup()
+        exit(exit_code)
