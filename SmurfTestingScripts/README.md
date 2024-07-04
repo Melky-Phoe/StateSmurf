@@ -22,8 +22,7 @@ All paths used in the scenario json are relative to that file.
 ```
 python3 CompareScenarios.py --scenario <path> --executable <path> --evaluator <path> [--output <path> --create-etalons]
 ```  
-First run must be run with the --create-etalons flag! Etalons aren't created automatically when not found,
-because they require human approval.
+The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval.
 ### Arguments:
 - **-s | --scenario**: Path to scenario json file containing run scenarios.
 - **-e | --executable**: Path to executable of tested application.
