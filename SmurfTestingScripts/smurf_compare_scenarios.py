@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 import json
 import argparse
-import threading
+import multiprocessing
 
 # Time in second to timeout if timeout argument is not set
 default_timeout = 5*60
@@ -16,11 +16,11 @@ kill_timeout = 10
 def run_commands(command_list):
     for command in command_list:
         if isinstance(command, list):
-            threading.Thread(target=run_commands, args=(command,)).start()
+            multiprocessing.Process(target=run_commands, args=(command,)).start()
         elif command != "":
             return_code = os.system(command)
             print("'" + command + "' ended with exit code: ", return_code)
-            if return_code > 0:
+            if return_code > 0 and return_code != 15:
                 return False
     return True
 
@@ -44,7 +44,7 @@ def run_scenarios():
         print("Running test: ", scenario["name"], " .....")
         process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir, preexec_fn=os.setsid)
         if "actions" in scenario.keys():
-            threading.Thread(target=run_commands, args=(scenario["actions"],)).start()
+            multiprocessing.Process(target=run_commands, args=(scenario["actions"],)).start()
         try:
             if "timeout_s" in scenario.keys():
                 process.wait(timeout=scenario["timeout_s"])
