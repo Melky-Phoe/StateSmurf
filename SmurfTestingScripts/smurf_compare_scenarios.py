@@ -17,46 +17,48 @@ def run_commands(command_list):
     for command in command_list:
         if isinstance(command, list):
             multiprocessing.Process(target=run_commands, args=(command,)).start()
-        elif command != "":
+        elif command:
+            print(f"\033[93m{command}\033[0m")
             return_code = os.system(command)
-            print("'" + command + "' ended with exit code: ", return_code)
             if return_code > 0 and return_code != 15:
+                print(f"\033[31m'{command}' ended with exit code: {return_code}\033[0m")
                 return False
     return True
 
 
 def setup():
+    print(f"\033[96mSetting up environment for scenario file {args.scenario}\033[0m\n")
     if not run_commands(scenario_json["setup"]):
-        print("Operation unsuccessful, shutting down testing script")
+        print("\033[31mOperation unsuccessful, shutting down testing script\033[0m")
         cleanup()
         exit(1)
+    print("\n\033[96mSetup finished\033[0m")
 
 
 def tidy_up():
-    if not run_commands(scenario_json["between_runs"]):
-        print("Tidy-up operation unsuccessful, following test might be unsuccessful")
-        exit(1)
+    if len(scenario_json["between_runs"]):
+        print(f"\n\033[96mTidying up in beteween scenarios .....\033[0m\n")
+        if not run_commands(scenario_json["between_runs"]):
+            print("\033[31mTidy-up operation unsuccessful, following test might be unsuccessful\033[0m")
+            exit(1)
 
 
 def run_scenarios():
     tests_passed = True
     for scenario in scenario_json["scenarios"]:
-        print("Running test: ", scenario["name"], " .....")
+        print(f"\n\033[92mRunning test: {scenario['name']} .....\033[0m\n")
         process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir, preexec_fn=os.setsid)
-        if "actions" in scenario.keys():
+        if "actions" in scenario:
             multiprocessing.Process(target=run_commands, args=(scenario["actions"],)).start()
         try:
-            if "timeout_s" in scenario.keys():
-                process.wait(timeout=scenario["timeout_s"])
-            else:
-                # setting default timeout to 5 minutes
-                process.wait(timeout=default_timeout)
+            timeout = scenario.get("timeout_s", default_timeout)
+            process.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
-            print("Timed out")
+            print("\033[31mTimed out\033[0m")
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
             time.sleep(kill_timeout)
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-        print("..... Done")
+        print("\n\033[92m..... Done\033[0m")
 
         if not args.create_etalons:
             if not compare_output(scenario["name"]):
@@ -67,20 +69,19 @@ def run_scenarios():
 
 def check_executable(path_to_executable) -> bool:
     if not os.path.isfile(path_to_executable):
-        print("ERROR: ", path_to_executable, " binary doesn't exist")
+        print(f"\033[31mERROR: {path_to_executable} binary doesn't exist\033[0m")
         return False
 
     if not os.access(path_to_executable, os.X_OK):
-        print("ERROR: ", path_to_executable, "  is not executable")
+        print(f"\033[31mERROR: {path_to_executable} is not executable\033[0m")
         return False
     return True
 
 
 def create_command_string(scenario: dict) -> str:
     command = executable_path + " "
-    if "arguments" in scenario.keys():
-        for argument in scenario["arguments"]:
-            command += argument + " "
+    for argument in scenario.get("arguments", []):
+        command += argument + " "
 
     if args.create_etalons:
         target = os.path.join(etalons_dir, scenario["name"] + ".log")
@@ -99,12 +100,13 @@ def compare_output(filename: str) -> bool:
     return_code = os.system(evaluator_bin_path + " --etalon " + etalon_file + " --compare " + compare_file +
                             " --save-aggregated " + aggregate_dir + " > " + output_file)
     if return_code > 0:
-        print("WARNING: test didn't pass: ", filename)
+        print(f"\033[31mWARNING: test didn't pass: {filename}\033[0m")
         return False
     return True
 
 
 def cleanup():
+    print("\033[96mCleaning up environment .....\033[0m\n")
     run_commands(scenario_json["cleanup"])
 
 
@@ -119,39 +121,37 @@ def validate_list_of_cmd_strings(cmd_list) -> bool:
 
 
 def validate_scenario(scenario, used_names):
-    if "name" not in scenario.keys() and not isinstance(scenario["name"], str):
+    if "name" not in scenario and not isinstance(scenario["name"], str):
         raise Exception("Scenario name must be a string")
     if scenario["name"] in used_names:
         raise Exception(f"Scenario '{scenario['name']}' name is not unique")
     expected_keys = ["name", "timeout_s", "arguments", "actions"]
-    for key in scenario.keys():
+    for key in scenario:
         if key not in expected_keys:
             raise Exception(f"Unexpected key '{key}' found in scenario '{scenario['name']}'")
-    if "timeout_s" in scenario.keys():
-        if not isinstance(scenario["timeout_s"], (int, float)) or scenario["timeout_s"] < 0:
+    if "timeout_s" in scenario and (not isinstance(scenario["timeout_s"], (int, float)) or scenario["timeout_s"] < 0):
             raise Exception(f"Scenario '{scenario['name']}' timeout must be a positive number")
-    if "arguments" in scenario.keys():
+    if "arguments" in scenario:
         if not isinstance(scenario["arguments"], list):
             raise Exception(f"Scenario '{scenario['name']}' arguments must be a list strings")
         for argument in scenario["arguments"]:
             if not isinstance(argument, str):
                 raise Exception(f"Scenario '{scenario['name']}' arguments can only contain a list strings")
-    if "actions" in scenario.keys() and not validate_list_of_cmd_strings(scenario["actions"]):
+    if "actions" in scenario and not validate_list_of_cmd_strings(scenario["actions"]):
         raise Exception(f"Scenario '{scenario['name']}' actions can only contain nested lists of strings")
 
 
 def validate_json():
     expected_keys = ["setup", "between_runs", "scenarios", "cleanup"]
-    for key in scenario_json.keys():
+    for key in scenario_json:
         if key not in expected_keys:
             raise Exception(f"Unexpected key '{key}' found in scenario file")
     for key_name in expected_keys:
-        if key_name not in scenario_json.keys():
+        if key_name not in scenario_json:
             raise Exception(f"'{key_name}' key not found in scenario file")
     expected_keys.remove("scenarios")
-    for key_name in expected_keys:
-        if not validate_list_of_cmd_strings(scenario_json[key_name]):
-            raise Exception(f"'{key_name}' key can only contain nested lists of strings")
+    if not all(validate_list_of_cmd_strings(scenario_json[key_name]) for key_name in expected_keys):
+        raise Exception(f"'{key_name}' key can only contain nested lists of strings")
     used_names = []
     for scenario in scenario_json["scenarios"]:
         validate_scenario(scenario, used_names)
@@ -179,7 +179,7 @@ if __name__ == "__main__":
         exit(1)
 
     if not os.path.isfile(args.scenario):
-        print("ERROR: File given by argument --scenario is not a valid file: " + args.scenario)
+        print(f"\033[31mERROR: File given by argument --scenario is not a valid file: {args.scenario}\033[0m")
         exit(1)
 
     scenario_file = open(args.scenario, "r")
@@ -188,11 +188,11 @@ if __name__ == "__main__":
         scenario_json = json.loads(scenario_file.read())
         validate_json()
     except json.decoder.JSONDecodeError as e:
-        print("ERROR: raised exception while parsing json file")
+        print("\033[31mERROR: raised exception while parsing json file\033[0m")
         print(e)
         exit(1)
     except Exception as e:
-        print("ERROR: raised exception while validating json file")
+        print("\033[31mERROR: raised exception while validating json file\033[0m")
         print(e)
         exit(1)
 
@@ -220,9 +220,9 @@ if __name__ == "__main__":
     setup()
     if not run_scenarios():
         exit_code = 2
-        print("WARNING: Some test have different transition logs, check \'" + evaluator_output_dir + "\' for output")
+        print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
     if args.create_etalons:
-        print("Etalons were created in:", etalons_dir)
+        print(f"\n\033[96mEtalons were created in: {etalons_dir}\033[0m\n")
     cleanup()
 
     exit(exit_code)
