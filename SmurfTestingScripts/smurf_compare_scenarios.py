@@ -22,13 +22,13 @@ def run_commands(command_list):
             return_code = os.system(command)
             if return_code > 0 and return_code != 15:
                 print(f"\033[31m'{command}' ended with exit code: {return_code}\033[0m")
-                return False
-    return True
+                commands_ok.value = 0
 
 
 def setup():
     print(f"\033[96mSetting up environment for scenario file {args.scenario}\033[0m\n")
-    if not run_commands(scenario_json["setup"]):
+    run_commands(scenario_json["setup"])
+    if not commands_ok.value:
         print("\033[31mOperation unsuccessful, shutting down testing script\033[0m")
         cleanup()
         exit(1)
@@ -38,8 +38,10 @@ def setup():
 def tidy_up():
     if len(scenario_json["between_runs"]):
         print(f"\n\033[96mTidying up in beteween scenarios .....\033[0m\n")
-        if not run_commands(scenario_json["between_runs"]):
+        run_commands(scenario_json["between_runs"])
+        if not commands_ok.value:
             print("\033[31mTidy-up operation unsuccessful, following test might be unsuccessful\033[0m")
+            cleanup()
             exit(1)
 
 
@@ -54,10 +56,16 @@ def run_scenarios():
             timeout = scenario.get("timeout_s", default_timeout)
             process.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
-            print("\033[31mTimed out\033[0m")
+            print("\033[31mTest timed out, aborting .....\033[0m")
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
             time.sleep(kill_timeout)
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+            cleanup()
+            exit(1)
+        if commands_ok.value == 0:
+            print("\033[31mAn error occurred during the test\033[0m")
+            cleanup()
+            exit(1)
         print("\n\033[92m..... Done\033[0m")
 
         if not args.create_etalons:
@@ -159,6 +167,7 @@ def validate_json():
 
 
 if __name__ == "__main__":
+    commands_ok = multiprocessing.Value('i', 1)
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
     parser.add_argument("-e", "--executable", type=str, required=True, help="Path to executable")
