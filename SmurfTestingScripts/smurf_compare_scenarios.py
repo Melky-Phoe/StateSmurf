@@ -62,6 +62,11 @@ def run_scenarios():
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
             cleanup()
             exit(1)
+        except KeyboardInterrupt:
+            print("Terminating process")
+            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+            cleanup()
+            raise KeyboardInterrupt
         if commands_ok.value == 0:
             print("\033[31mAn error occurred during the test\033[0m")
             cleanup()
@@ -227,11 +232,12 @@ if __name__ == "__main__":
 
     exit_code = 0
     setup()
-    if not run_scenarios():
-        exit_code = 2
-        print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
-    if args.create_etalons:
-        print(f"\n\033[96mEtalons were created in: {etalons_dir}\033[0m\n")
-    cleanup()
-
-    exit(exit_code)
+    try:
+        if not run_scenarios():
+            exit_code = 2
+            print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
+        if args.create_etalons:
+            print(f"\n\033[96mEtalons were created in: {etalons_dir}\033[0m\n")
+    finally:
+        cleanup()
+        exit(exit_code)
