@@ -37,10 +37,10 @@ def setup():
 
 def tidy_up():
     if len(scenario_json["between_runs"]):
-        print(f"\n\033[96mTidying up in beteween scenarios .....\033[0m\n")
+        print("\n\033[96mTidying up in beteween scenarios .....\033[0m\n")
         run_commands(scenario_json["between_runs"])
         if not commands_ok.value:
-            print("\033[31mTidy-up operation unsuccessful, following test might be unsuccessful\033[0m")
+            print("\033[31mTidy-up operation unsuccessful\033[0m")
             cleanup()
             exit(1)
 
@@ -92,9 +92,7 @@ def check_executable(path_to_executable) -> bool:
 
 
 def create_command_string(scenario: dict) -> str:
-    command = executable_path + " "
-    for argument in scenario.get("arguments", []):
-        command += argument + " "
+    command = executable_path + " " + " ".join(scenario.get("arguments", [])) + " "
 
     if args.create_etalons:
         target = os.path.join(etalons_dir, scenario["name"] + ".log")
@@ -196,11 +194,10 @@ if __name__ == "__main__":
         print(f"\033[31mERROR: File given by argument --scenario is not a valid file: {args.scenario}\033[0m")
         exit(1)
 
-    scenario_file = open(args.scenario, "r")
-
     try:
-        scenario_json = json.loads(scenario_file.read())
-        validate_json()
+        with open(args.scenario, "r") as scenario_file:
+            scenario_json = json.loads(scenario_file.read())
+            validate_json()
     except json.decoder.JSONDecodeError as e:
         print("\033[31mERROR: raised exception while parsing json file\033[0m")
         print(e)
