@@ -13,6 +13,12 @@ default_timeout = 5*60
 kill_timeout = 10
 
 
+def terminate_all_processes():
+    for process in multiprocessing.active_children():
+        print(f"Terminating process: {process.name}")
+        process.terminate()
+
+
 def run_commands(command_list):
     for command in command_list:
         if isinstance(command, list):
@@ -31,6 +37,7 @@ def setup():
     if not commands_ok.value:
         print("\033[31mOperation unsuccessful, shutting down testing script\033[0m")
         return False
+    terminate_all_processes()
     print("\n\033[96mSetup finished\033[0m")
     return True
 
@@ -227,6 +234,7 @@ if __name__ == "__main__":
 
     exit_code = 0
     if not setup():
+        terminate_all_processes()
         exit(1)
     try:
         if not run_scenarios():
@@ -236,8 +244,10 @@ if __name__ == "__main__":
             else:
                 print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
                 exit_code = 2
+        terminate_all_processes()
         if args.create_etalons and exit_code == 0:
             print(f"\n\033[96mEtalons were created in: {etalons_dir}\033[0m\n")
     finally:
         cleanup()
+        terminate_all_processes()
         exit(exit_code)
