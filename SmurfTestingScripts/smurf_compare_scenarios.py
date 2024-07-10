@@ -30,9 +30,9 @@ def setup():
     run_commands(scenario_json["setup"])
     if not commands_ok.value:
         print("\033[31mOperation unsuccessful, shutting down testing script\033[0m")
-        cleanup()
-        exit(1)
+        return False
     print("\n\033[96mSetup finished\033[0m")
+    return True
 
 
 def tidy_up():
@@ -41,8 +41,8 @@ def tidy_up():
         run_commands(scenario_json["between_runs"])
         if not commands_ok.value:
             print("\033[31mTidy-up operation unsuccessful\033[0m")
-            cleanup()
-            exit(1)
+            return False
+    return True
 
 
 def run_scenarios():
@@ -60,23 +60,21 @@ def run_scenarios():
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
             time.sleep(kill_timeout)
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-            cleanup()
-            exit(1)
+            return False
         except KeyboardInterrupt:
             print("Terminating process")
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-            cleanup()
             raise KeyboardInterrupt
         if commands_ok.value == 0:
-            print("\033[31mAn error occurred during the test\033[0m")
-            cleanup()
-            exit(1)
+            print("\033[31mAn error occurred in a test action\033[0m")
+            return False
         print("\n\033[92m..... Done\033[0m")
 
         if not args.create_etalons:
             if not compare_output(scenario["name"]):
                 tests_passed = False
-        tidy_up()
+        if not tidy_up():
+            return False
     return tests_passed
 
 
@@ -117,7 +115,7 @@ def compare_output(filename: str) -> bool:
 
 
 def cleanup():
-    print("\033[96mCleaning up environment .....\033[0m\n")
+    print("\033[96mCleaning up environment .....\033[0m")
     run_commands(scenario_json["cleanup"])
 
 
@@ -228,12 +226,17 @@ if __name__ == "__main__":
     os.chdir(workDir)
 
     exit_code = 0
-    setup()
+    if not setup():
+        exit(1)
     try:
         if not run_scenarios():
-            exit_code = 2
-            print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
-        if args.create_etalons:
+            if args.create_etalons:
+                print("\033[31mERROR: An unexpected error occured during tests\033[0m")
+                exit_code = 1
+            else:
+                print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
+                exit_code = 2
+        if args.create_etalons and exit_code == 0:
             print(f"\n\033[96mEtalons were created in: {etalons_dir}\033[0m\n")
     finally:
         cleanup()
