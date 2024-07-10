@@ -158,10 +158,11 @@ def validate_scenario(scenario, used_names):
 
 
 def validate_json():
-    expected_keys = ["setup", "between_runs", "scenarios", "cleanup"]
+    expected_keys = ["setup", "between_runs", "scenarios", "cleanup", "default_executable"]
     for key in scenario_json:
         if key not in expected_keys:
             raise Exception(f"Unexpected key '{key}' found in scenario file")
+    expected_keys.remove("default_executable")
     for key_name in expected_keys:
         if key_name not in scenario_json:
             raise Exception(f"'{key_name}' key not found in scenario file")
@@ -178,20 +179,16 @@ if __name__ == "__main__":
     commands_ok = multiprocessing.Value('i', 1)
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
-    parser.add_argument("-e", "--executable", type=str, required=True, help="Path to executable")
+    parser.add_argument("-e", "--executable", type=str, default="", help="Path to executable")
     parser.add_argument("--evaluator", type=str, required=True, help="Path to SmurfEvaluator binary")
     parser.add_argument("-c", "--create-etalons", dest="create_etalons", action="store_true",
                         help="Creates Etalon files and ends program")
     parser.add_argument("-o", "--output-dir", type=str, dest="output_dir", default="", help="Path to output directory")
+    parser.add_argument("--env", type=str, default="", help="Path to environment file")
 
     args = parser.parse_args()
 
     evaluator_bin_path = os.path.realpath(args.evaluator)
-    executable_path = os.path.realpath(args.executable)
-
-    if not check_executable(executable_path):
-        exit(1)
-
     if not check_executable(evaluator_bin_path):
         exit(1)
 
@@ -210,6 +207,17 @@ if __name__ == "__main__":
     except Exception as e:
         print("\033[31mERROR: raised exception while validating json file\033[0m")
         print(e)
+        exit(1)
+
+    if args.executable != "":
+        executable_path = os.path.realpath(args.executable)
+    elif "default_executable" in scenario_json:
+        executable_path = os.path.realpath(scenario_json["default_executable"])
+    else:
+        print("\033[31mERROR: No executable path provided\033[0m")
+        exit(1)
+
+    if not check_executable(executable_path):
         exit(1)
 
     workDir = os.path.realpath(os.path.dirname(args.scenario))
