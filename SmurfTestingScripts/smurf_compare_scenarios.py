@@ -196,16 +196,31 @@ if __name__ == "__main__":
         print(f"\033[31mERROR: File given by argument --scenario is not a valid file: {args.scenario}\033[0m")
         exit(1)
 
+    env_settings = {}
+    try:
+        if os.path.isfile(args.env):
+            with open(args.env, "r") as env_file:
+                env_json = json.loads(env_file.read())
+                for key, value in env_json.items():
+                    env_settings[key] = value
+    except json.decoder.JSONDecodeError as e:
+        print("\033[31mERROR: raised exception while parsing env file\033[0m")
+        print(e)
+        exit(1)
+
     try:
         with open(args.scenario, "r") as scenario_file:
-            scenario_json = json.loads(scenario_file.read())
+            scenario_str = scenario_file.read()
+            for key, value in env_settings.items():
+                scenario_str = scenario_str.replace(key, value)
+            scenario_json = json.loads(scenario_str)
             validate_json()
     except json.decoder.JSONDecodeError as e:
-        print("\033[31mERROR: raised exception while parsing json file\033[0m")
+        print("\033[31mERROR: raised exception while parsing scenario file\033[0m")
         print(e)
         exit(1)
     except Exception as e:
-        print("\033[31mERROR: raised exception while validating json file\033[0m")
+        print("\033[31mERROR: raised exception while validating scenario file\033[0m")
         print(e)
         exit(1)
 
