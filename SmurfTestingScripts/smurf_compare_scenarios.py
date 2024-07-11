@@ -44,7 +44,7 @@ def setup():
 
 def tidy_up():
     if len(scenario_json["between_runs"]):
-        print("\n\033[96mTidying up in beteween scenarios .....\033[0m\n")
+        print("\n\033[96mTidying up in between scenarios .....\033[0m\n")
         run_commands(scenario_json["between_runs"])
         if not commands_ok.value:
             print("\033[31mTidy-up operation unsuccessful\033[0m")
