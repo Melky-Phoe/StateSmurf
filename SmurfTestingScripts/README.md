@@ -22,7 +22,7 @@ All paths used in the scenario json are relative to that file.
 ```
 python3 CompareScenarios.py --scenario <path> --evaluator <path> [--executable <path> --output <path> --create-etalons --env <path>]
 ```  
-The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval. The --executable argument is not needed if it is provided in the scenario file. The json file provided for the --env argument is used to parametrize the scenario file (strings used for key names will be replaced by their values in the scenario file).
+The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval. The --executable argument is not needed if it is provided in the scenario file. The json file provided for the --env argument is used to parametrize the scenario file (strings used for key names will be replaced by their values in the scenario file if they are contained within brackets of a special STATE_SMURF_ENV[] string).
 ### Arguments:
 - **-s | --scenario**: Path to scenario json file containing run scenarios.
 - **-e | --executable**: Path to executable of tested application.
@@ -55,13 +55,13 @@ Scenario json:
 ```json
 {
   "setup" : [
-    "docker-compose --file=%%DOCKER_COMPOSE_PATH%% up -d", 
+    "docker-compose --file=STATE_SMURF_ENV[DOCKER_COMPOSE_PATH] up -d", 
     "echo message > msg.txt"
   ],
   "between_runs" : [
-    "docker-compose --file=%%DOCKER_COMPOSE_PATH%% restart"
+    "docker-compose --file=STATE_SMURF_ENV[DOCKER_COMPOSE_PATH] restart"
   ],
-  "default_executable": "%%PYTHON_PATH%%",
+  "default_executable": "STATE_SMURF_ENV[PYTHON_PATH]",
   "scenarios" : [
     {
       "name" : "test1",
@@ -71,7 +71,7 @@ Scenario json:
       ],
       "actions": [
         "sleep 2",
-        "%%PYTHON_PATH%% test1.py"
+        "STATE_SMURF_ENV[PYTHON_PATH] test1.py"
       ]
     },
     {
@@ -82,12 +82,12 @@ Scenario json:
       ],
       "actions": [
         "sleep 2",
-        "%%PYTHON_PATH%% test2.py"
+        "STATE_SMURF_ENV[PYTHON_PATH] test2.py"
       ]
     }
   ],
   "cleanup" : [
-    "docker-compose --file=%%DOCKER_COMPOSE_PATH%% down"
+    "docker-compose --file=STATE_SMURF_ENV[DOCKER_COMPOSE_PATH] down"
   ]
 }
 ```
@@ -95,7 +95,7 @@ Scenario json:
 Env json:
 ```json
 {
-    "%%PYTHON_PATH%%": "/usr/bin/python3",
-    "%%DOCKER_COMPOSE_PATH%%": "./etna/docker-compose.yml"
+    "PYTHON_PATH": "/usr/bin/python3",
+    "DOCKER_COMPOSE_PATH": "./etna/docker-compose.yml"
 }
 ```

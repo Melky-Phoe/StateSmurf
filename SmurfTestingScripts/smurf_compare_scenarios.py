@@ -80,6 +80,9 @@ def run_scenarios():
         if not args.create_etalons:
             if not compare_output(scenario["name"]):
                 tests_passed = False
+        if process.returncode != 0:
+            print(f"\033[31mERROR: tested executable ended with exit code: {process.returncode}\033[0m")
+            return False
         if not tidy_up():
             return False
     return tests_passed
@@ -212,7 +215,7 @@ if __name__ == "__main__":
         with open(args.scenario, "r") as scenario_file:
             scenario_str = scenario_file.read()
             for key, value in env_settings.items():
-                scenario_str = scenario_str.replace(key, value)
+                scenario_str = scenario_str.replace(f"STATE_SMURF_ENV[{key}]", value)
             scenario_json = json.loads(scenario_str)
             validate_json()
     except json.decoder.JSONDecodeError as e:
