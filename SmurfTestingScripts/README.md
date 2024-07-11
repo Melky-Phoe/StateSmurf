@@ -20,15 +20,16 @@ All paths used in the scenario json are relative to that file.
 
 ## Run
 ```
-python3 CompareScenarios.py --scenario <path> --executable <path> --evaluator <path> [--output <path> --create-etalons]
+python3 CompareScenarios.py --scenario <path> --evaluator <path> [--executable <path> --output <path> --create-etalons --env <path>]
 ```  
-The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval.
+The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval. The --executable argument is not needed if it is provided in the scenario file. The json file provided for the --env argument is used to parametrize the scenario file (strings used for key names will be replaced by their values in the scenario file).
 ### Arguments:
 - **-s | --scenario**: Path to scenario json file containing run scenarios.
 - **-e | --executable**: Path to executable of tested application.
 - **--evaluator**: Path to SmurfEvaluator executable.
 - **-c | --create-etalons**: Switch to create etalons.
-- **-o | --output**: Path to directory, where all output directories are created
+- **-o | --output**: Path to directory, where all output directories are created.
+- **--env**: Path to environment json file.
 
 #### Exit codes:
 - 0 = Success, everything worked
@@ -40,6 +41,7 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
 - setup : list of commands, that are run once on the beginning
 - between_runs : list of commands, that are run in between each test scenario
 - cleanup : list of commands, that are run once at the end of all tests
+- default_executable (optional) : path to the tested executable; the --executable argument has priority over this
 - scenarios : set of testing scenarios containing:
   - name : test name; must be unique
   - timeout (optional) : time in seconds (can be decimal) after which the run is terminated (SIGTERM). 10 seconds after SIGTERM, SIGKILL is sent 
@@ -49,15 +51,17 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
 note: all keys that accept a list of commands can have nested lists; nesting will run the commands in a new thread
   
 #### Example
+Scenario json:
 ```json
 {
   "setup" : [
-    "docker-compose --file=./docker-compose.yml up -d", 
+    "docker-compose --file=%%DOCKER_COMPOSE_PATH%% up -d", 
     "echo message > msg.txt"
   ],
   "between_runs" : [
-    "docker-compose --file=./docker-compose.yml restart"
+    "docker-compose --file=%%DOCKER_COMPOSE_PATH%% restart"
   ],
+  "default_executable": "%%PYTHON_PATH%%",
   "scenarios" : [
     {
       "name" : "test1",
@@ -67,7 +71,7 @@ note: all keys that accept a list of commands can have nested lists; nesting wil
       ],
       "actions": [
         "sleep 2",
-        "python3 test1.py"
+        "%%PYTHON_PATH%% test1.py"
       ]
     },
     {
@@ -78,12 +82,20 @@ note: all keys that accept a list of commands can have nested lists; nesting wil
       ],
       "actions": [
         "sleep 2",
-        "python3 test2.py"
+        "%%PYTHON_PATH%% test2.py"
       ]
     }
   ],
   "cleanup" : [
-    "docker-compose --file=./etna/docker-compose.yml down"
+    "docker-compose --file=%%DOCKER_COMPOSE_PATH%% down"
   ]
+}
+```
+
+Env json:
+```json
+{
+    "%%PYTHON_PATH%%": "/usr/bin/python3",
+    "%%DOCKER_COMPOSE_PATH%%": "./etna/docker-compose.yml"
 }
 ```
