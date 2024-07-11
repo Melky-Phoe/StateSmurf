@@ -3,7 +3,7 @@ Python script used for automated StateSmurf testing.
 
 # CompareScenarios
 This script runs test-scenarios based on a scenario json file and compares each run's State transitions using [SmurfEvaluator](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfEvaluator).  
-Test is successful when SmurfEvaluator is successful. Script doesn't consider exit code of application run.
+Test is successful when SmurfEvaluator is successful. The script considers the exit code of the application run.
 
 
 ## Usage
@@ -38,7 +38,7 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
 ### Scenarios
 
 #### keys:
-- setup : list of commands, that are run once on the beginning
+- setup : list of commands, that are run once at the beginning
 - between_runs : list of commands, that are run in between each test scenario
 - cleanup : list of commands, that are run once at the end of all tests
 - default_executable (optional) : path to the tested executable; the --executable argument has priority over this
