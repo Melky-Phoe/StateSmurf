@@ -44,9 +44,9 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
 - default_executable (optional) : path to the tested executable; the --executable argument has priority over this
 - scenarios : set of testing scenarios containing:
   - name : test name; must be unique
-  - timeout (optional) : time in seconds (can be decimal) after which the run is terminated (SIGTERM). 10 seconds after SIGTERM, SIGKILL is sent 
+  - timeout_s (optional) : time in seconds (can be decimal) after which the run is terminated (SIGTERM). 10 seconds after SIGTERM, SIGKILL is sent 
   - arguments (optional) : list of program arguments for the tested executable
-  - actions (optional) : list of commands, that are run in parallel with the tested executable
+  - actions (optional) : list of commands, that are run in parallel with the tested executable. If any of the commands exit with a non 0 return code, the test fails. Make sure actions are written in a way, where no action is running after the tested executable ends (whis may lead to commands running during clean-up steps or other tests)
 
 note: all keys that accept a list of commands can have nested lists; nesting will run the commands in a new thread
   
@@ -65,7 +65,7 @@ Scenario json:
   "scenarios" : [
     {
       "name" : "test1",
-      "timeout" : 70,
+      "timeout_s" : 70,
       "arguments" : [
         "--foo", "dir/file", "--bar"
       ],
@@ -76,7 +76,7 @@ Scenario json:
     },
     {
       "name" : "test2",
-      "timeout" : 65,
+      "timeout_s" : 65,
       "arguments" : [
         "--foo", "dir/file2"
       ],
