@@ -5,6 +5,26 @@ Python script used for automated StateSmurf testing.
 This script runs test-scenarios based on a scenario json file and compares each run's State transitions using [SmurfEvaluator](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfEvaluator).  
 Test is successful when SmurfEvaluator is successful. The script considers the exit code of the application run.
 
+### Sequence diagram
+
+```mermaid
+sequenceDiagram
+    User->>Script: Execute smurf_compare_scenarios.py
+    Script->>validate_json: Validate scenario JSON
+    validate_json-->>Script: JSON Valid
+    Script->>setup_env: Setup test environment
+    setup_env->>Script: Execute setup commands
+    loop For each scenario
+        Script->>run_scenarios: Run scenario
+        run_scenarios->>run_scenarios: Start the tested executable
+        run_scenarios->>run_scenarios: Start actions
+        run_scenarios->>run_scenarios: Compare scenario output
+        run_scenarios->>Script: Tidy up between scenarios
+    end
+    Script->>cleanup: Cleanup after all scenarios
+    cleanup->>Script: Execute cleanup commands
+    Script-->>User: Provide test results
+```
 
 ## Usage
 The scenario json file contains commands that will run before, in between each application run, and after all runs are completed.
@@ -38,18 +58,18 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
 ### Scenarios
 
 #### keys:
-- setup : list of commands, that are run once at the beginning
-- between_runs : list of commands, that are run in between each test scenario
-- cleanup : list of commands, that are run once at the end of all tests
-- default_executable (optional) : path to the tested executable; the --executable argument has priority over this
-- scenarios : set of testing scenarios containing:
-  - name : test name; must be unique
-  - timeout_s (optional) : time in seconds (can be decimal) after which the run is terminated (SIGTERM). 10 seconds after SIGTERM, SIGKILL is sent 
-  - arguments (optional) : list of program arguments for the tested executable
-  - actions (optional) : list of commands, that are run in parallel with the tested executable. If any of the commands exit with a non 0 return code, the test fails. Make sure actions are written in a way, where no action is running after the tested executable ends (whis may lead to commands running during clean-up steps or other tests)
+- `setup` : list of commands, that are run once at the beginning
+- `between_runs` : list of commands, that are run in between each test scenario
+- `cleanup` : list of commands, that are run once at the end of all tests
+- `default_executable` (optional) : path to the tested executable; the --executable argument has priority over this
+- `scenarios` : set of testing scenarios containing:
+  - `name` : test name; must be unique
+  - `timeout_s` (optional) : time in seconds (can be decimal) after which the run is terminated (SIGTERM). 10 seconds after SIGTERM, SIGKILL is sent 
+  - `arguments` (optional) : list of program arguments for the tested executable
+  - `actions` (optional) : list of commands, that are run in parallel with the tested executable. If any of the commands exit with a non 0 return code, the test fails. Make sure actions are written in a way, where no action is running after the tested executable ends (whis may lead to commands running during clean-up steps or other tests)
 
-note: all keys that accept a list of commands can have nested lists; nesting will run the commands in a new thread
-  
+note: `setup`, `between_runs`, `cleanup` and `action` keys accept nested arrays of strings as values; each string is a command that will be sequentially launched as a python multiprocessing Process; if the next value in line is an array, commands inside will be launched in a parallel thread
+
 #### Example
 Scenario json:
 ```json
