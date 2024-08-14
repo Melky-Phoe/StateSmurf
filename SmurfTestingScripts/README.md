@@ -5,7 +5,7 @@ Python script used for automated StateSmurf testing.
 This script runs test-scenarios based on a scenario json file and compares each run's State transitions using [SmurfEvaluator](https://github.com/Melky-Phoe/StateSmurf/tree/master/SmurfEvaluator).  
 Test is successful when SmurfEvaluator is successful. The script considers the exit code of the application run.
 
-### Sequence diagram
+## Sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -33,10 +33,10 @@ Application runs contain the name of a test, timeout in seconds, program argumen
 All paths used in the scenario json are relative to that file.
 
 **Created directories:** 
-* etalons: created when -c option is used; files with raw .log files
-* output: raw .log output of test-runs
-* aggregated_output: aggregated output of test-runs
-* evaluator_output: SmurfEvaluator output containing the comparison between an etalon and an output
+- etalons: created when -c option is used; files with raw .log files
+- output: raw .log output of test-runs
+- aggregated_output: aggregated output of test-runs
+- evaluator_output: SmurfEvaluator output containing the comparison between an etalon and an output
 
 ## Run
 ```
@@ -70,7 +70,7 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
 
 note 1: `setup`, `between_runs`, `cleanup` and `action` keys accept nested arrays of strings as values; each string is a command that will be sequentially launched as a python multiprocessing Process; if the next value in line is an array, commands inside will be launched in a parallel thread
 
-note 2: The STATE_SMURF_ENV[] string, mentioned eariler, can also be used in keys. 
+note 2: The STATE_SMURF_ENV[] string, mentioned eariler, can also be used in the keys. 
 
 #### Example
 Scenario json:
