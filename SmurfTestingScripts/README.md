@@ -40,9 +40,9 @@ All paths used in the scenario json are relative to that file.
 
 ## Run
 ```
-python3 CompareScenarios.py --scenario <path> --evaluator <path> [--executable <path> --output <path> --create-etalons --env <path>]
+python3 smurf_compare_scenarios.py --scenario <path> --evaluator <path> [--executable <path> --output <path> --create-etalons --env <path>]
 ```  
-The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval. The --executable argument is not needed if it is provided in the scenario file. The json file provided for the --env argument is used to parametrize the scenario file (strings used for key names will be replaced by their values in the scenario file if they are contained within brackets of a special STATE_SMURF_ENV[] string).
+The first run must be run with the --create-etalons flag! Etalons aren't created automatically when not found because they require human approval. The --executable argument is not needed if it is provided in the scenario file (executable provided as a command line argument has priority over the scenario file). The json file provided for the --env argument is used to parametrize the scenario file (strings used for key names will be replaced by their values in the scenario file if they are contained within brackets of a special STATE_SMURF_ENV[] string).
 ### Arguments:
 - **-s | --scenario**: Path to scenario json file containing run scenarios.
 - **-e | --executable**: Path to executable of tested application.
@@ -68,7 +68,9 @@ The first run must be run with the --create-etalons flag! Etalons aren't created
   - `arguments` (optional) : list of program arguments for the tested executable
   - `actions` (optional) : list of commands, that are run in parallel with the tested executable. If any of the commands exit with a non 0 return code, the test fails. Make sure actions are written in a way, where no action is running after the tested executable ends (whis may lead to commands running during clean-up steps or other tests)
 
-note: `setup`, `between_runs`, `cleanup` and `action` keys accept nested arrays of strings as values; each string is a command that will be sequentially launched as a python multiprocessing Process; if the next value in line is an array, commands inside will be launched in a parallel thread
+note 1: `setup`, `between_runs`, `cleanup` and `action` keys accept nested arrays of strings as values; each string is a command that will be sequentially launched as a python multiprocessing Process; if the next value in line is an array, commands inside will be launched in a parallel thread
+
+note 2: The STATE_SMURF_ENV[] string, mentioned eariler, can also be used in keys. 
 
 #### Example
 Scenario json:
