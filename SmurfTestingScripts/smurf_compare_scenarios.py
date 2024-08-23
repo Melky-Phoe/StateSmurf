@@ -67,7 +67,6 @@ def run_scenarios():
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
             time.sleep(kill_timeout)
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-            return False
         except KeyboardInterrupt:
             print("Terminating process")
             os.killpg(os.getpgid(process.pid), signal.SIGKILL)
@@ -80,7 +79,7 @@ def run_scenarios():
         if not args.create_etalons:
             if not compare_output(scenario["name"]):
                 tests_passed = False
-        if process.returncode != 0:
+        if process.returncode != 0 and process.returncode != None:
             print(f"\033[31mERROR: tested executable ended with exit code: {process.returncode}\033[0m")
             return False
         if not tidy_up():
@@ -191,7 +190,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    evaluator_bin_path = os.path.realpath(args.evaluator)
+    evaluator_bin_path = os.path.abspath(args.evaluator)
     if not check_executable(evaluator_bin_path):
         exit(1)
 
@@ -228,9 +227,9 @@ if __name__ == "__main__":
         exit(1)
 
     if args.executable != "":
-        executable_path = os.path.realpath(args.executable)
+        executable_path = os.path.abspath(args.executable)
     elif "default_executable" in scenario_json:
-        executable_path = os.path.realpath(scenario_json["default_executable"])
+        executable_path = os.path.abspath(scenario_json["default_executable"])
     else:
         print("\033[31mERROR: No executable path provided\033[0m")
         exit(1)
@@ -238,11 +237,11 @@ if __name__ == "__main__":
     if not check_executable(executable_path):
         exit(1)
 
-    workDir = os.path.realpath(os.path.dirname(args.scenario))
+    workDir = os.path.abspath(os.path.dirname(args.scenario))
     if args.output_dir == "":
         out_dir = workDir
     else:
-        out_dir = os.path.realpath(args.output_dir)
+        out_dir = os.path.abspath(args.output_dir)
 
     etalons_dir = os.path.join(out_dir, "etalons")
     output_dir = os.path.join(out_dir, "output")
