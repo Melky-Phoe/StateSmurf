@@ -9,13 +9,16 @@
 #include <bringauto/logging/ConsoleSink.hpp>
 
 namespace state_smurf::transition {
+
+	constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
+	using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
 	
 	class StateTransitionTest : public ::testing::Test {
 	protected:
 		void SetUp() override {
-			bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
-			bringauto::logging::Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
-			bringauto::logging::Logger::init({"StateTransitionTest", bringauto::logging::Logger::Verbosity::Debug});
+			Logger::addSink<bringauto::logging::ConsoleSink>();
+			Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
+			Logger::init({"StateTransition", bringauto::logging::LoggerVerbosity::Debug});
 			
 			diagram::StateDiagram stateDiagram;
 			auto a = stateDiagram.addVertex("A");
@@ -34,7 +37,7 @@ namespace state_smurf::transition {
 		}
 		
 		void TearDown() override {
-			bringauto::logging::Logger::destroy();
+			Logger::destroy();
 		}
 		
 		std::shared_ptr<StateTransition> transition;

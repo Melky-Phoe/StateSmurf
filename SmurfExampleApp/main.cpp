@@ -6,7 +6,7 @@
 #include <bringauto/logging/ConsoleSink.hpp>
 #include <bringauto/logging/FileSink.hpp>
 
-#include <string>
+#include <cstring>
 #include <thread>
 
 void connect(const std::shared_ptr<state_smurf::transition::StateTransition> &transitions) {
@@ -40,19 +40,30 @@ state_smurf::diagram::StateDiagram createStateDiagram() {
 	return stateGraph;
 }
 
+
+constexpr bringauto::logging::LoggerId logIdSample = {.id = "sampleApp"};
+constexpr bringauto::logging::LoggerId logIdStateTrans = {.id = "StateTransition"};
+using LoggerSample = bringauto::logging::Logger<logIdSample, bringauto::logging::LoggerImpl>;
+using LoggerStateTrans = bringauto::logging::Logger<logIdStateTrans, bringauto::logging::LoggerImpl>;
+
+
 int main(int argc, char **argv) {
 	/// State Transitions are using BALogger. You have to initialize before using it,
 	namespace log = bringauto::logging;
-	log::Logger::addSink<log::ConsoleSink>();
-	log::Logger::addSink<log::FileSink>({"./", "sampleApp.log"});
-	log::Logger::init({"sampleApp", log::Logger::Verbosity::Debug});
+	log::FileSink::Params fsParams = {"./", "sampleApp.log"};
+	LoggerSample::addSink<log::ConsoleSink>();
+	//LoggerSample::addSink<log::FileSink>(fsParams); // Using 2 file sinks on one file does not work properly
+	LoggerSample::init({"sampleApp", log::LoggerVerbosity::Debug});
+	LoggerStateTrans::addSink<log::ConsoleSink>();
+	LoggerStateTrans::addSink<log::FileSink>(fsParams);
+	LoggerStateTrans::init({"StateTransition", log::LoggerVerbosity::Debug});
 	
 	/// Creating State Graph. More in function
 	state_smurf::diagram::StateDiagram stateGraph = createStateDiagram();
 	
 	/// Transition class takes StateGraph in constructor, on which it is working on
 	std::shared_ptr<state_smurf::transition::StateTransition> transitions = std::make_shared<state_smurf::transition::StateTransition>(
-			stateGraph);
+		stateGraph);
 	
 	// parsing arguments
 	int targetSpeed = 0;
@@ -76,7 +87,7 @@ int main(int argc, char **argv) {
 	
 	/// Invalid transition returns false
 	if (!transitions->goToState("idle")) {
-		bringauto::logging::Logger::logWarning("Cant go to idle while driving, stopping...");
+		LoggerSample::logWarning("Cant go to idle while driving, stopping...");
 		drive.stop();
 		transitions->goToState("idle");
 	}

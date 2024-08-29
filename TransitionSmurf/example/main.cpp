@@ -5,6 +5,9 @@
 #include <bringauto/logging/ConsoleSink.hpp>
 #include <bringauto/logging/FileSink.hpp>
 
+constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
+using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
+
 int main() {
     /// Creating State Graph
 	state_smurf::diagram::StateDiagram stateDiagram;
@@ -39,9 +42,9 @@ int main() {
 
     /// Logger initialization
 	namespace log = bringauto::logging;
-	log::Logger::addSink<log::ConsoleSink>();
-	log::Logger::addSink<log::FileSink>({"./","StateTransition.log"});
-	log::Logger::init({"StateTransition", log::Logger::Verbosity::Debug});
+	Logger::addSink<log::ConsoleSink>();
+	Logger::addSink<log::FileSink>({"./","StateTransition.log"});
+	Logger::init({"StateTransition", log::LoggerVerbosity::Debug});
 
     /// StateTransition Init
     state_smurf::transition::StateTransition transitions(stateDiagram);

@@ -3,34 +3,38 @@
 #include <bringauto/logging/Logger.hpp>
 
 namespace state_smurf::transition {
+
+	constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
+	using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
+
 	StateTransition::StateTransition(diagram::StateDiagram stateDiagram) {
 		stateDiagram_ = std::move(stateDiagram);
 		if (stateDiagram_.startVertexesEmpty()) {
 			// In later version, this check will be part of creating diagram in compile-time
-			bringauto::logging::Logger::logError("[TransitionSmurf] No starting vertex was set, TransitionSmurf is unable to work!");
+			Logger::logError("[TransitionSmurf] No starting vertex was set, TransitionSmurf is unable to work!");
 			return;
 		}
 		printAdjacencyList();
-		bringauto::logging::Logger::logDebug("[TransitionSmurf] Start of Run");
+		Logger::logDebug("[TransitionSmurf] Start of Run");
 	}
 	
 	bool StateTransition::goToState(const std::string &stateName) {
 		if (stateDiagram_.changeState(stateName)) {
-			bringauto::logging::Logger::logDebug("[TransitionSmurf] Going to state {}", stateName);
+			Logger::logDebug("[TransitionSmurf] Going to state {}", stateName);
 			return inState(stateName);
 		} else {
 			if (stateDiagram_.stateExist(stateName)) {
 				if (stateDiagram_.getCurrentStateName().empty()) {
-					bringauto::logging::Logger::logWarning(
-							R"([TransitionSmurf] Invalid Starting state {{ "state":{} }})",
-							stateName);
+					Logger::logWarning(
+						R"([TransitionSmurf] Invalid Starting state {{ "state":{} }})",
+						stateName);
 				} else {
-					bringauto::logging::Logger::logWarning(
-							R"([TransitionSmurf] Couldn't change state {{ "to":{} "from": {} }})",
-							stateName, stateDiagram_.getCurrentStateName());
+					Logger::logWarning(
+						R"([TransitionSmurf] Couldn't change state {{ "to":{} "from": {} }})",
+						stateName, stateDiagram_.getCurrentStateName());
 				}
 			} else {
-				bringauto::logging::Logger::logWarning("[TransitionSmurf] State doesnt exist {}", stateName);
+				Logger::logWarning("[TransitionSmurf] State doesnt exist {}", stateName);
 			}
 			return false;
 		}
@@ -40,8 +44,8 @@ namespace state_smurf::transition {
 		if (isInState(stateName)) {
 			return true;
 		} else {
-				bringauto::logging::Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",
-													 stateName, stateDiagram_.getCurrentStateName());
+				Logger::logError("[TransitionSmurf] Not in state {}, current state is {}",
+					stateName, stateDiagram_.getCurrentStateName());
 
 			return false;
 		}
@@ -60,7 +64,7 @@ namespace state_smurf::transition {
 				states.append(state->getName());
 				states.append(" ");
 			}
-			bringauto::logging::Logger::logDebug("[DiagramSmurf] {} :\t{}", it.first->getName(), states);
+			Logger::logDebug("[DiagramSmurf] {} :\t{}", it.first->getName(), states);
 		}
 		
 	}
