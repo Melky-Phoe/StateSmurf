@@ -4,7 +4,7 @@
 
 namespace state_smurf::transition {
 
-    constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
+	constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
 	using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
 
 }
