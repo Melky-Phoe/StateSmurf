@@ -1,4 +1,3 @@
-BA_PACKAGE_LIBRARY(ba-logger     v2.0.0)
 BA_PACKAGE_LIBRARY(cxxopts       v3.0.5  PLATFORM_STRING_MODE any_machine NO_DEBUG ON)
 
 IF (BRINGAUTO_TESTS)

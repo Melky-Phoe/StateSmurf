@@ -2,6 +2,7 @@
 
 #include <state_smurf/diagram/StateDiagram.hpp>
 #include <state_smurf/transition/StateTransition.hpp>
+#include <state_smurf/transition/StateTransitionLoggerId.hpp>
 #include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 #include <bringauto/logging/FileSink.hpp>
@@ -41,22 +42,16 @@ state_smurf::diagram::StateDiagram createStateDiagram() {
 }
 
 
-constexpr bringauto::logging::LoggerId logIdSample = {.id = "sampleApp"};
-constexpr bringauto::logging::LoggerId logIdStateTrans = {.id = "StateTransition"};
-using LoggerSample = bringauto::logging::Logger<logIdSample, bringauto::logging::LoggerImpl>;
-using LoggerStateTrans = bringauto::logging::Logger<logIdStateTrans, bringauto::logging::LoggerImpl>;
-
-
 int main(int argc, char **argv) {
 	/// State Transitions are using BALogger. You have to initialize before using it,
 	namespace log = bringauto::logging;
 	log::FileSink::Params fsParams = {"./", "sampleApp.log"};
-	LoggerSample::addSink<log::ConsoleSink>();
+	state_smurf::example::Logger::addSink<log::ConsoleSink>();
 	//LoggerSample::addSink<log::FileSink>(fsParams); // Using 2 file sinks on one file does not work properly
-	LoggerSample::init({"sampleApp", log::LoggerVerbosity::Debug});
-	LoggerStateTrans::addSink<log::ConsoleSink>();
-	LoggerStateTrans::addSink<log::FileSink>(fsParams);
-	LoggerStateTrans::init({"StateTransition", log::LoggerVerbosity::Debug});
+	state_smurf::example::Logger::init({"sampleApp", log::LoggerVerbosity::Debug});
+	state_smurf::transition::Logger::addSink<log::ConsoleSink>();
+	state_smurf::transition::Logger::addSink<log::FileSink>(fsParams);
+	state_smurf::transition::Logger::init({"StateTransition", log::LoggerVerbosity::Debug});
 	
 	/// Creating State Graph. More in function
 	state_smurf::diagram::StateDiagram stateGraph = createStateDiagram();
@@ -87,7 +82,7 @@ int main(int argc, char **argv) {
 	
 	/// Invalid transition returns false
 	if (!transitions->goToState("idle")) {
-		LoggerSample::logWarning("Cant go to idle while driving, stopping...");
+		state_smurf::example::Logger::logWarning("Cant go to idle while driving, stopping...");
 		drive.stop();
 		transitions->goToState("idle");
 	}

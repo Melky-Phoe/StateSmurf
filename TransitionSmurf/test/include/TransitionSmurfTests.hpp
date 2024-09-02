@@ -2,16 +2,13 @@
 
 #include <state_smurf/diagram/StateDiagram.hpp>
 #include <state_smurf/transition/StateTransition.hpp>
+#include <state_smurf/transition/StateTransitionLoggerId.hpp>
 
 #include <gtest/gtest.h>
-#include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/FileSink.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 
 namespace state_smurf::transition {
-
-	constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
-	using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
 	
 	class StateTransitionTest : public ::testing::Test {
 	protected:

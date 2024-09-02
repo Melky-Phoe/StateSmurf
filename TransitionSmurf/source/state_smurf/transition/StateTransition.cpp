@@ -1,11 +1,7 @@
 #include <state_smurf/transition/StateTransition.hpp>
-
-#include <bringauto/logging/Logger.hpp>
+#include <state_smurf/transition/StateTransitionLoggerId.hpp>
 
 namespace state_smurf::transition {
-
-	constexpr bringauto::logging::LoggerId logId = {.id = "StateTransition"};
-	using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
 
 	StateTransition::StateTransition(diagram::StateDiagram stateDiagram) {
 		stateDiagram_ = std::move(stateDiagram);
