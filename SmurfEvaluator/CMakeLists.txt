@@ -18,8 +18,6 @@ ENDIF ()
 
 FIND_PACKAGE(cxxopts 3.0.0 REQUIRED)
 
-FIND_PACKAGE(libbringauto_logger)
-
 FILE(GLOB_RECURSE source_files "source/*")
 ADD_LIBRARY(smurf_evaluator_lib STATIC ${source_files})
 TARGET_INCLUDE_DIRECTORIES(smurf_evaluator_lib PUBLIC "include")
