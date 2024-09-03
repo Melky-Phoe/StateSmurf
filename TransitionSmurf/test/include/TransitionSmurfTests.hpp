@@ -2,9 +2,9 @@
 
 #include <state_smurf/diagram/StateDiagram.hpp>
 #include <state_smurf/transition/StateTransition.hpp>
+#include <state_smurf/transition/StateTransitionLoggerId.hpp>
 
 #include <gtest/gtest.h>
-#include <bringauto/logging/Logger.hpp>
 #include <bringauto/logging/FileSink.hpp>
 #include <bringauto/logging/ConsoleSink.hpp>
 
@@ -13,9 +13,9 @@ namespace state_smurf::transition {
 	class StateTransitionTest : public ::testing::Test {
 	protected:
 		void SetUp() override {
-			bringauto::logging::Logger::addSink<bringauto::logging::ConsoleSink>();
-			bringauto::logging::Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
-			bringauto::logging::Logger::init({"StateTransitionTest", bringauto::logging::Logger::Verbosity::Debug});
+			Logger::addSink<bringauto::logging::ConsoleSink>();
+			Logger::addSink<bringauto::logging::FileSink>({"./", "StateTransitionTest.log"});
+			Logger::init({"StateTransition", bringauto::logging::LoggerVerbosity::Debug});
 			
 			diagram::StateDiagram stateDiagram;
 			auto a = stateDiagram.addVertex("A");
@@ -34,7 +34,7 @@ namespace state_smurf::transition {
 		}
 		
 		void TearDown() override {
-			bringauto::logging::Logger::destroy();
+			Logger::destroy();
 		}
 		
 		std::shared_ptr<StateTransition> transition;

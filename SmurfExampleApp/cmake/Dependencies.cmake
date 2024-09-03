@@ -1,1 +1,1 @@
-BA_PACKAGE_LIBRARY(ba-logger     v1.2.0)
+BA_PACKAGE_LIBRARY(ba-logger     v2.0.0)

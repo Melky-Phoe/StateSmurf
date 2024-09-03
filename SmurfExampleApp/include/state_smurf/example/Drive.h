@@ -1,9 +1,14 @@
 #pragma once
 
 #include <state_smurf/transition/StateTransition.hpp>
+#include <bringauto/logging/Logger.hpp>
 #include <memory>
 
 namespace state_smurf::example {
+
+	constexpr bringauto::logging::LoggerId logId = {.id = "sampleApp"};
+	using Logger = bringauto::logging::Logger<logId, bringauto::logging::LoggerImpl>;
+
 	/**
 	 * Example class using TransitionSmurf
 	 */

@@ -1,1 +1,5 @@
-BA_PACKAGE_LIBRARY(ba-logger     v1.2.0)
+BA_PACKAGE_LIBRARY(ba-logger     v2.0.0)
+
+IF (BRINGAUTO_TESTS)
+    BA_PACKAGE_LIBRARY(gtest     v1.12.1)
+ENDIF ()
