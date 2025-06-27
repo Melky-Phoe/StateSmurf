@@ -6,11 +6,34 @@ from pathlib import Path
 import json
 import argparse
 import multiprocessing
+import multiprocessing.shared_memory
+
+
+class TestResult:
+    def __init__(self, name, cmd_output, transitions_equal):
+        self.name = name
+        self.cmd_output = cmd_output
+        self.transitions_equal = transitions_equal
+
+
+    def to_string(self):
+        match self.transitions_equal:
+            case True:
+                transitions_str = "OK"
+            case False:
+                transitions_str = "DIFFERENT"
+            case None:
+                transitions_str = "N/A"
+        return "| {:<15} | {:>9} | {:>11} |".format(self.name,
+                                                   "OK" if self.cmd_output != 0 else "NOT OK",
+                                                   transitions_str)
+
 
 # Time in second to timeout if timeout argument is not set
 default_timeout = 5*60
 # Time after SIGINT to send SIGKILL
 kill_timeout = 10
+test_results: list[TestResult] = []
 
 
 def terminate_all_processes():
@@ -19,7 +42,7 @@ def terminate_all_processes():
         process.terminate()
 
 
-def run_commands(command_list):
+def run_commands(command_list: list[str]):
     for command in command_list:
         if isinstance(command, list):
             multiprocessing.Process(target=run_commands, args=(command,)).start()
@@ -28,6 +51,8 @@ def run_commands(command_list):
             return_code = os.system(command)
             if return_code > 0 and return_code != 15:
                 print(f"\033[31m'{command}' ended with exit code: {return_code}\033[0m")
+                failed_commands[failed_commands_count.value] = f"{command}; exit code: {return_code}"
+                failed_commands_count.value += 1
                 commands_ok.value = 0
 
 
@@ -55,7 +80,8 @@ def tidy_up():
 def run_scenarios():
     tests_passed = True
     for scenario in scenario_json["scenarios"]:
-        print(f"\n\033[92mRunning test: {scenario['name']} .....\033[0m\n")
+        print("\n\033[92m" + "-" * 75 + "\033[0m")
+        print(f"\033[92mRunning test case: {scenario['name']} .....\033[0m\n")
         process = subprocess.Popen(create_command_string(scenario), shell=True, cwd=workDir, preexec_fn=os.setsid)
         if "actions" in scenario:
             multiprocessing.Process(target=run_commands, args=(scenario["actions"],)).start()
@@ -73,15 +99,19 @@ def run_scenarios():
             raise KeyboardInterrupt
         if commands_ok.value == 0:
             print("\033[31mAn error occurred in a test action\033[0m")
+            test_results.append(TestResult(scenario["name"], 0, None))
             return False
-        print("\n\033[92m..... Done\033[0m")
+        print(f"\n\033[92m..... Test case: {scenario['name']} finished\033[0m")
 
         if not args.create_etalons:
-            if not compare_output(scenario["name"]):
+            etalons_equal = compare_output(scenario["name"])
+            if not etalons_equal:
                 tests_passed = False
+        test_results.append(TestResult(scenario["name"], 0 if commands_ok.value == 0 else 1, etalons_equal))
         if process.returncode != 0 and process.returncode != None:
             print(f"\033[31mERROR: tested executable ended with exit code: {process.returncode}\033[0m")
             return False
+        print("\033[92m" + "-" * 75 + "\033[0m")
         if not tidy_up():
             return False
     return tests_passed
@@ -177,8 +207,32 @@ def validate_json():
         used_names.append(scenario["name"])
 
 
+def print_test_results():
+    print("\n\033[96mTest Results:\033[0m")
+    print("-" * 45)
+    print("| {:<15} | {:>9} | {:>11} |".format("Test Name", "Exit code", "Transitions"))
+    print("-" * 45)
+    for result in test_results:
+        print(result.to_string())
+    print("-" * 45)
+    if len(failed_commands):
+        failed_commands_list = [cmd for cmd in failed_commands if not cmd.isspace()]
+    if all(result.cmd_output != 0 and result.transitions_equal for result in test_results):
+        if len(failed_commands_list) == 0:
+            print("\033[92mAll tests passed successfully!\033[0m")
+        else:
+            print("\033[31mSome command during the last test failed!\033[0m")
+            print(f"\033[31mFailed commands: {', '.join(failed_commands_list)}\033[0m")
+    else:
+        print("\033[31mSome tests failed, check the output above for details.\033[0m")
+        if len(failed_commands_list) > 0:
+            print(f"\033[31mFailed commands:\n{', '.join(failed_commands_list)}\033[0m")
+
+
 if __name__ == "__main__":
     commands_ok = multiprocessing.Value('i', 1)
+    failed_commands_count = multiprocessing.Value('i', 0)
+    failed_commands = multiprocessing.shared_memory.ShareableList([' '*200] * 100)
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--scenario", type=str, required=True, help="Path to scenario.json file")
     parser.add_argument("-e", "--executable", type=str, default="", help="Path to executable")
@@ -263,16 +317,14 @@ if __name__ == "__main__":
         exit(1)
     try:
         if not run_scenarios():
-            if args.create_etalons:
-                print("\033[31mERROR: An unexpected error occured during tests\033[0m")
-                exit_code = 1
-            else:
-                print(f"\n\033[31mWARNING: Some test have different transition logs, check '{evaluator_output_dir}' for output\033[0m")
-                exit_code = 2
+            exit_code = 1
         terminate_all_processes()
         if args.create_etalons and exit_code == 0:
             print(f"\n\033[96mEtalons were created in: {etalons_dir}\033[0m\n")
     finally:
         cleanup()
         terminate_all_processes()
+        print_test_results()
+        failed_commands.shm.close()
+        failed_commands.shm.unlink()
         exit(exit_code)
