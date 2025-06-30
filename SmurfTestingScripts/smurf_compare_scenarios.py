@@ -10,9 +10,9 @@ import multiprocessing.shared_memory
 
 
 class TestResult:
-    def __init__(self, name, cmd_output, transitions_equal):
+    def __init__(self, name: str, cmd_ok: bool, transitions_equal: bool | None):
         self.name = name
-        self.cmd_output = cmd_output
+        self.cmd_ok = cmd_ok
         self.transitions_equal = transitions_equal
 
 
@@ -25,7 +25,7 @@ class TestResult:
             case None:
                 transitions_str = "N/A"
         return "| {:<15} | {:>9} | {:>11} |".format(self.name,
-                                                   "OK" if self.cmd_output != 0 else "NOT OK",
+                                                   "OK" if self.cmd_ok else "NOT OK",
                                                    transitions_str)
 
 
@@ -51,8 +51,11 @@ def run_commands(command_list: list[str]):
             return_code = os.system(command)
             if return_code > 0 and return_code != 15:
                 print(f"\033[31m'{command}' ended with exit code: {return_code}\033[0m")
-                failed_commands[failed_commands_count.value] = f"{command}; exit code: {return_code}"
-                failed_commands_count.value += 1
+                if failed_commands_count.value < len(failed_commands):
+                    failed_commands[failed_commands_count.value] = f"{command}; exit code: {return_code}"
+                    failed_commands_count.value += 1
+                else:
+                    print("\033[31mWARNING: Failed commands list is full, skipping adding a command\033[0m")
                 commands_ok.value = 0
 
 
@@ -99,15 +102,16 @@ def run_scenarios():
             raise KeyboardInterrupt
         if commands_ok.value == 0:
             print("\033[31mAn error occurred in a test action\033[0m")
-            test_results.append(TestResult(scenario["name"], 0, None))
+            test_results.append(TestResult(scenario["name"], False, None))
             return False
         print(f"\n\033[92m..... Test case: {scenario['name']} finished\033[0m")
 
+        etalons_equal = None
         if not args.create_etalons:
             etalons_equal = compare_output(scenario["name"])
             if not etalons_equal:
                 tests_passed = False
-        test_results.append(TestResult(scenario["name"], 0 if commands_ok.value == 0 else 1, etalons_equal))
+        test_results.append(TestResult(scenario["name"], False if commands_ok.value == 0 else True, etalons_equal))
         if process.returncode != 0 and process.returncode != None:
             print(f"\033[31mERROR: tested executable ended with exit code: {process.returncode}\033[0m")
             return False
@@ -215,9 +219,10 @@ def print_test_results():
     for result in test_results:
         print(result.to_string())
     print("-" * 45)
+    failed_commands_list = []
     if len(failed_commands):
         failed_commands_list = [cmd for cmd in failed_commands if not cmd.isspace()]
-    if all(result.cmd_output != 0 and result.transitions_equal for result in test_results):
+    if all(result.cmd_ok and result.transitions_equal for result in test_results):
         if len(failed_commands_list) == 0:
             print("\033[92mAll tests passed successfully!\033[0m")
         else:
